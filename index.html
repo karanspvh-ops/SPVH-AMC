@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPVH AMC | Institutional Wealth Management</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Sticky Nav -->
+  <header id="header">
+    <div class="container nav-container">
+      <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
+      
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html#firm-overview">Firm Overview</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="pms.html">Investment Solutions <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a href="performance.html">Performance</a></li>
+        <li class="nav-item"><a href="insights.html">Insights</a></li>
+        <li class="nav-item"><a href="resources.html">Resources</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="#" class="login-link">Investor Login</a>
+        <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
+      </div>
+
+      <div class="hamburger">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Cinematic Hero -->
+    <section class="hero cinematic-hero">
+      <div class="overlay-gradient"></div>
+      <div class="container hero-container">
+        <div class="hero-content reveal">
+          <h1 class="hero-title">Generational Wealth.<br><span class="hero-subtitle">Institutional Precision.</span></h1>
+          <p class="hero-text">SPVH AMC delivers specialized alternative and portfolio management solutions designed specifically for family offices and institutional investors. Absolute returns driven by uncompromised research.</p>
+          <a href="about.html#pillars" class="btn btn-primary" style="margin-top: 1.5rem; padding: 1rem 2.5rem; font-size: 1rem;">Discover Our Framework</a>
+        </div>
+      </div>
+      
+      <!-- Ticker Complex -->
+      <div class="hero-ticker-complex">
+        <div class="announcement-bar">
+          <div class="container">
+            <div class="ticker-content">
+              <span class="ticker-pulse"></span>
+              <span class="ticker-text"><strong>SPVH Value Discovery Fund</strong> now open for subscriptions.</span>
+              <span style="color: rgba(255,255,255,0.4); margin: 0 1.5rem;">|</span>
+              <a href="value-discovery-fund.html" class="ticker-text" style="color: var(--secondary); text-decoration: none;"><strong>Explore More</strong></a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Stock Marquee (Live TradingView Widget) -->
+        <div class="stock-marquee" style="padding: 0;">
+          <!-- TradingView Widget BEGIN -->
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+            "symbols": [
+              { "description": "SENSEX", "proName": "BSE:SENSEX" },
+              { "description": "RELIANCE", "proName": "BSE:RELIANCE" },
+              { "description": "HDFC BANK", "proName": "BSE:HDFCBANK" },
+              { "description": "INFOSYS", "proName": "BSE:INFY" },
+              { "description": "TCS", "proName": "BSE:TCS" },
+              { "description": "ICICI BANK", "proName": "BSE:ICICIBANK" }
+            ],
+            "showSymbolLogo": true,
+            "isTransparent": true,
+            "displayMode": "adaptive",
+            "colorTheme": "dark",
+            "locale": "in"
+          }
+            </script>
+          </div>
+          <!-- TradingView Widget END -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Statistics -->
+    <section class="key-statistics" style="background-color: #FAFAFA; padding: 80px 0;">
+      <div class="container">
+        <div class="key-stats-row">
+          
+          <div class="key-stat-item stat-box reveal">
+            <div class="stat-accent"></div>
+            <div class="stat-value">₹<span class="counter" data-target="950" data-duration="1500">0</span> Cr+</div>
+            <div class="stat-label">Asset Under Management &amp; Administration</div>
+          </div>
+          
+          <div class="stat-divider reveal" style="animation-delay: 0.1s;"></div>
+          
+          <div class="key-stat-item stat-box reveal" style="animation-delay: 0.2s;">
+            <div class="stat-accent"></div>
+            <div class="stat-value"><span class="counter" data-target="22" data-duration="1500">0</span>%</div>
+            <div class="stat-label">CAGR Since Inception</div>
+          </div>
+          
+          <div class="stat-divider reveal" style="animation-delay: 0.3s;"></div>
+          
+          <div class="key-stat-item stat-box reveal" style="animation-delay: 0.4s;">
+            <div class="stat-accent"></div>
+            <div class="stat-value"><span class="counter" data-target="250" data-duration="1500">0</span>+</div>
+            <div class="stat-label">HNI/ UHNI &amp; Families Served</div>
+          </div>
+          
+          <div class="stat-divider reveal" style="animation-delay: 0.5s;"></div>
+          
+          <div class="key-stat-item stat-box reveal" style="animation-delay: 0.6s;">
+            <div class="stat-accent"></div>
+            <div class="stat-value"><span class="counter" data-target="15" data-duration="1500">0</span>+ Years</div>
+            <div class="stat-label">Fund Manager's Track Record</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="about-section" style="background-color: #ffffff; padding: 100px 0; overflow: hidden;">
+      <div class="container">
+        <div class="about-new-grid">
+          <div class="about-new-content reveal-left">
+            <h2 class="about-new-title">Built on Research. Driven by Conviction.</h2>
+            <div class="about-new-accent"></div>
+            <p class="about-new-text">SPVH Asset Management Company is the investment arm of the SPVH Group &mdash; a multi-generational holding company with diversified interests across sectors. We bring institutional-grade investment discipline to family offices, HNIs, and ultra-high-net-worth investors across India.</p>
+            <p class="about-new-text">Our approach combines deep fundamental research, macro-aware portfolio construction, and a long-term conviction-based philosophy &mdash; designed to preserve and compound wealth across market cycles.</p>
+            <a href="about.html" class="about-new-link">Our Full Story &rarr;</a>
+          </div>
+          <div class="about-new-visual reveal-right">
+            <div class="about-image-wrapper">
+              <img src="assets/images/ChatGPT%20Image%20May%2012,%202026,%2004_19_30%20PM.png" alt="SPVH Group Modern Lobby">
+              <div class="about-floating-card">
+                <img src="assets/images/SPVH%20Round%20Logo.png" alt="SPVH Logo Icon" class="floating-icon">
+                <div class="floating-text">
+                  <span class="floating-title">SPVH Group</span>
+                  <span class="floating-sub">Est. 2020</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solutions -->
+    <section class="solutions-section" style="background-color: #F0F4FA; padding: 100px 0;">
+      <div class="container">
+        <div class="solutions-title-wrapper reveal">
+          <span class="solutions-subtitle">WHAT WE OFFER</span>
+          <h2 class="solutions-title">Solutions Designed for <span>Serious Investors.</span></h2>
+        </div>
+        
+        <div class="solutions-grid">
+          
+          <!-- Card 1 -->
+          <div class="solution-card reveal" style="animation-delay: 0s;">
+            <i class="fas fa-chart-pie solution-icon"></i>
+            <h3 class="solution-heading">Portfolio Management Services</h3>
+            <span class="solution-tag">SEBI Registered PMS</span>
+            <p class="solution-desc">Discretionary portfolio management for HNIs with a minimum ticket size of &#8377;50 Lakhs. Actively managed equity strategies with a research-first approach.</p>
+            <span class="solution-meta">Minimum Investment: &#8377;50 Lakhs and above</span>
+            <a href="pms.html" class="solution-link">Learn More &rarr;</a>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="solution-card reveal" style="animation-delay: 0.15s;">
+            <i class="fas fa-layer-group solution-icon"></i>
+            <h3 class="solution-heading">Alternative Investment Funds</h3>
+            <span class="solution-tag">Category II & III AIF</span>
+            <p class="solution-desc">Curated alternative strategies including private equity, pre-IPO strategies, public equities product for sophisticated investors seeking aggressive returns.</p>
+            <span class="solution-meta">Minimum Investment: &#8377;1 Crore and above</span>
+            <a href="aif.html" class="solution-link">Learn More &rarr;</a>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="solution-card reveal" style="animation-delay: 0.3s;">
+            <i class="fas fa-globe solution-icon"></i>
+            <h3 class="solution-heading">Offshore & Global Funds</h3>
+            <span class="solution-tag">International Exposure</span>
+            <p class="solution-desc">Access to global markets through GIFT City and international fund structure through FOF Investment schemes. Diversify beyond Indian equities with currency and geography diversification.</p>
+            <span class="solution-meta">Minimum Investment: &#8377;1 Crore and above</span>
+            <a href="offshore.html" class="solution-link">Learn More &rarr;</a>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="solution-card reveal" style="animation-delay: 0.45s;">
+            <i class="fas fa-lightbulb solution-icon"></i>
+            <h3 class="solution-heading">Investment Advisory & Research</h3>
+            <span class="solution-tag">Research Backed Equity Advisory</span>
+            <p class="solution-desc">Unbiased, in-depth investment research and advisory services for family offices and institutional investors. Sector reports, portfolio reviews, and bespoke investment recommendations driven purely by data and conviction.</p>
+            <span class="solution-meta">Engagement: Retainer Fees and Subscription Based</span>
+            <a href="investment-advisory-research.html" class="solution-link">Learn More &rarr;</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Philosophy -->
+    <section class="philosophy-section" style="background-color: #0A1628; padding: 100px 0;">
+      <div class="container">
+        <div class="philosophy-title-wrapper reveal">
+          <span class="philosophy-subtitle">HOW WE THINK</span>
+          <h2 class="philosophy-title">A Philosophy Built for <span>Wealth That Lasts.</span></h2>
+        </div>
+        
+        <div class="philosophy-grid">
+          
+          <!-- Card 1 -->
+          <div class="philosophy-card reveal" style="animation-delay: 0s;">
+            <span class="philosophy-number">01</span>
+            <i class="fas fa-search philosophy-icon"></i>
+            <h3 class="philosophy-heading">Research First</h3>
+            <p class="philosophy-desc">Every investment decision is grounded in deep fundamental analysis &mdash; bottom-up stock picking combined with top-down macro awareness. No noise. Only conviction.</p>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="philosophy-card reveal" style="animation-delay: 0.2s;">
+            <span class="philosophy-number">02</span>
+            <i class="fas fa-arrow-trend-up philosophy-icon"></i>
+            <h3 class="philosophy-heading">Absolute Return Mindset</h3>
+            <p class="philosophy-desc">We measure success against capital preservation and real returns &mdash; not benchmark hugging. Our goal is to grow and protect your wealth across all market conditions.</p>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="philosophy-card reveal" style="animation-delay: 0.4s;">
+            <span class="philosophy-number">03</span>
+            <i class="fas fa-gem philosophy-icon"></i>
+            <h3 class="philosophy-heading">Concentrated Conviction</h3>
+            <p class="philosophy-desc">We run high-conviction, focused portfolios. We believe meaningful wealth is built through selective positioning &mdash; not over-diversification that dilutes returns.</p>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="philosophy-card reveal" style="animation-delay: 0.6s;">
+            <span class="philosophy-number">04</span>
+            <i class="fas fa-infinity philosophy-icon"></i>
+            <h3 class="philosophy-heading">Long-Term Compounding</h3>
+            <p class="philosophy-desc">Patience is our edge. We invest with a 3&ndash;5 year horizon, allowing compounding to work undisturbed by short-term market volatility and noise.</p>
+          </div>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 4rem;" class="reveal">
+          <a href="#" class="philosophy-btn">Read Our Full Philosophy &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Performance Highlights -->
+    <section class="performance-highlights-section" style="background-color: #F0F4FA; padding: 100px 0;">
+      <div class="container">
+        
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">TRACK RECORD</span>
+          <h2 class="leadership-title">Numbers That <span>Speak for Themselves.</span></h2>
+          <p class="perf-disclaimer">Past performance does not guarantee future results. Returns are indicative.</p>
+        </div>
+
+        <div class="perf-split-grid">
+          
+          <!-- Left Column: Table -->
+          <div class="perf-col-left reveal-left" style="transition: all 0.4s ease;">
+            <div class="perf-table-wrapper">
+              <table class="perf-table-new">
+                <thead>
+                  <tr>
+                    <th>Strategy</th>
+                    <th>1 Year</th>
+                    <th>3 Year</th>
+                    <th>5 Year</th>
+                    <th>Since Inception</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>SPVH Equity PMS</td>
+                    <td class="perf-pos">24.5%</td>
+                    <td class="perf-pos">18.2%</td>
+                    <td class="perf-pos">21.4%</td>
+                    <td class="perf-pos">22.8%</td>
+                  </tr>
+                  <tr>
+                    <td>SPVH Special Situations AIF</td>
+                    <td class="perf-pos">19.2%</td>
+                    <td class="perf-pos">21.0%</td>
+                    <td class="perf-pos">19.8%</td>
+                    <td class="perf-pos">20.5%</td>
+                  </tr>
+                  <tr>
+                    <td>SPVH Private Credit Fund</td>
+                    <td class="perf-pos">14.5%</td>
+                    <td class="perf-pos">13.8%</td>
+                    <td class="perf-pos">14.1%</td>
+                    <td class="perf-pos">14.0%</td>
+                  </tr>
+                  <tr class="perf-row-benchmark">
+                    <td>Benchmark (Nifty 50)</td>
+                    <td class="perf-pos">16.8%</td>
+                    <td class="perf-pos">14.1%</td>
+                    <td class="perf-pos">15.2%</td>
+                    <td class="perf-pos">14.8%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right Column: Chart -->
+          <div class="perf-col-right reveal-right" style="transition: all 0.4s ease; animation-delay: 0.1s;">
+            <div class="perf-chart-container">
+              <h4 class="perf-chart-title">₹100 Invested in SPVH Equity PMS — Growth vs Benchmark</h4>
+              <canvas id="performanceChart"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="perf-banner reveal">
+          <p>All returns are TWRR &nbsp;|&nbsp; Audited figures available on request &nbsp;|&nbsp; SEBI Registered Category II Fund: Reg. No. IN/AIF2/22-23/1248</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Client Testimonials -->
+    <section class="testimonials-dark-section" style="background-color: #0A1628; padding: 100px 0;">
+      <div class="container">
+        
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">WHAT OUR INVESTORS SAY</span>
+          <h2 class="leadership-title" style="color: white;">Trust Built Over <span style="color: #47a996;">Years of Delivering Returns.</span></h2>
+        </div>
+
+        <div class="carousel-wrapper reveal">
+          <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+          
+          <div class="carousel-track-container">
+            <div class="carousel-track" id="testimonialTrack">
+              
+              <!-- Card 1 -->
+              <div class="testi-card">
+                <div class="testi-card-inner">
+                  <div class="testi-quote-mark">&ldquo;</div>
+                  <div class="testi-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                  <p class="testi-text">"SPVH AMC has completely transformed how we think about our family's long-term wealth. Their research depth and transparency sets them apart from every other firm we have worked with."</p>
+                  <div class="testi-profile">
+                    <div class="testi-avatar">SR</div>
+                    <div class="testi-info">
+                      <h4>Siddharth R.</h4>
+                      <span>FOUNDER, TECHNOLOGY GROUP | MUMBAI</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="testi-card">
+                <div class="testi-card-inner">
+                  <div class="testi-quote-mark">&ldquo;</div>
+                  <div class="testi-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                  <p class="testi-text">"We value predictable compounding. SPVH's obsession with downside protection and active management gives us total confidence during extreme macroeconomic volatility."</p>
+                  <div class="testi-profile">
+                    <div class="testi-avatar">NK</div>
+                    <div class="testi-info">
+                      <h4>Naina K.</h4>
+                      <span>CHIEF INVESTMENT OFFICER, ENDOWMENT FUND</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="testi-card">
+                <div class="testi-card-inner">
+                  <div class="testi-quote-mark">&ldquo;</div>
+                  <div class="testi-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                  <p class="testi-text">"Transitioning our offshore capital via SPVH's structured FPI solutions was seamless. Their deep on-ground intelligence provides edge that foreign institutions cannot replicate."</p>
+                  <div class="testi-profile">
+                    <div class="testi-avatar">DM</div>
+                    <div class="testi-info">
+                      <h4>David M.</h4>
+                      <span>DIRECTOR, GLOBAL PENSION TRUST</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Card 4 (Carousel extension) -->
+              <div class="testi-card">
+                <div class="testi-card-inner">
+                  <div class="testi-quote-mark">&ldquo;</div>
+                  <div class="testi-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                  <p class="testi-text">"The level of bespoke investment advisory we received was unmatched. They identified market gaps clearly and built a robust framework for our multi-generational asset allocation."</p>
+                  <div class="testi-profile">
+                    <div class="testi-avatar">AP</div>
+                    <div class="testi-info">
+                      <h4>Arjun P.</h4>
+                      <span>MANAGING PARTNER, VENTURE CAPITAL</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
+        <div class="carousel-dots" id="carouselDots">
+          <!-- Dots generated by JS -->
+        </div>
+
+        <p class="testi-disclaimer">[Testimonials shared with investor consent. Identities partially anonymized for privacy.]</p>
+        
+      </div>
+    </section>
+
+    <!-- Insights & Thought Leadership -->
+    <section class="insights-section" style="background-color: #FAFAFA; padding: 100px 0;">
+      <div class="container">
+        
+        <div class="insights-header reveal">
+          <h2 class="insights-title">Latest <span>Insights & Research.</span></h2>
+          <a href="#" class="insights-view-all">View All Insights &rarr;</a>
+        </div>
+
+        <div class="insights-grid">
+          
+          <!-- Card 1 -->
+          <div class="insight-card-new reveal" style="animation-delay: 0s;">
+            <div class="insight-thumb">
+              <div class="insight-cat">Market Outlook</div>
+            </div>
+            <div class="insight-content">
+              <span class="insight-date">24 MAR 2026</span>
+              <h3 class="insight-heading">India's Private Credit Opportunity in a Rising Rate Environment</h3>
+              <p class="insight-excerpt">A deep dive into why private credit is emerging as the most compelling risk-adjusted opportunity for sophisticated Indian investors in 2025.</p>
+              <div class="insight-footer">
+                <div class="insight-author">
+                  <div class="author-avatar">VK</div>
+                  <span class="author-name">Vikram K.</span>
+                </div>
+                <span class="insight-time">5 min read</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="insight-card-new reveal" style="animation-delay: 0.15s;">
+            <div class="insight-thumb" style="background-image: linear-gradient(135deg, #112240, #2d3748);">
+              <div class="insight-cat">Fund Update</div>
+            </div>
+            <div class="insight-content">
+              <span class="insight-date">12 FEB 2026</span>
+              <h3 class="insight-heading">SPVH Special Situations Fund: Q1 Portfolio Rebalancing</h3>
+              <p class="insight-excerpt">An overview of our recent exits in the industrials segment and strategic entries into structured technology debt alongside marquee founders.</p>
+              <div class="insight-footer">
+                <div class="insight-author">
+                  <div class="author-avatar">PS</div>
+                  <span class="author-name">Pooja S.</span>
+                </div>
+                <span class="insight-time">4 min read</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="insight-card-new reveal" style="animation-delay: 0.3s;">
+            <div class="insight-thumb" style="background-image: linear-gradient(135deg, rgba(10, 22, 40, 0.9), rgba(73, 107, 173, 0.7));">
+              <div class="insight-cat">Research Note</div>
+            </div>
+            <div class="insight-content">
+              <span class="insight-date">28 JAN 2026</span>
+              <h3 class="insight-heading">The Illusion of Liquidity: Why Public Markets Are Structurally Fragile</h3>
+              <p class="insight-excerpt">Our forensic analysis on how passive flows are creating massive dislocations in mid-cap equity valuations, presenting asymmetric entry points.</p>
+              <div class="insight-footer">
+                <div class="insight-author">
+                  <div class="author-avatar">AS</div>
+                  <span class="author-name">Aditya S.</span>
+                </div>
+                <span class="insight-time">8 min read</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="insights-cta-wrapper reveal" style="animation-delay: 0.45s;">
+          <a href="#" class="insights-btn">Explore All Research & Insights</a>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- Awards & Recognition -->
+    <section class="awards-recognition-section" style="background-color: #F0F4FA; padding: 80px 0; overflow: hidden;">
+      <div class="container">
+        
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">RECOGNITION & TRUST</span>
+          <h2 class="leadership-title">Recognised by <span style="color: #496bad;">Industry Leaders.</span></h2>
+        </div>
+
+        <div class="awards-new-grid">
+          
+          <!-- Award 1 -->
+          <div class="award-card-new reveal" style="animation-delay: 0s;">
+            <i class="fas fa-trophy award-icon"></i>
+            <h4 class="award-name">Best PMS Fund Manager &mdash; 2025</h4>
+            <span class="award-body">MORNINGSTAR INDIA</span>
+            <span class="award-year">2025</span>
+          </div>
+
+          <!-- Award 2 -->
+          <div class="award-card-new reveal" style="animation-delay: 0.15s;">
+            <i class="fas fa-medal award-icon"></i>
+            <h4 class="award-name">Top Quintile AIF Performance</h4>
+            <span class="award-body">BLOOMBERG TERMINAL</span>
+            <span class="award-year">2025</span>
+          </div>
+
+          <!-- Award 3 -->
+          <div class="award-card-new reveal" style="animation-delay: 0.3s;">
+            <i class="fas fa-award award-icon"></i>
+            <h4 class="award-name">Excellence in Private Credit</h4>
+            <span class="award-body">ASIAHEDGE AWARDS</span>
+            <span class="award-year">2024</span>
+          </div>
+
+          <!-- Award 4 -->
+          <div class="award-card-new reveal" style="animation-delay: 0.45s;">
+            <i class="fas fa-star award-icon"></i>
+            <h4 class="award-name">5-Star Structured Equity Rating</h4>
+            <span class="award-body">CRISIL RATINGS</span>
+            <span class="award-year">2024</span>
+          </div>
+
+        </div>
+
+        <div class="media-strip-wrapper reveal-right" style="animation-delay: 0.6s;">
+          <div class="media-strip-divider"></div>
+          <span class="media-strip-label">AS SEEN IN & ASSOCIATED WITH</span>
+          
+          <div class="media-marquee-container">
+            <div class="media-marquee-track">
+              <!-- Duplicated set for seamless loop -->
+              <div class="media-logo-box">The Economic Times</div>
+              <div class="media-logo-box">Business Standard</div>
+              <div class="media-logo-box">Moneycontrol</div>
+              <div class="media-logo-box">CNBC TV18</div>
+              <div class="media-logo-box">AMFI</div>
+              <div class="media-logo-box">SEBI</div>
+              <div class="media-logo-box">NSE</div>
+              <div class="media-logo-box">BSE</div>
+            </div>
+            <div class="media-marquee-track" aria-hidden="true">
+              <!-- Set 2 -->
+              <div class="media-logo-box">The Economic Times</div>
+              <div class="media-logo-box">Business Standard</div>
+              <div class="media-logo-box">Moneycontrol</div>
+              <div class="media-logo-box">CNBC TV18</div>
+              <div class="media-logo-box">AMFI</div>
+              <div class="media-logo-box">SEBI</div>
+              <div class="media-logo-box">NSE</div>
+              <div class="media-logo-box">BSE</div>
+            </div>
+          </div>
+          
+        </div>
+
+        <p class="awards-disclaimer">[Awards and recognitions are based on internal nominations and third-party evaluations. Not indicative of future performance.]</p>
+
+      </div>
+    </section>
+
+    <!-- Pre-Footer CTA -->
+    <section class="pre-footer-cta-new" style="background-color: #0A1628; padding: 100px 0; position: relative; overflow: hidden;">
+      
+      <!-- Abstract Pattern Overlay -->
+      <div class="cta-abstract-overlay pattern-1"></div>
+
+      <div class="container" style="position: relative; z-index: 2;">
+        
+        <div class="cta-content-wrapper text-center">
+          <span class="cta-label reveal">START YOUR JOURNEY</span>
+          <h2 class="cta-heading reveal">Ready to Build <span style="color: #47a996;">Wealth That Lasts Generations?</span></h2>
+          <p class="cta-subtext reveal">Speak with our investment team today. Minimum investment starting at ₹50 Lakhs.</p>
+
+          <div class="cta-button-group reveal-pop">
+            <a href="contact.html" class="btn-cta-primary">Schedule a Consultation</a>
+            <a href="#" class="btn-cta-secondary">Download Our Fund Deck</a>
+          </div>
+
+          <div class="cta-trust-indicators reveal" style="animation-delay: 0.2s;">
+            <div class="trust-item"><i class="fas fa-check-circle" style="color: #47a996;"></i> SEBI Registered</div>
+            <span class="trust-dot">&bull;</span>
+            <div class="trust-item"><i class="fas fa-check-circle" style="color: #47a996;"></i> Confidential &amp; No Obligation</div>
+            <span class="trust-dot">&bull;</span>
+            <div class="trust-item"><i class="fas fa-check-circle" style="color: #47a996;"></i> Response Within 24 Hours</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-new">
+    <div class="container">
+      <div class="footer-top-grid">
+        
+        <!-- Column 1: Brand -->
+        <div class="footer-col-brand reveal" style="animation-delay: 0s;">
+          <a href="index.html" class="footer-logo-img" style="display: inline-block; margin-bottom: 1.25rem;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height: 73px; width: auto; display: block;">
+          </a>
+          <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div class="footer-col-links reveal" style="animation-delay: 0.1s;">
+          <h4 class="footer-heading">COMPANY</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Leadership Team</a></li>
+            <li><a href="#">Investment Philosophy</a></li>
+            <li><a href="#">Why SPVH</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Solutions -->
+        <div class="footer-col-links reveal" style="animation-delay: 0.2s;">
+          <h4 class="footer-heading">OUR SOLUTIONS</h4>
+          <ul>
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Contact -->
+        <div class="footer-col-contact reveal" style="animation-delay: 0.3s;">
+          <h4 class="footer-heading">GET IN TOUCH</h4>
+          <div class="contact-line">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Registered Office Address, Mumbai &mdash; 400051</span>
+          </div>
+          <div class="contact-line">
+            <i class="fas fa-phone-alt"></i>
+            <span>+91 22 4000 0000</span>
+          </div>
+          <div class="contact-line">
+            <i class="fas fa-envelope"></i>
+            <span>info@spvhamc.com</span>
+          </div>
+          <a href="#" class="footer-cta-link">Schedule Consultation &rarr;</a>
+        </div>
+
+      </div>
+    </div>
+    
+    <div class="footer-divider"></div>
+    
+    <div class="container">
+      <div class="footer-bottom-bar reveal" style="animation-delay: 0.4s;">
+        <div class="footer-copyright">&copy; 2025 SPVH Asset Management Company. All Rights Reserved.</div>
+        <div class="footer-legal-links">
+          <a href="#">Privacy Policy</a>
+          <span class="dot">&middot;</span>
+          <a href="#">Disclaimer</a>
+          <span class="dot">&middot;</span>
+          <a href="#">Regulatory Information</a>
+        </div>
+        <div class="footer-sebi">SEBI Registered Portfolio Manager | Reg. No. INP00000XXXX | Investments are subject to market risk.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+

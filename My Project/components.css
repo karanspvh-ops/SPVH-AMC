@@ -1,0 +1,197 @@
+/* SaaS Fintech Design System - Core Components */
+
+/* Layout System */
+.ds-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--space-6);
+  display: flex;
+  gap: var(--space-6);
+}
+
+.ds-sidebar {
+  width: 250px;
+  flex-shrink: 0;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  height: calc(100vh - var(--space-12));
+  position: sticky;
+  top: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.ds-content {
+  flex-grow: 1;
+}
+
+/* Surface Cards - Primary Container for Widgets */
+.ds-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-6);
+}
+
+.ds-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-3);
+}
+
+.ds-card-title {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+/* Data Tables - High Density for Ledgers/Transactions */
+.ds-table-container {
+  overflow-x: auto;
+}
+
+.ds-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.ds-table th {
+  background-color: var(--bg-app);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-strong);
+  border-top: 1px solid var(--border-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ds-table th:first-child { border-top-left-radius: var(--radius-sm); border-left: 1px solid var(--border-subtle); }
+.ds-table th:last-child { border-top-right-radius: var(--radius-sm); border-right: 1px solid var(--border-subtle); }
+
+.ds-table td {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  vertical-align: middle;
+}
+
+.ds-table tr:hover td {
+  background-color: var(--bg-app);
+}
+
+/* Specific Cell formatting */
+.td-number { text-align: right; }
+.td-action { text-align: center; }
+
+/* Status Pills */
+.ds-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.ds-pill.success { background-color: var(--fin-success-bg); color: var(--fin-success); }
+.ds-pill.error { background-color: var(--fin-error-bg); color: var(--fin-error); }
+.ds-pill.warning { background-color: var(--fin-warning-bg); color: var(--fin-warning); }
+.ds-pill.info { background-color: var(--fin-info-bg); color: var(--fin-info); }
+
+/* Buttons & Inputs */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+}
+
+.ds-btn-primary {
+  background-color: var(--brand-primary);
+  color: var(--text-inverse);
+}
+
+.ds-btn-primary:hover { background-color: var(--brand-primary-light); }
+
+.ds-btn-outline {
+  background-color: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.ds-btn-outline:hover { background-color: var(--bg-app); border-color: var(--text-secondary); }
+
+.ds-input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.ds-input:focus {
+  outline: none;
+  border-color: var(--brand-primary-light);
+  box-shadow: 0 0 0 3px var(--fin-info-bg);
+}
+
+/* KPI Summary Widgets */
+.ds-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.ds-kpi-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-kpi-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.ds-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.ds-kpi-trend {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.ds-kpi-trend i { margin-right: 4px; }

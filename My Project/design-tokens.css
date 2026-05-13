@@ -1,0 +1,95 @@
+/* SaaS Fintech Design System - Tokens */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap');
+
+:root {
+  /* Functional Colors - Fintech Needs High Contrast for Status */
+  --fin-success: #1DA362;
+  --fin-success-bg: #E8F6EF;
+  --fin-error: #E53E3E;
+  --fin-error-bg: #FCF0F0;
+  --fin-warning: #DD6B20;
+  --fin-warning-bg: #FEF6EB;
+  --fin-info: #3182CE;
+  --fin-info-bg: #EBF4FC;
+
+  /* Primary Brand - Trustworthy Navy/Blue */
+  --brand-primary: #1A365D;
+  --brand-primary-light: #2B6CB0;
+  --brand-primary-dark: #0F1F38;
+
+  /* Surface and Backgrounds (Light Theme Default) */
+  --bg-app: #F7FAFC; /* Light gray for app background to make panels pop */
+  --bg-surface: #FFFFFF;
+  --border-subtle: #E2E8F0;
+  --border-strong: #CBD5E0;
+
+  /* Typography Colors */
+  --text-primary: #1A202C; /* Almost black for high readability */
+  --text-secondary: #4A5568;
+  --text-tertiary: #A0AEC0;
+  --text-inverse: #FFFFFF;
+
+  /* Typography Specs */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Roboto Mono', monospace; /* Crucial for tabular data */
+
+  /* Shadows (Depth for Modals, Cards, Dropdowns) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Spacing (4px baseline grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  /* Borders */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fundamental Reset & Base Styles */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  line-height: 1.2;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+
+p { margin-bottom: var(--space-4); color: var(--text-secondary); }
+a { color: var(--brand-primary-light); text-decoration: none; font-weight: 500; }
+a:hover { text-decoration: underline; }
+
+/* Financial Standard Format Classes */
+.fin-tabular {
+  font-family: var(--font-mono);
+  letter-spacing: -0.5px;
+}
+
+.fin-pos { color: var(--fin-success); }
+.fin-neg { color: var(--fin-error); }

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPVH AMC | Value Discovery Fund</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="fund_styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @keyframes breatheGlow {
+      0% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
+      50% { text-shadow: 0 0 40px rgba(71, 169, 150, 0.9); }
+      100% { text-shadow: 0 0 20px rgba(73, 107, 173, 0.8); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Nav -->
+  <header id="header">
+    <div class="container nav-container">
+      <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
+      
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html#firm-overview">Firm Overview</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="pms.html">Investment Solutions <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a href="performance.html">Performance</a></li>
+        <li class="nav-item"><a href="insights.html">Insights</a></li>
+        <li class="nav-item"><a href="resources.html">Resources</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="#" class="login-link">Investor Login</a>
+        <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
+      </div>
+
+      <div class="hamburger">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Banner -->
+    <section class="vdf-hero">
+      <div class="pattern-overlay"></div>
+      <div class="container" style="position: relative; z-index: 2;">
+        <span class="about-hero-label" style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 20px;">CATEGORY II AIF &middot; SEBI Reg No: IN/AIF2/22-23/1248</span>
+        <h1 style="color: white; font-size: 56px; font-weight: 700; line-height: 1.1; margin-bottom: 10px; margin-top: 0;">SPVH Value Discovery Fund</h1>
+        <div style="color: #47a996; font-size: 22px; font-style: italic; margin-bottom: 30px;">SME Focused Pre-IPO Cat II AIF</div>
+        
+        <div class="vdf-hero-pill-row">
+          <span class="vdf-hero-pill">Target Corpus: &#8377;250 Cr</span>
+          <span class="vdf-hero-pill">Min. Investment: &#8377;1 Cr</span>
+          <span class="vdf-hero-pill">Target IRR: 45%+ CAGR</span>
+        </div>
+        
+        <a href="contact.html" class="btn btn-primary" style="background-color: #496bad; border-color: #496bad; font-size: 16px; padding: 15px 30px;">Schedule a Call with the Fund Manager &rarr;</a>
+      </div>
+    </section>
+
+    <!-- Section 1 — Fund Vision -->
+    <section class="philosophy-overview" style="background-color: white; padding: 80px 0;">
+      <div class="container">
+        <div class="philosophy-grid-section-1" style="align-items: center;">
+          <div class="philosophy-grid-section-1-left reveal">
+            <h2 style="color: #496bad; font-size: 46px; font-weight: 700; margin-bottom: 1.5rem; margin-top:0;">Capitalising the 10X Dream.</h2>
+            <div style="width: 80px; height: 4px; background-color: #47a996; margin-bottom: 2.5rem;"></div>
+            <p style="color: #4b5563; font-size: 18px; line-height: 1.7;">To capitalize on India's vibrant SME ecosystem by identifying and nurturing tomorrow's market leaders at their pre-IPO stage, leveraging strategic partnerships and deep market insights to generate superior alpha of 10X returns while democratizing access to India's most promising growth stories.</p>
+            
+            <div class="vdf-tenet-pills" style="margin-top: 35px; gap: 15px;">
+              <span class="vdf-tenet-pill" style="font-size: 15px; padding: 10px 20px;">Value + Discovery</span>
+              <span class="vdf-tenet-pill" style="font-size: 15px; padding: 10px 20px;">12&ndash;48 Month Holding Framework</span>
+              <span class="vdf-tenet-pill" style="font-size: 15px; padding: 10px 20px;">Disciplined Exit Strategy</span>
+            </div>
+          </div>
+          <div class="philosophy-grid-section-1-right reveal-right" style="justify-content: center; align-items: center; align-self: stretch; display: flex;">
+            <div class="vdf-10x-box" style="width: 100%; border: 1px solid rgba(71,169,150,0.3); background: linear-gradient(135deg, #0A1628, #112240); box-shadow: 0 20px 50px rgba(0,0,0,0.15), inset 0 0 30px rgba(71,169,150,0.05); padding: 50px;">
+              <div class="vdf-10x-text" style="animation: breatheGlow 4s infinite alternate ease-in-out; font-size: 110px; line-height: 1; background: linear-gradient(180deg, #FFFFFF, rgba(255,255,255,0.7)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">10X</div>
+              <div style="color: #9CA3AF; font-size: 18px; margin-top: 20px; line-height: 1.5; font-weight: 500;">Target Return on Pre-IPO investments over 36&ndash;48 months.</div>
+              
+              <div class="vdf-gauge-row" style="gap: 25px; margin-top: 45px; justify-content: center;">
+                <div class="vdf-gauge-item">
+                  <div class="vdf-gauge-visual" style="width: 90px; height: 45px; border-width: 6px;"></div>
+                  <div style="color: white; font-size: 18px; font-weight: 700;">45%</div>
+                  <div style="color: #9CA3AF; font-size: 14px; margin-top: 5px;">Pre-IPO</div>
+                </div>
+                <div class="vdf-gauge-item">
+                  <div class="vdf-gauge-visual" style="width: 90px; height: 45px; border-width: 6px;"></div>
+                  <div style="color: white; font-size: 18px; font-weight: 700;">36%</div>
+                  <div style="color: #9CA3AF; font-size: 14px; margin-top: 5px;">Anchor</div>
+                </div>
+                <div class="vdf-gauge-item">
+                  <div class="vdf-gauge-visual" style="width: 90px; height: 45px; border-width: 6px;"></div>
+                  <div style="color: white; font-size: 18px; font-weight: 700;">16%</div>
+                  <div style="color: #9CA3AF; font-size: 14px; margin-top: 5px;">Listed</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2 — The Opportunity -->
+    <section style="background-color: #F0F4FA; padding: 80px 0;">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
+          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">THE OPPORTUNITY</span>
+          <h2 style="color: #1A1A1A; font-size: 36px; font-weight: 700; margin-top:0; margin-bottom: 0;">The Goldmine in <span style="color: #496bad;">India's SME Ecosystem.</span></h2>
+        </div>
+
+        <div class="vdf-stats-grid reveal">
+          <div class="vdf-stat-card">
+            <div class="vdf-stat-num">241</div>
+            <div class="vdf-stat-label">SME IPOs launched in 2024</div>
+          </div>
+          <div class="vdf-stat-card">
+            <div class="vdf-stat-num">72%</div>
+            <div class="vdf-stat-label">Average listing day gain (2024)</div>
+          </div>
+          <div class="vdf-stat-card">
+            <div class="vdf-stat-num">22</div>
+            <div class="vdf-stat-label">SME IPOs gave 10X returns in 2024</div>
+          </div>
+          <div class="vdf-stat-card">
+            <div class="vdf-stat-num">&#8377;1.8 Lakh Cr+</div>
+            <div class="vdf-stat-label">raised on NSE Emerge alone</div>
+          </div>
+          <div class="vdf-stat-card">
+            <div class="vdf-stat-num">45%</div>
+            <div class="vdf-stat-label">CAGR projected SME listing growth</div>
+          </div>
+          <div class="vdf-stat-card">
+            <div class="vdf-stat-num">&#8377;225,000 Cr</div>
+            <div class="vdf-stat-label">targeted SME market cap by 2030</div>
+          </div>
+        </div>
+        
+        <div class="vdf-highlight-strip reveal">
+          <p>India's SME IPO market is entering its next explosive growth cycle &mdash; 250&ndash;300 IPOs per year, average listing gains of 200&ndash;300%, cumulative wealth creation potential of 600&ndash;1200% over 5&ndash;6 years.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 — Fund Thesis & Strategy -->
+    <section style="background-color: white; padding: 80px 0;">
+      <div class="container">
+        <div style="display: flex; flex-direction: column; gap: 80px; align-items: center;">
+          <div class="reveal" style="width: 100%; max-width: 1000px; text-align: center;">
+            <h2 style="color: #496bad; font-size: 46px; font-weight: 700; margin-bottom: 2rem; margin-top:0;">Fund Thesis.</h2>
+            <p style="color: #4b5563; font-size: 18px; line-height: 1.7; margin-bottom: 3rem;">The SPVH Value Discovery Fund pursues a disciplined, high-alpha strategy by identifying high-potential SMEs at their pre-IPO stage, entering at discounted P/E multiples, participating in anchor book allocations, and executing structured exits within 12&ndash;24 months post-listing. Gains are recycled into the next pipeline, maintaining a rolling portfolio of 6&ndash;10 active investments targeting a consistent 10X value-unlocking strategy.</p>
+            
+            <div style="background-color: white; border-radius: 12px; padding: 50px; border: 1px solid #E5E7EB; box-shadow: 0 15px 40px rgba(0,0,0,0.06); margin: 0 auto; max-width: 800px;">
+              <h3 style="color: #1A1A1A; font-size: 22px; font-weight: 700; margin-top: 0; margin-bottom: 40px; text-align: center;">Portfolio Construction</h3>
+              <div class="vdf-donut-container">
+                <div class="vdf-donut-wrapper" style="position: relative; width: 300px; height: 300px; margin: 0 auto 50px auto;">
+                  <canvas id="vdfPortfolioChart"></canvas>
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <div style="font-size: 14px; font-weight: 600; color: #9CA3AF; text-transform: uppercase;">Holding</div>
+                    <div style="font-size: 32px; font-weight: 800; color: #1A1A1A; line-height: 1;">36M</div>
+                  </div>
+                </div>
+                
+                <div style="text-align: left; width: 100%; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; border-top: 1px solid #E5E7EB; padding-top: 30px;">
+                  <div class="vdf-bucket-desc vdf-bucket-preipo">Pre-IPO Placement <span style="font-weight: 800; opacity: 0.8; margin-left:8px;">60%</span></div>
+                  <div class="vdf-bucket-desc vdf-bucket-anchor">Anchor Book <span style="font-weight: 800; opacity: 0.8; margin-left:8px;">25%</span></div>
+                  <div class="vdf-bucket-desc vdf-bucket-public">Public Equities <span style="font-weight: 800; opacity: 0.8; margin-left:8px;">15%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="reveal-up" style="width: 100%; max-width: 1100px; display: flex; justify-content: center; align-items: center; margin-top: 40px;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; position: relative; width: 100%;">
+              <!-- Central SUJI Bubble -->
+              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; width: 180px; height: 180px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 20px 45px rgba(0,0,0,0.12); z-index: 10; border: 10px solid #F0F4FA;">
+                <span style="font-size: 38px; font-weight: 800; color: #496bad; line-height: 1.1;">SUJI</span>
+                <span style="font-size: 12px; font-weight: 700; color: #47a996; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px;">Framework</span>
+                
+                <div style="position: absolute; top: -12px; left: -12px; color: #496bad; font-size: 26px; transform: rotate(-45deg); opacity: 0.8;"><i class="fas fa-arrow-up"></i></div>
+                <div style="position: absolute; top: -12px; right: -12px; color: #496bad; font-size: 26px; transform: rotate(45deg); opacity: 0.8;"><i class="fas fa-arrow-up"></i></div>
+                <div style="position: absolute; bottom: -12px; left: -12px; color: #496bad; font-size: 26px; transform: rotate(-135deg); opacity: 0.8;"><i class="fas fa-arrow-up"></i></div>
+                <div style="position: absolute; bottom: -12px; right: -12px; color: #496bad; font-size: 26px; transform: rotate(135deg); opacity: 0.8;"><i class="fas fa-arrow-up"></i></div>
+              </div>
+
+              <!-- 4 Blocks -->
+              <div style="display: flex; flex-direction: column; align-items: center; text-align: center; background-color: white; padding: 50px 40px; border-radius: 12px; border-top: 5px solid #496bad; box-shadow: 0 15px 40px rgba(0,0,0,0.06); height: 100%;">
+                <div style="width: 60px; height: 60px; background-color: #496bad; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 800; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(73,107,173,0.3);">S</div>
+                <div>
+                  <div style="color: #47a996; font-weight: 700; font-size: 18px; margin-bottom: 12px;">Scalability &amp; Sector Tailwinds</div>
+                  <div style="color: #4b5563; font-size: 15px; line-height: 1.6;">High-growth sectors with macroeconomic support and inherently scalable business models.</div>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; text-align: center; background-color: white; padding: 50px 40px; border-radius: 12px; border-top: 5px solid #496bad; box-shadow: 0 15px 40px rgba(0,0,0,0.06); height: 100%;">
+                <div style="width: 60px; height: 60px; background-color: #496bad; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 800; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(73,107,173,0.3);">U</div>
+                <div>
+                  <div style="color: #47a996; font-weight: 700; font-size: 18px; margin-bottom: 12px;">Underlying Financial Strength</div>
+                  <div style="color: #4b5563; font-size: 15px; line-height: 1.6;">High ROE/ROCE, strong cash-flow generation, low debt, and historically consistent margins.</div>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; text-align: center; background-color: white; padding: 50px 40px; border-radius: 12px; border-top: 5px solid #496bad; box-shadow: 0 15px 40px rgba(0,0,0,0.06); height: 100%;">
+                <div style="width: 60px; height: 60px; background-color: #496bad; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 800; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(73,107,173,0.3);">J</div>
+                <div>
+                  <div style="color: #47a996; font-weight: 700; font-size: 18px; margin-bottom: 12px;">Judicious Valuation</div>
+                  <div style="color: #4b5563; font-size: 15px; line-height: 1.6;">Entry at deep discounts to listed peers, ensuring significant valuation arbitrage upon listing.</div>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; text-align: center; background-color: white; padding: 50px 40px; border-radius: 12px; border-top: 5px solid #496bad; box-shadow: 0 15px 40px rgba(0,0,0,0.06); height: 100%;">
+                <div style="width: 60px; height: 60px; background-color: #496bad; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 800; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(73,107,173,0.3);">I</div>
+                <div>
+                  <div style="color: #47a996; font-weight: 700; font-size: 18px; margin-bottom: 12px;">IPO Readiness &amp; Exit Visibility</div>
+                  <div style="color: #4b5563; font-size: 15px; line-height: 1.6;">Robust corporate governance, clean promoter background, and designated banking conduits in place.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 — The Moonshot -->
+    <section style="background-color: #0A1628; padding: 80px 0;">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
+          <h2 style="color: white; font-size: 46px; font-weight: 700; margin-top:0; margin-bottom: 0;">The Moonshot &mdash; <span style="color: #47a996;">From Pre-IPO to Exit.</span></h2>
+        </div>
+
+        <div class="vdf-moonshot-timeline reveal">
+          <div class="vdf-moonshot-line"></div>
+          
+          <div class="vdf-moonshot-step">
+            <div class="vdf-moonshot-stage">Pre-IPO Entry</div>
+            <div class="vdf-moonshot-node">1X</div>
+            <div class="vdf-moonshot-label">0M</div>
+          </div>
+          <div class="vdf-moonshot-step">
+            <div class="vdf-moonshot-stage">IPO Listing</div>
+            <div class="vdf-moonshot-node">2&ndash;2.5X</div>
+            <div class="vdf-moonshot-label">12&ndash;15M</div>
+          </div>
+          <div class="vdf-moonshot-step">
+            <div class="vdf-moonshot-stage">Anchor/QIB Unlocked</div>
+            <div class="vdf-moonshot-node">3&ndash;4X</div>
+            <div class="vdf-moonshot-label">12&ndash;24M</div>
+          </div>
+          <div class="vdf-moonshot-step">
+            <div class="vdf-moonshot-stage">Valuation Trigger</div>
+            <div class="vdf-moonshot-node">5&ndash;7X</div>
+            <div class="vdf-moonshot-label">24&ndash;36M</div>
+          </div>
+          <div class="vdf-moonshot-step">
+            <div class="vdf-moonshot-stage">Exit Trigger</div>
+            <div class="vdf-moonshot-node">7&ndash;12X</div>
+            <div class="vdf-moonshot-label">36&ndash;48M</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5 — Case Studies -->
+    <section style="background-color: white; padding: 80px 0;">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
+          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">PROVEN TRACK RECORD</span>
+          <h2 style="color: #1A1A1A; font-size: 32px; font-weight: 700; margin-top:0; margin-bottom: 0;">Real Deals. <span style="color: #496bad;">Real Returns.</span></h2>
+        </div>
+
+        <div class="vdf-case-row reveal" style="flex-direction: column; gap: 35px;">
+          
+          <div class="vdf-case-card" style="box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 15px; padding: 40px; display: flex; flex-direction: row; align-items: stretch; transition: all 0.4s ease;">
+            <div class="vdf-case-split" style="flex: 1; margin-bottom: 0;">
+              <div class="vdf-case-left">
+                <div class="vdf-multiple" style="font-size: 56px;">7.33X</div>
+                <div class="vdf-case-name" style="font-size: 24px;">Danish Power Limited</div>
+                <div class="vdf-case-data-grid" style="display: flex; gap: 25px; margin-top: 15px;">
+                  <div class="vdf-case-data" style="font-size: 15px;">Pre-IPO Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;150</span></div>
+                  <div class="vdf-case-data" style="font-size: 15px;">Issue Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;380</span></div>
+                  <div class="vdf-case-data" style="font-size: 15px;">Exit Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;1,050</span></div>
+                </div>
+              </div>
+              <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
+              <div class="vdf-case-right" style="gap: 12px; justify-content: center;">
+                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Sectoral Tailwinds</span>
+                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Strong Financials</span>
+                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Valuation Comfort</span>
+              </div>
+            </div>
+            <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
+            <div class="vdf-holding-period" style="border: none; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; min-width: 150px; text-align: center;">Holding Period:<br>20 Months</div>
+          </div>
+
+          <div class="vdf-case-card" style="box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 15px; padding: 40px; display: flex; flex-direction: row; align-items: stretch; transition: all 0.4s ease;">
+            <div class="vdf-case-split" style="flex: 1; margin-bottom: 0;">
+              <div class="vdf-case-left">
+                <div class="vdf-multiple" style="font-size: 56px;">10.3X</div>
+                <div class="vdf-case-name" style="font-size: 24px;">Kaycee Energy &amp; Infra</div>
+                <div class="vdf-case-data-grid" style="display: flex; gap: 25px; margin-top: 15px;">
+                  <div class="vdf-case-data" style="font-size: 15px;">Pre-IPO Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;35</span></div>
+                  <div class="vdf-case-data" style="font-size: 15px;">Issue Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;54</span></div>
+                  <div class="vdf-case-data" style="font-size: 15px;">Exit Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;365</span></div>
+                </div>
+              </div>
+              <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
+              <div class="vdf-case-right" style="gap: 12px; justify-content: center;">
+                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Anchor Backing</span>
+                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Low Debt Base</span>
+                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Order Book Surge</span>
+              </div>
+            </div>
+            <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
+            <div class="vdf-holding-period" style="border: none; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; min-width: 150px; text-align: center;">Holding Period:<br>17 Months</div>
+          </div>
+
+          <div class="vdf-case-card" style="box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 15px; padding: 40px; display: flex; flex-direction: row; align-items: stretch; transition: all 0.4s ease;">
+            <div class="vdf-case-split" style="flex: 1; margin-bottom: 0;">
+              <div class="vdf-case-left">
+                <div class="vdf-multiple" style="font-size: 56px;">5.6X</div>
+                <div class="vdf-case-name" style="font-size: 24px;">Owais Metal &amp; Minerals</div>
+                <div class="vdf-case-data-grid" style="display: flex; gap: 25px; margin-top: 15px;">
+                  <div class="vdf-case-data" style="font-size: 15px;">Pre-IPO Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;45</span></div>
+                  <div class="vdf-case-data" style="font-size: 15px;">Issue Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;87</span></div>
+                  <div class="vdf-case-data" style="font-size: 15px;">Exit Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;254</span></div>
+                </div>
+              </div>
+              <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
+              <div class="vdf-case-right" style="gap: 12px; justify-content: center;">
+                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Commodity Cycle</span>
+                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Capex Completion</span>
+                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Margin Expansion</span>
+              </div>
+            </div>
+            <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
+            <div class="vdf-holding-period" style="border: none; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; min-width: 150px; text-align: center;">Holding Period:<br>16 Months</div>
+          </div>
+
+        </div>
+        
+        <p style="text-align: center; color: #9CA3AF; font-size: 12px; font-style: italic; margin-top: 2rem; margin-bottom: 0;" class="reveal">Past performance does not guarantee future results. Returns are indicative and based on specific transactions.</p>
+      </div>
+    </section>
+
+
+    <!-- Section 7 — Fund Team -->
+    <section style="background-color: #0A1628; padding: 80px 0;">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
+          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">FUND MANAGEMENT TEAM</span>
+          <h2 style="color: white; font-size: 32px; font-weight: 700; margin-top:0; margin-bottom: 0;">The People <span style="color: #47a996;">Behind the Fund.</span></h2>
+        </div>
+
+        <div class="vdf-team-row reveal" style="gap: 40px;">
+          <div class="vdf-team-card" style="padding: 50px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
+            <div class="vdf-team-photo" style="width: 120px; height: 120px; font-size: 44px; margin-bottom: 25px;"><i class="fas fa-user-tie"></i></div>
+            <div class="vdf-team-name" style="font-size: 22px; margin-bottom: 8px;">Sujay Prakash</div>
+            <div class="vdf-team-role" style="font-size: 14px; margin-bottom: 20px;">Founder &amp; General Partner</div>
+            <div style="width: 50px; height: 2px; background-color: rgba(255,255,255,0.2); margin: 0 auto 20px auto;"></div>
+            <div style="color: #9CA3AF; font-size: 15px; line-height: 1.7;">Veteran investor with 20+ years navigating Indian public and private markets. Renowned for identifying systemic mispricing early in the cycle.</div>
+          </div>
+          
+          <div class="vdf-team-card" style="padding: 50px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
+            <div class="vdf-team-photo" style="width: 120px; height: 120px; font-size: 44px; margin-bottom: 25px;"><i class="fas fa-chart-line"></i></div>
+            <div class="vdf-team-name" style="font-size: 22px; margin-bottom: 8px;">Jimit Majithia</div>
+            <div class="vdf-team-role" style="font-size: 14px; margin-bottom: 20px;">Partner &amp; Fund Manager</div>
+            <div style="width: 50px; height: 2px; background-color: rgba(255,255,255,0.2); margin: 0 auto 20px auto;"></div>
+            <div style="color: #9CA3AF; font-size: 15px; line-height: 1.7;">Specialist in SME Pre-IPO structuring and anchor book allocations. Holds a stellar track record of 8 consecutive successful exits over 4 years.</div>
+          </div>
+          
+          <div class="vdf-team-card" style="padding: 50px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
+            <div class="vdf-team-photo" style="width: 120px; height: 120px; font-size: 44px; margin-bottom: 25px;"><i class="fas fa-briefcase"></i></div>
+            <div class="vdf-team-name" style="font-size: 22px; margin-bottom: 8px;">Karan Nagda</div>
+            <div class="vdf-team-role" style="font-size: 14px; margin-bottom: 20px;">Director &ndash; AMC Business</div>
+            <div style="width: 50px; height: 2px; background-color: rgba(255,255,255,0.2); margin: 0 auto 20px auto;"></div>
+            <div style="color: #9CA3AF; font-size: 15px; line-height: 1.7;">Manages institutional distribution and operational compliance frameworks for SPVH AMC, bringing global family office management expertise.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 8 — Download CTA -->
+    <section style="background-color: white; padding: 80px 0;">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: 3rem;" class="reveal">
+          <h2 style="color: #1A1A1A; font-size: 36px; font-weight: 700; margin-top:0; margin-bottom: 0;">Ready to Invest in <span style="color: #496bad;">India's Pre-IPO Opportunity?</span></h2>
+        </div>
+
+        <div class="vdf-contact-card reveal" style="padding: 45px; max-width: 900px;">
+          <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+            <a href="contact.html" class="btn btn-primary" style="background-color: #496bad; border-color: #496bad; font-size: 18px; padding: 16px 36px;">Schedule a Consultation</a>
+            <a href="#" class="btn btn-outline-light" style="color: #496bad; border-color: #496bad; font-size: 18px; padding: 16px 36px;">Download Fund Deck</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-new">
+    <div class="container">
+      <div class="footer-top-grid">
+        
+        <!-- Column 1: Brand -->
+        <div class="footer-col-brand reveal">
+          <a href="index.html" class="footer-logo-img" style="display: inline-block; margin-bottom: 1.25rem;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height: 73px; width: auto; display: block;">
+          </a>
+          <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div class="footer-col-links reveal">
+          <h4 class="footer-heading">COMPANY</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Leadership Team</a></li>
+            <li><a href="#">Investment Philosophy</a></li>
+            <li><a href="#">Why SPVH</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Solutions -->
+        <div class="footer-col-links reveal">
+          <h4 class="footer-heading">OUR SOLUTIONS</h4>
+          <ul>
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Contact -->
+        <div class="footer-col-contact reveal">
+          <h4 class="footer-heading">GET IN TOUCH</h4>
+          <div class="contact-line">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Registered Office Address, Mumbai &mdash; 400051</span>
+          </div>
+          <div class="contact-line">
+            <i class="fas fa-phone-alt"></i>
+            <span>+91 22 4000 0000</span>
+          </div>
+          <div class="contact-line">
+            <i class="fas fa-envelope"></i>
+            <span>info@spvhamc.com</span>
+          </div>
+          <a href="#" class="footer-cta-link">Schedule Consultation &rarr;</a>
+        </div>
+
+      </div>
+    </div>
+    
+    <div class="footer-divider"></div>
+    
+    <div class="container">
+      <div class="footer-bottom-bar reveal">
+        <div class="footer-copyright">&copy; 2025 SPVH Asset Management Company. All Rights Reserved.</div>
+        <div class="footer-legal-links">
+          <a href="#">Privacy Policy</a>
+          <span class="dot">&middot;</span>
+          <a href="#">Disclaimer</a>
+          <span class="dot">&middot;</span>
+          <a href="#">Regulatory Information</a>
+        </div>
+        <div class="footer-sebi">SEBI Registered Portfolio Manager | Reg. No. INP00000XXXX | Investments are subject to market risk.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
