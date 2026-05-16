@@ -1,0 +1,699 @@
+/* =====================================================
+   RESPONSIVE.CSS — SPVH AMC
+   Breakpoints:
+   - Small laptop / large tablet landscape : max-width 1200px
+   - Tablet landscape (iPad Pro, Android)  : max-width 1024px
+   - Tablet portrait  (iPad, Android tab)  : max-width 900px
+   - Mobile large     (Android, iPhone+)   : max-width 768px
+   - Mobile           (standard phones)    : max-width 480px
+   - Mobile small     (iPhone SE, older)   : max-width 375px
+   ===================================================== */
+
+/* =====================================================
+   GLOBAL BASE FIXES
+   ===================================================== */
+
+html {
+  -webkit-text-size-adjust: 100%;   /* prevent iOS font inflation */
+  scroll-behavior: smooth;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* =====================================================
+   CONTAINER PADDING
+   ===================================================== */
+
+@media (max-width: 900px) {
+  .container { padding: 0 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 1rem; }
+}
+
+/* =====================================================
+   NAVIGATION — RESPONSIVE HEADER & HAMBURGER MENU
+   ===================================================== */
+
+/* --- Tablet landscape: shrink header a little --- */
+@media (max-width: 1200px) {
+  header {
+    top: 0.75rem;
+    width: 97%;
+  }
+  .nav-container {
+    height: 90px !important;
+    padding: 0 2rem !important;
+  }
+  .logo img { height: 76px; }
+  .nav-menu { gap: 1.25rem; }
+  .nav-item > a { font-size: 0.9375rem; }
+  .nav-actions { padding: 3px; }
+  .login-link { padding: 0 1rem; font-size: 0.8125rem; }
+}
+
+/* --- Tablet portrait / large mobile: compact header --- */
+@media (max-width: 1024px) {
+  header {
+    top: 0.5rem;
+    width: 98%;
+  }
+  .nav-container {
+    height: 80px !important;
+    padding: 0 1.5rem !important;
+  }
+  .logo img { height: 66px; }
+  .nav-menu { gap: 1rem; }
+  .nav-item > a { font-size: 0.875rem; }
+}
+
+/* --- Mobile: hamburger menu --- */
+@media (max-width: 768px) {
+  /* Reset floating pill nav */
+  header {
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: none;
+    border-radius: 0 0 16px 16px;
+    border-top: none;
+  }
+
+  .nav-container {
+    height: 68px !important;
+    padding: 0 1.25rem !important;
+    position: relative;
+  }
+
+  .logo img { height: 54px; }
+
+  /* Hide nav and actions by default */
+  .nav-menu  { display: none !important; }
+  .nav-actions { display: none !important; }
+
+  /* Show hamburger */
+  .hamburger {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    font-size: 1.375rem;
+    color: var(--bg-dark);
+    cursor: pointer;
+    z-index: 1100;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+  }
+  .hamburger:hover { background: rgba(73,107,173,0.08); }
+  .hamburger.active { color: var(--primary); }
+
+  /* --- Open state — driven by JS adding .nav-open class --- */
+
+  /* Nav menu panel: scrollable full-height overlay below header */
+  .nav-menu.nav-open {
+    display: flex !important;
+    flex-direction: column;
+    position: fixed;
+    top: 68px;
+    left: 0;
+    right: 0;
+    bottom: 88px;          /* leaves room for the actions bar at the bottom */
+    background: #fff;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    z-index: 999;
+    padding: 0.5rem 0;
+    border-top: 2px solid var(--secondary);
+    gap: 0;
+    height: auto;
+  }
+
+  /* Each nav item row */
+  .nav-menu.nav-open .nav-item {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .nav-menu.nav-open .nav-item > a {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--bg-dark);
+    width: 100%;
+    justify-content: space-between;
+    white-space: normal;
+  }
+
+  .nav-menu.nav-open .nav-item > a::after { display: none; }
+
+  /* Mobile dropdown: inline accordion */
+  .nav-menu.nav-open .dropdown-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border-top: none;
+    min-width: 100%;
+    display: none;
+    padding: 0 0 0.5rem 0;
+    background: #f8faff;
+  }
+
+  .nav-menu.nav-open .nav-item.submenu-open .dropdown-menu {
+    display: block;
+  }
+
+  .nav-menu.nav-open .dropdown-menu li a {
+    padding: 0.75rem 2rem;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    border-bottom: none;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-menu.nav-open .dropdown-menu li a:hover {
+    padding-left: 2.25rem;
+    color: var(--secondary);
+    background: #f0f4fa;
+  }
+
+  /* Nav actions: sticky bar at the bottom of the screen */
+  .nav-actions.nav-open {
+    display: flex !important;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 0.875rem 1.25rem 1.25rem;
+    border-top: 1px solid rgba(0,0,0,0.07);
+    z-index: 1000;
+    gap: 0.625rem;
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.07);
+    border-radius: 0;
+  }
+
+  .nav-actions.nav-open .login-link {
+    text-align: center;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--primary);
+    border-radius: 50px;
+    font-size: 0.875rem;
+    display: block;
+    color: var(--primary);
+  }
+
+  .nav-actions.nav-open .btn-primary {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 0.875rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    display: flex;
+  }
+}
+
+/* =====================================================
+   HERO SECTION — FIX iOS PARALLAX + RESPONSIVE TYPE
+   ===================================================== */
+
+/* Fix: background-attachment:fixed is broken on iOS/Android WebKit */
+@media (max-width: 1024px) {
+  .cinematic-hero {
+    background-attachment: scroll;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero-title    { font-size: 4.25rem; }
+  .hero-subtitle { font-size: 2.5rem; }
+}
+
+@media (max-width: 1024px) {
+  .hero-title    { font-size: 3.5rem; }
+  .hero-subtitle { font-size: 2rem; }
+  .hero-text     { font-size: 1.125rem; }
+}
+
+@media (max-width: 768px) {
+  .cinematic-hero {
+    min-height: 100svh;
+    align-items: flex-end;
+    padding-bottom: 140px;
+    background-position: 70% center;
+  }
+
+  .overlay-gradient {
+    background: linear-gradient(
+      180deg,
+      rgba(10,22,40,0.55) 0%,
+      rgba(10,22,40,0.82) 55%,
+      #0A1628 100%
+    );
+  }
+
+  .hero-content {
+    max-width: 100%;
+    text-align: center;
+    padding-top: 68px;
+  }
+
+  .hero-title    { font-size: 2.5rem; letter-spacing: -0.25px; margin-bottom: 0.75rem; }
+  .hero-subtitle { font-size: 1.625rem; margin-top: 0.25rem; }
+  .hero-text     { font-size: 1rem; max-width: 100%; margin-bottom: 1.5rem; }
+
+  .hero-content .btn-primary {
+    display: inline-flex;
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+    padding: 1rem 1.5rem !important;
+    font-size: 0.9375rem !important;
+  }
+
+  .ticker-content { flex-wrap: wrap; gap: 0.375rem; }
+  .ticker-pulse   { margin-right: 0.75rem; }
+}
+
+@media (max-width: 480px) {
+  .hero-title    { font-size: 2rem; }
+  .hero-subtitle { font-size: 1.375rem; }
+  .hero-text     { font-size: 0.9375rem; }
+}
+
+@media (max-width: 375px) {
+  .hero-title    { font-size: 1.75rem; }
+  .hero-subtitle { font-size: 1.2rem; }
+}
+
+/* =====================================================
+   KEY STATISTICS SECTION
+   ===================================================== */
+
+@media (max-width: 900px) {
+  .key-stats-row {
+    flex-wrap: wrap;
+    gap: 2.5rem 3rem;
+    justify-content: center;
+  }
+  .stat-divider { display: none; }
+  .key-stat-item { flex: 0 1 180px; }
+}
+
+@media (max-width: 768px) {
+  .key-statistics { padding: 56px 0 !important; }
+  .stat-value     { font-size: 34px; }
+}
+
+@media (max-width: 480px) {
+  .key-stats-row   { flex-direction: column; align-items: center; gap: 2rem; }
+  .key-stat-item   { flex: none; width: 100%; max-width: 240px; }
+  .stat-value      { font-size: 30px; }
+}
+
+/* =====================================================
+   ABOUT SECTION (HOME PAGE)
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .about-new-grid     { grid-template-columns: 1fr; gap: 2.5rem; }
+  .about-new-content  { padding-right: 0; }
+  .about-new-title    { font-size: 36px; }
+  .about-floating-card { bottom: -16px; left: 12px; }
+}
+
+@media (max-width: 768px) {
+  .about-section      { padding: 60px 0 !important; }
+  .about-new-title    { font-size: 28px; }
+  .about-new-text     { font-size: 15px; }
+  .about-floating-card { left: 8px; padding: 0.5rem 0.875rem; }
+  .floating-title     { font-size: 1.25rem; }
+  .floating-icon      { width: 44px !important; }
+}
+
+/* =====================================================
+   SOLUTIONS SECTION
+   ===================================================== */
+
+@media (max-width: 1200px) {
+  .solutions-grid  { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .solutions-title { font-size: 40px; }
+}
+
+@media (max-width: 768px) {
+  .solutions-section  { padding: 60px 0 !important; }
+  .solutions-grid     { grid-template-columns: 1fr; gap: 1.25rem; }
+  .solutions-title    { font-size: 30px; }
+  .solution-heading   { font-size: 1.25rem; min-height: auto; }
+  .solution-tag       { min-height: auto; }
+  .solution-desc      { font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .solutions-title { font-size: 26px; }
+}
+
+/* =====================================================
+   PHILOSOPHY SECTION (HOME PAGE)
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .philosophy-grid  { grid-template-columns: 1fr; gap: 1.25rem; }
+  .philosophy-title { font-size: 38px; }
+}
+
+@media (max-width: 768px) {
+  .philosophy-section { padding: 60px 0 !important; }
+  .philosophy-title   { font-size: 28px; }
+  .philosophy-card    { padding: 24px; }
+  .philosophy-number  { font-size: 48px; }
+  .philosophy-heading { font-size: 1.25rem; }
+}
+
+@media (max-width: 480px) {
+  .philosophy-title { font-size: 24px; }
+}
+
+/* =====================================================
+   PERFORMANCE HIGHLIGHTS SECTION
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .perf-split-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .leadership-title { font-size: 38px; }
+}
+
+@media (max-width: 768px) {
+  .performance-highlights-section { padding: 60px 0 !important; }
+  .leadership-title { font-size: 28px; }
+
+  /* Horizontal scroll for table on mobile */
+  .perf-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+  }
+  .perf-table-new { min-width: 460px; }
+  .perf-table-new th,
+  .perf-table-new td { padding: 12px 14px; font-size: 13px; }
+}
+
+/* =====================================================
+   TESTIMONIALS CAROUSEL
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .prev-btn { left: 0;  background: rgba(10,22,40,0.75); }
+  .next-btn { right: 0; background: rgba(10,22,40,0.75); }
+}
+
+@media (max-width: 768px) {
+  .testimonials-dark-section { padding: 60px 0 !important; }
+  .testi-card       { flex: 0 0 100%; }
+  .testi-card-inner { padding: 24px; }
+  .prev-btn { left: 4px;  }
+  .next-btn { right: 4px; }
+}
+
+@media (max-width: 480px) {
+  .testi-card-inner { padding: 18px; }
+  .testi-text       { font-size: 15px; }
+}
+
+/* =====================================================
+   INSIGHTS SECTION
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .insights-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .insights-section { padding: 60px 0 !important; }
+  .insights-grid    { grid-template-columns: 1fr; }
+  .insights-title   { font-size: 32px; }
+  .insights-header  { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+}
+
+@media (max-width: 480px) {
+  .insights-title { font-size: 26px; }
+}
+
+/* =====================================================
+   AWARDS & RECOGNITION SECTION
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .awards-new-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .awards-recognition-section { padding: 56px 0 !important; }
+  .awards-new-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .awards-new-grid { grid-template-columns: 1fr; }
+}
+
+/* =====================================================
+   PRE-FOOTER CTA
+   ===================================================== */
+
+@media (max-width: 1200px) {
+  .cta-heading { font-size: 44px; }
+}
+
+@media (max-width: 1024px) {
+  .cta-heading { font-size: 38px; }
+}
+
+@media (max-width: 768px) {
+  .pre-footer-cta-new { padding: 64px 0 !important; }
+  .cta-heading  { font-size: 28px; text-align: center; }
+  .cta-subtext  { font-size: 15px; text-align: center; }
+
+  .cta-button-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.875rem;
+    align-items: center;
+  }
+  .btn-cta-primary,
+  .btn-cta-secondary {
+    width: 100%;
+    max-width: 340px;
+    justify-content: center;
+    height: 52px;
+    font-size: 0.9375rem;
+  }
+
+  .cta-trust-indicators {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: max-content;
+    margin: 0 auto;
+  }
+  .trust-dot { display: none; }
+}
+
+@media (max-width: 480px) {
+  .cta-heading { font-size: 24px; }
+  .btn-cta-primary,
+  .btn-cta-secondary { max-width: 100%; }
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .footer-top-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 40px 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 36px 0 !important;
+  }
+  .footer-bottom-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+  .footer-sebi { text-align: left; }
+}
+
+/* =====================================================
+   ABOUT PAGE
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .about-hero-title { font-size: 40px; }
+  .story-grid       { grid-template-columns: 1fr; gap: 2.5rem; }
+  .story-visual, .group-visual { min-height: 300px; }
+  .story-image { min-height: 300px; }
+  .values-grid { grid-template-columns: repeat(2, 1fr); }
+  .culture-flex-grid { flex-direction: column; gap: 2rem; }
+}
+
+@media (max-width: 768px) {
+  .about-hero-new   { height: auto; padding: 96px 0 48px; }
+  .about-hero-title { font-size: 30px; }
+  .story-title, .group-title { font-size: 28px; }
+  .story-section, .group-overview-section { padding: 60px 0 !important; }
+  .values-grid { grid-template-columns: 1fr; }
+  .values-title { font-size: 28px; }
+  .values-section { padding: 60px 0 !important; }
+}
+
+@media (max-width: 480px) {
+  .about-hero-title { font-size: 26px; }
+  .story-title, .group-title { font-size: 24px; }
+}
+
+/* =====================================================
+   PHILOSOPHY PAGE
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .philosophy-page-hero { height: auto; padding: 100px 0 56px; }
+  .philosophy-grid-section-1 { flex-direction: column; }
+  .philosophy-grid-section-1-left,
+  .philosophy-grid-section-1-right { width: 100%; }
+  .pillars-grid { grid-template-columns: 1fr; }
+  .esg-grid { flex-direction: column; gap: 2rem; }
+  .esg-left, .esg-right { width: 100%; }
+  .timeline-nodes { flex-direction: column; align-items: flex-start; }
+  .timeline-line {
+    top: 0; bottom: 0; left: 25px;
+    width: 2px; height: 100%;
+    background-image: linear-gradient(to bottom, transparent 50%, #47a996 50%);
+    background-size: 100% 15px;
+  }
+  .timeline-step {
+    width: 100%; text-align: left;
+    display: flex; flex-direction: column;
+    padding-left: 70px; position: relative;
+    margin-bottom: 40px;
+  }
+  .timeline-node { position: absolute; left: 0; top: 0; margin: 0; }
+}
+
+@media (max-width: 768px) {
+  .esg-title  { font-size: 28px; }
+  .esg-desc   { font-size: 14px; }
+}
+
+/* =====================================================
+   PMS PAGE
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .strategy-row { flex-wrap: wrap; }
+  .strategy-card { flex: 0 0 calc(50% - 15px); }
+  .diff-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .strategy-row { flex-direction: column; }
+  .strategy-card { flex: 1 1 100%; }
+  .diff-grid { grid-template-columns: 1fr; }
+}
+
+/* =====================================================
+   AIF PAGE
+   ===================================================== */
+
+@media (max-width: 900px) {
+  .aif-row { flex-direction: column; align-items: stretch; }
+  .aif-card { max-width: 100%; }
+}
+
+/* =====================================================
+   VALUE DISCOVERY FUND PAGE
+   ===================================================== */
+
+@media (max-width: 768px) {
+  .vdf-hero { padding: 96px 0 64px; }
+  .vdf-gauge-row { flex-wrap: wrap; gap: 1.5rem; justify-content: center; }
+  .vdf-gauge-item { flex: 0 0 30%; }
+  .vdf-10x-text { font-size: 56px; }
+  .vdf-10x-box { padding: 28px; }
+  .vdf-hero-pill-row { gap: 10px; }
+}
+
+@media (max-width: 480px) {
+  .vdf-gauge-item { flex: 0 0 45%; }
+  .vdf-10x-text   { font-size: 44px; }
+}
+
+/* =====================================================
+   SECTION PADDING — TABLET
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .key-statistics            { padding: 64px 0 !important; }
+  .about-section             { padding: 72px 0 !important; }
+  .solutions-section         { padding: 72px 0 !important; }
+  .philosophy-section        { padding: 72px 0 !important; }
+  .performance-highlights-section { padding: 72px 0 !important; }
+  .testimonials-dark-section { padding: 72px 0 !important; }
+  .insights-section          { padding: 72px 0 !important; }
+  .awards-recognition-section { padding: 60px 0 !important; }
+  .pre-footer-cta-new        { padding: 72px 0 !important; }
+}
+
+/* =====================================================
+   TOUCH TARGET SIZES — MINIMUM 44 × 44 px
+   ===================================================== */
+
+@media (max-width: 1024px) {
+  .btn,
+  .btn-cta-primary,
+  .btn-cta-secondary,
+  .carousel-btn,
+  .social-icon,
+  .hamburger,
+  .nav-actions .btn-primary,
+  .login-link,
+  .footer-cta-link,
+  .insights-btn,
+  .philosophy-btn {
+    min-height: 44px;
+  }
+
+  .nav-menu.nav-open .dropdown-menu li a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* =====================================================
+   BODY SCROLL LOCK — when mobile menu is open
+   ===================================================== */
+
+body.menu-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}

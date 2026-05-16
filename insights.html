@@ -1,28 +1,523 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-  <meta charset='UTF-8'>
-  <title>SPVH AMC | INSIGHTS</title>
-  <link rel='stylesheet' href='styles.css'>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPVH AMC | Insights & Research</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ==============================
+       INSIGHTS PAGE — SCOPED STYLES
+       ============================== */
+
+    /* Hero */
+    .insights-hero {
+      background-color: #0A1628;
+      position: relative;
+      padding: 140px 0 80px;
+      overflow: hidden;
+    }
+    .insights-hero .pattern-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 24px 24px; z-index: 1;
+    }
+    .insights-hero-inner {
+      position: relative; z-index: 2;
+    }
+    .insights-hero-label {
+      font-family: 'Montserrat', sans-serif; color: #47a996;
+      font-size: 13px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; display: block; margin-bottom: 1.25rem;
+    }
+    .insights-hero-title {
+      font-family: 'Montserrat', sans-serif; color: white;
+      font-size: 52px; font-weight: 700; line-height: 1.15;
+      margin: 0 0 1.25rem; max-width: 700px;
+    }
+    .insights-hero-title span { color: #47a996; }
+    .insights-hero-sub {
+      font-family: 'Helvetica', sans-serif; color: #9CA3AF;
+      font-size: 16px; max-width: 560px; line-height: 1.6; margin-bottom: 2.5rem;
+    }
+
+    /* Search bar */
+    .insights-search-bar {
+      display: flex; max-width: 560px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px; overflow: hidden;
+    }
+    .insights-search-bar input {
+      flex: 1; background: transparent; border: none; outline: none;
+      color: white; font-family: 'Helvetica', sans-serif; font-size: 15px;
+      padding: 14px 20px;
+    }
+    .insights-search-bar input::placeholder { color: rgba(255,255,255,0.35); }
+    .insights-search-bar button {
+      background: #496bad; border: none; color: white; padding: 0 22px;
+      font-size: 16px; cursor: pointer; transition: background 0.3s ease;
+    }
+    .insights-search-bar button:hover { background: #47a996; }
+
+    /* Hero stats row */
+    .insights-hero-stats {
+      display: flex; gap: 3rem; margin-top: 2.5rem; flex-wrap: wrap;
+    }
+    .insights-hero-stat { text-align: left; }
+    .insights-hero-stat-num {
+      font-family: 'Montserrat', sans-serif; font-size: 28px;
+      font-weight: 700; color: white; line-height: 1;
+    }
+    .insights-hero-stat-lbl {
+      font-family: 'Helvetica', sans-serif; font-size: 12px;
+      color: #9CA3AF; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* ---- Filter Bar ---- */
+    .filter-bar-wrapper {
+      background: white;
+      border-bottom: 1px solid #E5EAF2;
+      position: sticky; top: 0; z-index: 90;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .filter-bar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0; gap: 0;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .filter-topics {
+      display: flex; gap: 0; overflow-x: auto;
+    }
+    .filter-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600;
+      color: #6B7280; padding: 18px 22px; white-space: nowrap;
+      border: none; background: transparent; cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .filter-btn:hover { color: #496bad; }
+    .filter-btn.active { color: #496bad; border-bottom-color: #496bad; }
+    .filter-btn i { font-size: 14px; }
+    .filter-type-group {
+      display: flex; gap: 0.5rem; padding: 10px 0 10px 1.5rem;
+      border-left: 1px solid #E5EAF2; flex-shrink: 0;
+    }
+    .type-pill {
+      font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600;
+      color: #6B7280; background: #F0F4FA;
+      border: 1px solid #E5EAF2; border-radius: 50px;
+      padding: 6px 14px; cursor: pointer;
+      transition: all 0.2s ease; white-space: nowrap;
+    }
+    .type-pill:hover { border-color: #496bad; color: #496bad; }
+    .type-pill.active { background: #496bad; color: white; border-color: #496bad; }
+
+    /* ---- Featured Section ---- */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 2rem;
+    }
+    .featured-card-main {
+      background: white; border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+    .featured-card-main:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+    }
+    .featured-thumb-main {
+      width: 100%; padding-top: 52%;
+      background-image: linear-gradient(135deg, rgba(10,22,40,0.92), rgba(73,107,173,0.75));
+      position: relative;
+    }
+    .featured-card-side {
+      background: white; border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .featured-card-side:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+    }
+    .featured-thumb-side {
+      width: 100%; padding-top: 58%;
+      background-image: linear-gradient(135deg, rgba(10,22,40,0.88), rgba(71,169,150,0.7));
+      position: relative;
+    }
+    .featured-badge {
+      position: absolute; top: 1rem; left: 1rem;
+      background: #47a996; color: white;
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 4px; z-index: 2;
+    }
+    .featured-badge.pms  { background: #496bad; }
+    .featured-badge.aif  { background: #47a996; }
+    .featured-badge.off  { background: #6366f1; }
+    .featured-badge.adv  { background: #f59e0b; }
+    .featured-badge.mkt  { background: #ef4444; }
+    .featured-badge.video { background: #0A1628; }
+
+    .featured-body { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
+    .featured-meta {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 0.875rem;
+    }
+    .featured-date {
+      font-family: 'Helvetica', sans-serif; font-size: 12px;
+      color: #8b96a5; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .featured-read-time {
+      font-family: 'Helvetica', sans-serif; font-size: 12px; color: #8b96a5;
+    }
+    .featured-heading-main {
+      font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 700;
+      color: #1A1A1A; line-height: 1.35; margin-bottom: 0.875rem;
+    }
+    .featured-heading-side {
+      font-family: 'Montserrat', sans-serif; font-size: 17px; font-weight: 700;
+      color: #1A1A1A; line-height: 1.35; margin-bottom: 0.875rem;
+    }
+    .featured-excerpt {
+      font-family: 'Helvetica', sans-serif; font-size: 14px;
+      color: #64748b; line-height: 1.6; flex-grow: 1; margin-bottom: 1.25rem;
+    }
+    .featured-author-row {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid #f1f5f9; padding-top: 1rem;
+    }
+    .featured-author {
+      display: flex; align-items: center; gap: 0.625rem;
+    }
+    .featured-av {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #496bad; color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .featured-av-name {
+      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: #1A1A1A;
+    }
+    .featured-read-link {
+      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700;
+      color: #496bad; text-decoration: none; transition: color 0.2s ease;
+    }
+    .featured-read-link:hover { color: #47a996; }
+
+    /* ---- Solution Section Headers ---- */
+    .solution-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2rem; padding-bottom: 1.25rem;
+      border-bottom: 2px solid #E5EAF2;
+    }
+    .solution-section-label {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .solution-section-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .solution-section-icon.pms  { background: #EEF2FA; color: #496bad; }
+    .solution-section-icon.aif  { background: #ECFDF5; color: #47a996; }
+    .solution-section-icon.off  { background: #EDE9FE; color: #6366f1; }
+    .solution-section-icon.adv  { background: #FEF3C7; color: #f59e0b; }
+    .solution-section-title {
+      font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 700; color: #1A1A1A;
+      margin: 0;
+    }
+    .solution-section-sub {
+      font-family: 'Helvetica', sans-serif; font-size: 13px; color: #9CA3AF; margin-top: 2px;
+    }
+    .solution-view-all {
+      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700;
+      color: #496bad; text-decoration: none; white-space: nowrap;
+      display: flex; align-items: center; gap: 6px;
+      transition: color 0.2s ease;
+    }
+    .solution-view-all:hover { color: #47a996; }
+
+    /* ---- Content Grid (3 articles + 1 video) ---- */
+    .solution-content-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr) 1fr;
+      gap: 1.5rem;
+    }
+
+    /* Article card (compact) */
+    .article-card {
+      background: white; border-radius: 10px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      border-bottom: 3px solid transparent;
+    }
+    .article-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.1);
+      border-bottom-color: #47a996;
+    }
+    .article-thumb {
+      width: 100%; padding-top: 52%;
+      position: relative; overflow: hidden;
+    }
+    .article-thumb-gradient {
+      position: absolute; inset: 0;
+      transition: transform 0.4s ease;
+    }
+    .article-card:hover .article-thumb-gradient { transform: scale(1.04); }
+    .article-cat {
+      position: absolute; top: 0.875rem; left: 0.875rem;
+      font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; color: white;
+      background: rgba(0,0,0,0.35); backdrop-filter: blur(6px);
+      padding: 4px 10px; border-radius: 4px; z-index: 2;
+    }
+    .article-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+    .article-date {
+      font-family: 'Helvetica', sans-serif; font-size: 11px;
+      color: #8b96a5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.625rem;
+    }
+    .article-heading {
+      font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 700;
+      color: #1A1A1A; line-height: 1.4; margin-bottom: 0.75rem; flex-grow: 1;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .article-footer-row {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid #f1f5f9; padding-top: 0.75rem;
+    }
+    .article-av {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #496bad; color: white;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; margin-right: 6px;
+    }
+    .article-author-name {
+      font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: #1A1A1A;
+    }
+    .article-time {
+      font-family: 'Helvetica', sans-serif; font-size: 11px; color: #8b96a5;
+    }
+
+    /* Video card */
+    .video-card {
+      background: #0A1628; border-radius: 10px;
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.15);
+    }
+    .video-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .video-thumb {
+      width: 100%; padding-top: 56%;
+      position: relative; overflow: hidden; cursor: pointer;
+    }
+    .video-thumb-bg {
+      position: absolute; inset: 0;
+      transition: transform 0.4s ease;
+    }
+    .video-card:hover .video-thumb-bg { transform: scale(1.04); }
+    .video-play-btn {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      display: flex; align-items: center; justify-content: center;
+      color: #0A1628; font-size: 18px; z-index: 3;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .video-card:hover .video-play-btn { transform: translate(-50%, -50%) scale(1.1); background: white; }
+    .video-duration {
+      position: absolute; bottom: 0.75rem; right: 0.75rem;
+      background: rgba(0,0,0,0.7); color: white;
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600;
+      padding: 3px 8px; border-radius: 4px; z-index: 3;
+    }
+    .video-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+    .video-label {
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+      color: #47a996; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .video-heading {
+      font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 700;
+      color: white; line-height: 1.4; margin-bottom: 0.75rem; flex-grow: 1;
+    }
+    .video-date {
+      font-family: 'Helvetica', sans-serif; font-size: 11px; color: #8b96a5;
+      margin-top: auto; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* ---- Video Library ---- */
+    .video-library-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    .vlibrary-card {
+      background: #112240; border-radius: 10px; overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .vlibrary-card:hover {
+      transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+    .vlibrary-thumb {
+      width: 100%; padding-top: 56%; position: relative; overflow: hidden; cursor: pointer;
+    }
+    .vlibrary-thumb-bg { position: absolute; inset: 0; transition: transform 0.4s ease; }
+    .vlibrary-card:hover .vlibrary-thumb-bg { transform: scale(1.05); }
+    .vlibrary-play {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      display: flex; align-items: center; justify-content: center;
+      color: #0A1628; font-size: 16px; z-index: 3;
+      transition: transform 0.2s ease;
+    }
+    .vlibrary-card:hover .vlibrary-play { transform: translate(-50%, -50%) scale(1.1); }
+    .vlibrary-dur {
+      position: absolute; bottom: 0.625rem; right: 0.625rem;
+      background: rgba(0,0,0,0.75); color: white;
+      font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600;
+      padding: 2px 7px; border-radius: 4px; z-index: 3;
+    }
+    .vlibrary-body { padding: 16px; }
+    .vlibrary-tag {
+      display: inline-block; font-family: 'Montserrat', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      color: #47a996; margin-bottom: 0.5rem;
+    }
+    .vlibrary-title {
+      font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;
+      color: white; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    .vlibrary-date { font-family: 'Helvetica', sans-serif; font-size: 11px; color: #6B7280; }
+
+    /* ---- Newsletter CTA ---- */
+    .newsletter-section {
+      background: linear-gradient(135deg, #496bad 0%, #0A1628 60%);
+      padding: 80px 0; position: relative; overflow: hidden;
+    }
+    .newsletter-pattern {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .newsletter-inner { position: relative; z-index: 2; }
+    .newsletter-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .newsletter-title {
+      font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 700;
+      color: white; line-height: 1.25; margin: 0 0 1rem;
+    }
+    .newsletter-title span { color: #47a996; }
+    .newsletter-desc {
+      font-family: 'Helvetica', sans-serif; font-size: 15px;
+      color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 0;
+    }
+    .newsletter-form { display: flex; flex-direction: column; gap: 1rem; }
+    .newsletter-input-row { display: flex; gap: 0.75rem; }
+    .newsletter-input {
+      flex: 1; background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+      color: white; font-family: 'Helvetica', sans-serif; font-size: 15px;
+      padding: 14px 18px; outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .newsletter-input::placeholder { color: rgba(255,255,255,0.35); }
+    .newsletter-input:focus { border-color: #47a996; }
+    .newsletter-btn {
+      background: #47a996; color: white; border: none; border-radius: 8px;
+      font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;
+      padding: 14px 24px; cursor: pointer; white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+    .newsletter-btn:hover { background: white; color: #0A1628; }
+    .newsletter-disclaimer {
+      font-family: 'Helvetica', sans-serif; font-size: 12px;
+      color: rgba(255,255,255,0.4); line-height: 1.5;
+    }
+    .newsletter-trust {
+      display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.5rem;
+    }
+    .newsletter-trust-item {
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'Helvetica', sans-serif; font-size: 12px;
+      color: rgba(255,255,255,0.55);
+    }
+    .newsletter-trust-item i { color: #47a996; }
+
+    /* Responsive overrides */
+    @media (max-width: 1200px) {
+      .solution-content-grid { grid-template-columns: repeat(2, 1fr); }
+      .video-library-grid { grid-template-columns: repeat(2, 1fr); }
+      .newsletter-grid { gap: 2.5rem; }
+    }
+    @media (max-width: 1024px) {
+      .featured-grid { grid-template-columns: 1fr; }
+      .featured-card-side { display: grid; grid-template-columns: 1fr 1fr; }
+      .featured-thumb-side { padding-top: 100%; }
+      .insights-hero-title { font-size: 38px; }
+    }
+    @media (max-width: 768px) {
+      .insights-hero { padding: 110px 0 60px; }
+      .insights-hero-title { font-size: 28px; }
+      .insights-hero-sub { font-size: 14px; }
+      .insights-search-bar { max-width: 100%; }
+      .insights-hero-stats { gap: 2rem; }
+      .filter-btn { padding: 15px 14px; font-size: 12px; }
+      .filter-type-group { display: none; }
+      .featured-card-side { display: flex; flex-direction: column; }
+      .featured-thumb-side { padding-top: 56%; }
+      .solution-content-grid { grid-template-columns: 1fr; }
+      .video-library-grid { grid-template-columns: 1fr; }
+      .newsletter-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .newsletter-title { font-size: 26px; }
+      .newsletter-input-row { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .insights-hero-stats { flex-direction: column; gap: 1.25rem; }
+      .solution-section-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    }
+  </style>
 </head>
 <body>
+
   <!-- Sticky Nav -->
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-      
+
       <ul class="nav-menu">
         <li class="nav-item">
-          <a href="#">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
           <ul class="dropdown-menu">
-            <li><a href="about.html">Firm Overview</a></li>
-            <li><a href="team.html">Leadership Team</a></li>
-            <li><a href="philosophy.html">Investment Philosophy</a></li>
+            <li><a href="about.html#firm-overview">Firm Overview</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#">Investment Solutions <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <a href="pms.html">Investment Solutions <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
           <ul class="dropdown-menu">
             <li><a href="pms.html">Portfolio Management Services</a></li>
             <li><a href="aif.html">Alternative Investment Funds</a></li>
@@ -40,36 +535,710 @@
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
 
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
-      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
   </header>
 
   <main>
-    <!-- Hero (Dark) -->
-    <section class="hero bg-dark">
-      <div class="container">
-        <div class="hero-content reveal">
-          <h1>Generational Wealth.<br><span>Institutional Precision.</span></h1>
-          <p>SPVH AMC delivers specialized alternative and portfolio management solutions designed specifically for family offices and institutional investors. Absolute returns driven by uncompromised research.</p>
-          <a href="about.html" class="btn btn-outline-light" style="margin-top: 1rem;">Discover Our Framework</a>
+
+    <!-- ======================== HERO ======================== -->
+    <section class="insights-hero">
+      <div class="pattern-overlay"></div>
+      <div class="container insights-hero-inner">
+        <span class="insights-hero-label">RESEARCH &amp; INSIGHTS</span>
+        <h1 class="insights-hero-title">Intelligence That<br><span>Drives Better Investing.</span></h1>
+        <p class="insights-hero-sub">In-depth research, market commentary, fund updates, and educational content — curated by the SPVH AMC investment team for serious investors.</p>
+
+        <div class="insights-search-bar reveal">
+          <input type="text" placeholder="Search articles, fund updates, research notes&hellip;">
+          <button type="button"><i class="fas fa-search"></i></button>
+        </div>
+
+        <div class="insights-hero-stats reveal" style="animation-delay: 0.15s;">
+          <div class="insights-hero-stat">
+            <div class="insights-hero-stat-num">48+</div>
+            <div class="insights-hero-stat-lbl">Research Articles</div>
+          </div>
+          <div class="insights-hero-stat">
+            <div class="insights-hero-stat-num">24</div>
+            <div class="insights-hero-stat-lbl">Video Sessions</div>
+          </div>
+          <div class="insights-hero-stat">
+            <div class="insights-hero-stat-num">4</div>
+            <div class="insights-hero-stat-lbl">Investment Solutions Covered</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Stats Counters -->
-<main>
-  <section class='hero bg-dark' style='min-height: 40vh; height: 40vh;'>
-    <div class='container'>
-      <div class='hero-content reveal'>
-        <h1 style='font-size: 3rem;'>INSIGHTS</h1>
+    <!-- ======================== FILTER BAR ======================== -->
+    <div class="filter-bar-wrapper">
+      <div class="container">
+        <div class="filter-bar">
+          <div class="filter-topics">
+            <button class="filter-btn active" data-filter="all">
+              <i class="fas fa-th-large"></i> All
+            </button>
+            <button class="filter-btn" data-filter="pms">
+              <i class="fas fa-chart-pie"></i> PMS
+            </button>
+            <button class="filter-btn" data-filter="aif">
+              <i class="fas fa-layer-group"></i> AIF
+            </button>
+            <button class="filter-btn" data-filter="offshore">
+              <i class="fas fa-globe"></i> Offshore &amp; Global
+            </button>
+            <button class="filter-btn" data-filter="advisory">
+              <i class="fas fa-lightbulb"></i> Advisory &amp; Research
+            </button>
+            <button class="filter-btn" data-filter="video">
+              <i class="fas fa-play-circle"></i> Videos
+            </button>
+          </div>
+          <div class="filter-type-group">
+            <button class="type-pill active" data-type="all">All</button>
+            <button class="type-pill" data-type="article">Articles</button>
+            <button class="type-pill" data-type="video">Videos</button>
+            <button class="type-pill" data-type="research">Research</button>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
-  <section class='section-padding' style='min-height: 50vh;'><div class='container'><h2 style='text-align:center;'>INSIGHTS Module Under Construction</h2></div></section>
-</main>
-  <footer class="bg-dark">    <div class="container">       <div class="footer-grid">         <div>           <a href="index.html" class="logo" style="color: white;">SPVH<span style="color: var(--secondary);">AMC</span></a>           <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1.5rem;">Corporate Headquarters:<br>SPVH Tower, Bandra Kurla Complex,<br>Mumbai, Maharashtra 400051.</p>           <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1rem;">Email: ir@spvhamc.com<br>Tel: +91 22 4000 0000</p>         </div>         <div>           <h4 class="footer-title">Strategies</h4>           <ul class="footer-links">             <li><a href="pms.html">Portfolio Management</a></li>             <li><a href="aif.html">Alternative Funds</a></li>             <li><a href="offshore.html">FPI Structuring</a></li>             <li><a href="performance.html">Performance Data</a></li>           </ul>         </div>         <div>           <h4 class="footer-title">Firm</h4>           <ul class="footer-links">             <li><a href="about.html">About Us</a></li>             <li><a href="team.html">Leadership</a></li>             <li><a href="philosophy.html">Philosophy</a></li>             <li><a href="insights.html">Insights</a></li>             <li><a href="contact.html">Contact Us</a></li>           </ul>         </div>         <div>           <h4 class="footer-title">Secure Portals</h4>           <ul class="footer-links">             <li><a href="#">Client Login</a></li>             <li><a href="#">Distributor Login</a></li>             <li><a href="resources.html">Factsheets Download</a></li>             <li><a href="#">Governance Disclosures</a></li>           </ul>         </div>       </div>       <div class="footer-bottom">         <div class="legal-text">           <strong style="color:white; margin-bottom: 0.5rem; display:block;">SEBI REGULATORY DISCLAIMER</strong>           SPVH Asset Management Company is registered with the Securities and Exchange Board of India (SEBI) as a Portfolio Manager (Registration No. INP000000000) and Alternative Investment Fund Manager (Registration No. IN/AIF2/00-00/0000).            Information provided on this website is for educational and informational purposes only for High Net Worth Individuals and Institutional Entities. It does not constitute an offer to sell or a solicitation to buy any security or investment product.            Investments in securities market are subject to market risks. Read all the related documents carefully before investing. Past performance of the Portfolio Manager/Record of the fund manager is not indicative of future results.         </div>         <div class="copyright">           <span>&copy; 2026 SPVH Asset Management Company. All Rights Reserved.</span>           <span style="font-family: 'Montserrat', sans-serif;">Privacy Policy | Terms of Use</span>         </div>       </div>     </div>   </footer>    <script src="script.js"></script> </body> </html>
 
+    <!-- ======================== FEATURED ======================== -->
+    <section style="background-color: #F0F4FA; padding: 64px 0;">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal" style="margin-bottom: 2rem;">
+          <span class="leadership-subtitle">EDITOR'S PICKS</span>
+          <h2 class="leadership-title">Featured <span>This Month.</span></h2>
+        </div>
 
+        <div class="featured-grid reveal">
 
+          <!-- Main featured -->
+          <div class="featured-card-main">
+            <div class="featured-thumb-main" style="background-image: linear-gradient(135deg, rgba(10,22,40,0.92) 0%, rgba(73,107,173,0.65) 100%);">
+              <span class="featured-badge pms">Portfolio Management</span>
+            </div>
+            <div class="featured-body">
+              <div class="featured-meta">
+                <span class="featured-date">02 MAY 2026</span>
+                <span class="featured-read-time"><i class="far fa-clock" style="margin-right:4px;"></i>8 min read</span>
+              </div>
+              <h3 class="featured-heading-main">The Case for Concentrated Portfolios: Why 15 Stocks Beat 150 in India's Equity Market</h3>
+              <p class="featured-excerpt">Empirical evidence and two decades of fund manager data suggest that over-diversification systematically destroys alpha. We examine the mathematics of concentration and why SPVH runs focused, high-conviction portfolios.</p>
+              <div class="featured-author-row">
+                <div class="featured-author">
+                  <div class="featured-av">VK</div>
+                  <span class="featured-av-name">Vikram K. &mdash; CIO, SPVH AMC</span>
+                </div>
+                <a href="#" class="featured-read-link">Read Article &rarr;</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Side featured -->
+          <div class="featured-card-side">
+            <div class="featured-thumb-side" style="background-image: linear-gradient(135deg, rgba(10,22,40,0.9), rgba(71,169,150,0.6));">
+              <span class="featured-badge video"><i class="fas fa-play" style="margin-right:5px;"></i> VIDEO</span>
+              <div class="video-play-btn" style="width:44px;height:44px;font-size:16px; position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;color:#0A1628;">
+                <i class="fas fa-play" style="margin-left:3px;"></i>
+              </div>
+              <div class="video-duration">38:14</div>
+            </div>
+            <div class="featured-body">
+              <div class="featured-meta">
+                <span class="featured-date">28 APR 2026</span>
+                <span class="featured-read-time" style="color:#47a996;"><i class="fas fa-video" style="margin-right:4px;"></i>Webinar Recording</span>
+              </div>
+              <h3 class="featured-heading-side">SPVH Investment Committee — Q1 2026 Portfolio Review &amp; Macro Outlook</h3>
+              <p class="featured-excerpt">Our investment committee walks through Q1 positioning, key exits, new entries, and our macro thesis for the next 18 months.</p>
+              <div class="featured-author-row">
+                <div class="featured-author">
+                  <div class="featured-av">PS</div>
+                  <span class="featured-av-name">Pooja S. &mdash; Fund Manager</span>
+                </div>
+                <a href="#" class="featured-read-link">Watch &rarr;</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== PMS SECTION ======================== -->
+    <section class="insights-solution-section" data-section="pms" style="background-color: white; padding: 72px 0;">
+      <div class="container">
+
+        <div class="solution-section-header reveal">
+          <div class="solution-section-label">
+            <div class="solution-section-icon pms"><i class="fas fa-chart-pie"></i></div>
+            <div>
+              <h2 class="solution-section-title">Portfolio Management Services</h2>
+              <p class="solution-section-sub">Discretionary equity strategies for HNIs &bull; Min. &#8377;50 Lakhs</p>
+            </div>
+          </div>
+          <a href="pms.html" class="solution-view-all">Explore PMS <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="solution-content-grid reveal">
+
+          <!-- Article 1 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #0A1628 0%, #496bad 100%);"></div>
+              <span class="article-cat">Research Note</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">18 APR 2026</span>
+              <h4 class="article-heading">Growth vs. Value Investing: The SPVH Framework for Indian Equities</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av">VK</span>
+                  <span class="article-author-name">Vikram K.</span>
+                </div>
+                <span class="article-time">6 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Article 2 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #112240 0%, #496bad 100%);"></div>
+              <span class="article-cat">Investor Guide</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">05 APR 2026</span>
+              <h4 class="article-heading">How to Evaluate a PMS Manager: 10 Questions Every Investor Must Ask</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av">AS</span>
+                  <span class="article-author-name">Aditya S.</span>
+                </div>
+                <span class="article-time">5 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Article 3 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #0e3460 0%, #496bad 100%);"></div>
+              <span class="article-cat">Market Outlook</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">22 MAR 2026</span>
+              <h4 class="article-heading">Mid-Cap vs Large-Cap Allocation in Rising Rate Environments: A Historical Analysis</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av">PS</span>
+                  <span class="article-author-name">Pooja S.</span>
+                </div>
+                <span class="article-time">7 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Card -->
+          <div class="video-card">
+            <div class="video-thumb">
+              <div class="video-thumb-bg" style="background: linear-gradient(145deg, #0A1628 0%, #496bad 100%);"></div>
+              <div class="video-play-btn"><i class="fas fa-play" style="margin-left:3px;"></i></div>
+              <div class="video-duration">24:38</div>
+            </div>
+            <div class="video-body">
+              <div class="video-label"><i class="fas fa-video"></i> PMS Strategy Session</div>
+              <p class="video-heading">SPVH Growth Portfolio — Stock Selection Framework &amp; Live Q&amp;A</p>
+              <div class="video-date">15 APR 2026</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== AIF SECTION ======================== -->
+    <section class="insights-solution-section" data-section="aif" style="background-color: #F8FAFF; padding: 72px 0;">
+      <div class="container">
+
+        <div class="solution-section-header reveal">
+          <div class="solution-section-label">
+            <div class="solution-section-icon aif"><i class="fas fa-layer-group"></i></div>
+            <div>
+              <h2 class="solution-section-title">Alternative Investment Funds</h2>
+              <p class="solution-section-sub">Category II &amp; III AIFs for sophisticated investors &bull; Min. &#8377;1 Crore</p>
+            </div>
+          </div>
+          <a href="aif.html" class="solution-view-all">Explore AIF <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="solution-content-grid reveal">
+
+          <!-- Article 1 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #0A1628 0%, #47a996 100%);"></div>
+              <span class="article-cat">Research Note</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">24 MAR 2026</span>
+              <h4 class="article-heading">Pre-IPO Investing in India: How to Access Unicorn Growth Before the Market Does</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av" style="background:#47a996;">RN</span>
+                  <span class="article-author-name">Rahul N.</span>
+                </div>
+                <span class="article-time">8 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Article 2 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #064e3b 0%, #47a996 100%);"></div>
+              <span class="article-cat">Market Outlook</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">12 FEB 2026</span>
+              <h4 class="article-heading">India's Private Credit Opportunity in a Rising Rate Environment</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av" style="background:#47a996;">VK</span>
+                  <span class="article-author-name">Vikram K.</span>
+                </div>
+                <span class="article-time">5 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Article 3 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #022c22 0%, #47a996 100%);"></div>
+              <span class="article-cat">Investor Guide</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">28 JAN 2026</span>
+              <h4 class="article-heading">Category II vs Category III AIF: What Every HNI Must Know Before Investing</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av" style="background:#47a996;">PS</span>
+                  <span class="article-author-name">Pooja S.</span>
+                </div>
+                <span class="article-time">6 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Card -->
+          <div class="video-card">
+            <div class="video-thumb">
+              <div class="video-thumb-bg" style="background: linear-gradient(145deg, #064e3b 0%, #47a996 100%);"></div>
+              <div class="video-play-btn"><i class="fas fa-play" style="margin-left:3px;"></i></div>
+              <div class="video-duration">41:22</div>
+            </div>
+            <div class="video-body">
+              <div class="video-label"><i class="fas fa-video"></i> AIF Update</div>
+              <p class="video-heading">SPVH Special Situations Fund — Investment Committee Q1 Rebalancing &amp; Outlook</p>
+              <div class="video-date">10 FEB 2026</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== OFFSHORE SECTION ======================== -->
+    <section class="insights-solution-section" data-section="offshore" style="background-color: white; padding: 72px 0;">
+      <div class="container">
+
+        <div class="solution-section-header reveal">
+          <div class="solution-section-label">
+            <div class="solution-section-icon off"><i class="fas fa-globe"></i></div>
+            <div>
+              <h2 class="solution-section-title">Offshore &amp; Global Funds</h2>
+              <p class="solution-section-sub">GIFT City &amp; international fund structures for global diversification &bull; Min. &#8377;1 Crore</p>
+            </div>
+          </div>
+          <a href="offshore.html" class="solution-view-all">Explore Offshore <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="solution-content-grid reveal">
+
+          <!-- Article 1 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #1e1b4b 0%, #6366f1 100%);"></div>
+              <span class="article-cat">Market Outlook</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">08 MAY 2026</span>
+              <h4 class="article-heading">GIFT City 2026: India's New Gateway for Offshore Capital and Why It Changes Everything</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av" style="background:#6366f1;">AS</span>
+                  <span class="article-author-name">Aditya S.</span>
+                </div>
+                <span class="article-time">7 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Article 2 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #312e81 0%, #6366f1 100%);"></div>
+              <span class="article-cat">Research Note</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">15 APR 2026</span>
+              <h4 class="article-heading">Currency Diversification: Why Every Indian HNI Should Hold a Portion of Wealth in USD Assets</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av" style="background:#6366f1;">DM</span>
+                  <span class="article-author-name">David M.</span>
+                </div>
+                <span class="article-time">5 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Article 3 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #0A1628 0%, #6366f1 100%);"></div>
+              <span class="article-cat">Fund Update</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">01 MAR 2026</span>
+              <h4 class="article-heading">Global Macro Trends Reshaping Offshore Portfolio Strategy for Indian Investors in 2026</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av" style="background:#6366f1;">VK</span>
+                  <span class="article-author-name">Vikram K.</span>
+                </div>
+                <span class="article-time">9 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Card -->
+          <div class="video-card">
+            <div class="video-thumb">
+              <div class="video-thumb-bg" style="background: linear-gradient(145deg, #1e1b4b 0%, #6366f1 100%);"></div>
+              <div class="video-play-btn"><i class="fas fa-play" style="margin-left:3px;"></i></div>
+              <div class="video-duration">29:55</div>
+            </div>
+            <div class="video-body">
+              <div class="video-label"><i class="fas fa-video"></i> Global Strategy</div>
+              <p class="video-heading">Offshore Portfolio Strategy — Navigating Global Markets &amp; GIFT City Structures in 2026</p>
+              <div class="video-date">20 MAR 2026</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== ADVISORY & RESEARCH SECTION ======================== -->
+    <section class="insights-solution-section" data-section="advisory" style="background-color: #FFFBF0; padding: 72px 0;">
+      <div class="container">
+
+        <div class="solution-section-header reveal">
+          <div class="solution-section-label">
+            <div class="solution-section-icon adv"><i class="fas fa-lightbulb"></i></div>
+            <div>
+              <h2 class="solution-section-title">Investment Advisory &amp; Research</h2>
+              <p class="solution-section-sub">Research-backed equity advisory for family offices &amp; institutions &bull; Retainer &amp; subscription</p>
+            </div>
+          </div>
+          <a href="investment-advisory-research.html" class="solution-view-all">Explore Advisory <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="solution-content-grid reveal">
+
+          <!-- Article 1 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #0A1628 0%, #f59e0b 60%, #b45309 100%);"></div>
+              <span class="article-cat">Research Note</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">28 JAN 2026</span>
+              <h4 class="article-heading">The Illusion of Liquidity: Why Public Markets Are Structurally Fragile &amp; Where Alpha Hides</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av" style="background:#f59e0b;">AS</span>
+                  <span class="article-author-name">Aditya S.</span>
+                </div>
+                <span class="article-time">8 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Article 2 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #78350f 0%, #f59e0b 100%);"></div>
+              <span class="article-cat">Education</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">10 JAN 2026</span>
+              <h4 class="article-heading">Forensic Accounting for Investors: How to Spot Earnings Manipulation Before the Market Does</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av" style="background:#f59e0b;">RN</span>
+                  <span class="article-author-name">Rahul N.</span>
+                </div>
+                <span class="article-time">11 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Article 3 -->
+          <div class="article-card">
+            <div class="article-thumb">
+              <div class="article-thumb-gradient" style="background: linear-gradient(135deg, #0A1628 0%, #d97706 100%);"></div>
+              <span class="article-cat">Sector Report</span>
+            </div>
+            <div class="article-body">
+              <span class="article-date">20 DEC 2025</span>
+              <h4 class="article-heading">India's Industrials Supercycle: Identifying the Next Decade of Structural Wealth Creation</h4>
+              <div class="article-footer-row">
+                <div style="display:flex;align-items:center;">
+                  <span class="article-av" style="background:#f59e0b;">PS</span>
+                  <span class="article-author-name">Pooja S.</span>
+                </div>
+                <span class="article-time">10 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Card -->
+          <div class="video-card">
+            <div class="video-thumb">
+              <div class="video-thumb-bg" style="background: linear-gradient(145deg, #0A1628 0%, #b45309 100%);"></div>
+              <div class="video-play-btn"><i class="fas fa-play" style="margin-left:3px;"></i></div>
+              <div class="video-duration">52:10</div>
+            </div>
+            <div class="video-body">
+              <div class="video-label"><i class="fas fa-video"></i> Research Deep Dive</div>
+              <p class="video-heading">SPVH Research Deep Dive — Identifying Asymmetric Opportunities in Mid-Cap Dislocations</p>
+              <div class="video-date">05 JAN 2026</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== VIDEO LIBRARY ======================== -->
+    <section style="background-color: #0A1628; padding: 80px 0;">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal" style="margin-bottom: 2.5rem;">
+          <span class="leadership-subtitle" style="color:#47a996;">VIDEO LIBRARY</span>
+          <h2 class="leadership-title" style="color:white;">Watch. Learn. <span style="color:#47a996;">Invest Better.</span></h2>
+        </div>
+
+        <div class="video-library-grid reveal">
+
+          <div class="vlibrary-card">
+            <div class="vlibrary-thumb">
+              <div class="vlibrary-thumb-bg" style="background: linear-gradient(135deg, #0e3460, #496bad);"></div>
+              <div class="vlibrary-play"><i class="fas fa-play" style="margin-left:3px;"></i></div>
+              <div class="vlibrary-dur">18:44</div>
+            </div>
+            <div class="vlibrary-body">
+              <span class="vlibrary-tag">PMS</span>
+              <p class="vlibrary-title">PMS Onboarding Masterclass: What Happens After You Invest &#8377;50 Lakhs</p>
+              <div class="vlibrary-date">22 APR 2026</div>
+            </div>
+          </div>
+
+          <div class="vlibrary-card">
+            <div class="vlibrary-thumb">
+              <div class="vlibrary-thumb-bg" style="background: linear-gradient(135deg, #022c22, #47a996);"></div>
+              <div class="vlibrary-play"><i class="fas fa-play" style="margin-left:3px;"></i></div>
+              <div class="vlibrary-dur">33:07</div>
+            </div>
+            <div class="vlibrary-body">
+              <span class="vlibrary-tag">AIF</span>
+              <p class="vlibrary-title">Special Situations Investing: How We Source Pre-IPO Deals at SPVH AMC</p>
+              <div class="vlibrary-date">14 MAR 2026</div>
+            </div>
+          </div>
+
+          <div class="vlibrary-card">
+            <div class="vlibrary-thumb">
+              <div class="vlibrary-thumb-bg" style="background: linear-gradient(135deg, #1e1b4b, #6366f1);"></div>
+              <div class="vlibrary-play"><i class="fas fa-play" style="margin-left:3px;"></i></div>
+              <div class="vlibrary-dur">27:19</div>
+            </div>
+            <div class="vlibrary-body">
+              <span class="vlibrary-tag">Offshore</span>
+              <p class="vlibrary-title">GIFT City Explained: Tax Benefits, Structures &amp; How Indian HNIs Can Invest Globally</p>
+              <div class="vlibrary-date">02 FEB 2026</div>
+            </div>
+          </div>
+
+          <div class="vlibrary-card">
+            <div class="vlibrary-thumb">
+              <div class="vlibrary-thumb-bg" style="background: linear-gradient(135deg, #78350f, #f59e0b);"></div>
+              <div class="vlibrary-play"><i class="fas fa-play" style="margin-left:3px;"></i></div>
+              <div class="vlibrary-dur">44:55</div>
+            </div>
+            <div class="vlibrary-body">
+              <span class="vlibrary-tag">Research</span>
+              <p class="vlibrary-title">Annual Market Outlook 2026 — Themes, Opportunities &amp; Sectors to Watch</p>
+              <div class="vlibrary-date">10 JAN 2026</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="text-align:center; margin-top: 3rem;" class="reveal">
+          <a href="#" class="btn btn-outline-light" style="font-size:15px; padding: 14px 32px; border-radius:8px;">
+            <i class="fas fa-play-circle" style="margin-right:8px;"></i> View Full Video Library
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== NEWSLETTER CTA ======================== -->
+    <section class="newsletter-section">
+      <div class="newsletter-pattern"></div>
+      <div class="container newsletter-inner">
+        <div class="newsletter-grid reveal">
+
+          <div>
+            <h2 class="newsletter-title">Get Research Delivered<br><span>To Your Inbox.</span></h2>
+            <p class="newsletter-desc">Join 2,400+ HNIs, family offices, and institutional investors who receive the SPVH AMC Weekly Research Brief — market commentary, fund updates, and curated insights.</p>
+            <div class="newsletter-trust">
+              <div class="newsletter-trust-item"><i class="fas fa-check-circle"></i> No spam, ever</div>
+              <div class="newsletter-trust-item"><i class="fas fa-check-circle"></i> Unsubscribe anytime</div>
+              <div class="newsletter-trust-item"><i class="fas fa-check-circle"></i> Institutional quality research</div>
+            </div>
+          </div>
+
+          <div class="newsletter-form">
+            <div class="newsletter-input-row">
+              <input type="text" class="newsletter-input" placeholder="Your full name">
+            </div>
+            <div class="newsletter-input-row">
+              <input type="email" class="newsletter-input" placeholder="Work email address">
+              <button class="newsletter-btn">Subscribe</button>
+            </div>
+            <p class="newsletter-disclaimer">By subscribing you agree to receive investment research communications from SPVH AMC. Not an offer to buy or sell securities. For accredited investors only.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-new">
+    <div class="container">
+      <div class="footer-top-grid">
+
+        <div class="footer-col-brand reveal">
+          <a href="index.html" class="footer-logo-img" style="display:inline-block;margin-bottom:1.25rem;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height:73px;width:auto;display:block;">
+          </a>
+          <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col-links reveal" style="animation-delay:0.1s;">
+          <h4 class="footer-heading">COMPANY</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="team.html">Leadership Team</a></li>
+            <li><a href="philosophy.html">Investment Philosophy</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col-links reveal" style="animation-delay:0.2s;">
+          <h4 class="footer-heading">OUR SOLUTIONS</h4>
+          <ul>
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col-contact reveal" style="animation-delay:0.3s;">
+          <h4 class="footer-heading">GET IN TOUCH</h4>
+          <div class="contact-line"><i class="fas fa-map-marker-alt"></i><span>Registered Office Address, Mumbai &mdash; 400051</span></div>
+          <div class="contact-line"><i class="fas fa-phone-alt"></i><span>+91 22 4000 0000</span></div>
+          <div class="contact-line"><i class="fas fa-envelope"></i><span>info@spvhamc.com</span></div>
+          <a href="#" class="footer-cta-link">Schedule Consultation &rarr;</a>
+        </div>
+
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="container">
+      <div class="footer-bottom-bar reveal" style="animation-delay:0.4s;">
+        <div class="footer-copyright">&copy; 2026 SPVH Asset Management Company. All Rights Reserved.</div>
+        <div class="footer-legal-links">
+          <a href="#">Privacy Policy</a><span class="dot">&middot;</span>
+          <a href="#">Disclaimer</a><span class="dot">&middot;</span>
+          <a href="#">Regulatory Information</a>
+        </div>
+        <div class="footer-sebi">SEBI Registered Portfolio Manager | Reg. No. INP00000XXXX | Investments are subject to market risk.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Filter tab behaviour
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const typePills  = document.querySelectorAll('.type-pill');
+      const sections   = document.querySelectorAll('.insights-solution-section');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const filter = btn.dataset.filter;
+
+          sections.forEach(sec => {
+            if (filter === 'all' || filter === 'video') {
+              sec.style.display = '';
+            } else {
+              sec.style.display = sec.dataset.section === filter ? '' : 'none';
+            }
+          });
+
+          // If "Videos" filter, scroll to video library
+          if (filter === 'video') {
+            document.querySelector('.video-library-grid').closest('section')
+              .scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      typePills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          typePills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

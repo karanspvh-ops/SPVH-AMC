@@ -56,36 +56,55 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCount();
   }
 
-  // Mobile Menu (Simple Logging for Vanilla HTML shell scalability)
+  // Mobile Menu — class-based toggle (styles live in responsive.css)
   const hamburger = document.querySelector('.hamburger');
   const navMenu = document.querySelector('.nav-menu');
   const navActions = document.querySelector('.nav-actions');
 
-  if(hamburger) {
-    hamburger.addEventListener('click', () => {
-      if(navMenu.style.display === 'flex') {
-        navMenu.style.display = 'none';
-        navActions.style.display = 'none';
-      } else {
-        navMenu.style.display = 'flex';
-        navMenu.style.flexDirection = 'column';
-        navMenu.style.position = 'absolute';
-        navMenu.style.top = '90px';
-        navMenu.style.left = '0';
-        navMenu.style.width = '100%';
-        navMenu.style.background = '#fff';
-        navMenu.style.padding = '2rem';
-        navMenu.style.boxShadow = '0 10px 20px rgba(0,0,0,0.05)';
-        
-        navActions.style.display = 'flex';
-        navActions.style.flexDirection = 'column';
-        navActions.style.position = 'absolute';
-        navActions.style.top = '300px';
-        navActions.style.left = '0';
-        navActions.style.width = '100%';
-        navActions.style.background = '#fff';
-        navActions.style.padding = '2rem';
+  const closeMenu = () => {
+    navMenu.classList.remove('nav-open');
+    navActions.classList.remove('nav-open');
+    hamburger.classList.remove('active');
+    document.body.classList.remove('menu-open');
+  };
+
+  if (hamburger) {
+    hamburger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = navMenu.classList.contains('nav-open');
+      isOpen ? closeMenu() : (() => {
+        navMenu.classList.add('nav-open');
+        navActions.classList.add('nav-open');
+        hamburger.classList.add('active');
+        document.body.classList.add('menu-open');
+      })();
+    });
+
+    // Close when clicking outside the header
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('header') && navMenu.classList.contains('nav-open')) {
+        closeMenu();
       }
+    });
+
+    // Mobile submenu accordion — tap parent link to expand/collapse
+    navMenu.querySelectorAll('.nav-item > a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+          const parent = link.parentElement;
+          if (parent.querySelector('.dropdown-menu')) {
+            e.preventDefault();
+            parent.classList.toggle('submenu-open');
+          } else {
+            closeMenu();
+          }
+        }
+      });
+    });
+
+    // Close menu when viewport grows back to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) closeMenu();
     });
   }
 
