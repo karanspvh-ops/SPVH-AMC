@@ -1,0 +1,36 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC/.claude/worktrees/practical-zhukovsky-199ec9\" && git add -A && git commit -m \"Auto-deploy: $(date +%Y-%m-%dT%H:%M:%S)\" && git push origin HEAD:main 2>/dev/null || true",
+            "timeout": 60,
+            "statusMessage": "Deploying changes to GitHub Pages…"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Recurse -Force -ErrorAction SilentlyContinue | Select-Object @{N='Path';E={$_.FullName -replace [regex]::Escape\\($PWD + '\\\\'\\), ''}}, @{N='Type';E={if\\($_.PSIsContainer\\) {'DIR'} else {$_.Extension}}} | ConvertTo-Json -Depth 1)",
+      "Bash(cd \"/c/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC/.claude/worktrees/practical-zhukovsky-199ec9\" && find . -maxdepth 2 -type f \\\\\\( -name \"*.html\" -o -name \"*.css\" -o -name \"*.js\" -o -name \"*.py\" -o -name \"*.json\" \\\\\\) | head -30)",
+      "Bash(npm --version)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(git config *)",
+      "Bash(gh --version)",
+      "Bash(curl --version)",
+      "Bash(python -c \"import urllib.request; print\\('Python requests OK'\\)\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git credential *)",
+      "Bash(python -c \"import sys,json; r=json.load\\(sys.stdin\\); print\\('Visibility:', r.get\\('visibility','unknown'\\)\\); print\\('Private:', r.get\\('private'\\)\\); print\\('Plan:', r.get\\('owner',{}\\).get\\('plan',{}\\).get\\('name','N/A'\\) if 'owner' in r else 'N/A'\\)\")",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
+    ]
+  }
+}
