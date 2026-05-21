@@ -273,81 +273,576 @@
       </div>
     </section>
 
-    <!-- Performance Highlights -->
-    <section class="performance-highlights-section" style="background-color: #F0F4FA; padding: 100px 0;">
-      <div class="container">
-        
-        <div class="leadership-title-wrapper reveal">
-          <span class="leadership-subtitle">TRACK RECORD</span>
-          <h2 class="leadership-title">Numbers That <span>Speak for Themselves.</span></h2>
-          <p class="perf-disclaimer">Past performance does not guarantee future results. Returns are indicative.</p>
+    <!-- ═══════════════════════════════════════════════════════
+         PERFORMANCE DASHBOARD  ·  Track Record Section
+    ════════════════════════════════════════════════════════ -->
+    <style>
+      /* ── Dashboard scoped styles ─────────────────────────── */
+      .dash-section {
+        background: #060C1A;
+        padding: 90px 0 70px;
+        position: relative;
+        overflow: hidden;
+      }
+      .dash-section::before {
+        content: '';
+        position: absolute;
+        top: -120px; right: -120px;
+        width: 520px; height: 520px;
+        background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+        pointer-events: none;
+      }
+      .dash-section::after {
+        content: '';
+        position: absolute;
+        bottom: -80px; left: -80px;
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, rgba(71,169,150,0.05) 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      /* Header */
+      .dash-header { margin-bottom: 2.5rem; }
+      .dash-eyebrow {
+        font-size: 0.68rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #C9A84C;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 0.6rem;
+      }
+      .dash-title {
+        font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+        color: #fff;
+        line-height: 1.2;
+        margin: 0 0 0.4rem;
+      }
+      .dash-title span { color: #C9A84C; }
+      .dash-subtitle {
+        color: #64748B;
+        font-size: 0.85rem;
+        margin: 0;
+      }
+
+      /* KPI Strip */
+      .dash-kpi-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        background: rgba(201,168,76,0.12);
+        border: 1px solid rgba(201,168,76,0.12);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+      }
+      .dash-kpi {
+        background: #0D1528;
+        padding: 1.4rem 1.6rem;
+        text-align: center;
+        position: relative;
+      }
+      .dash-kpi::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: transparent;
+        transition: background 0.3s;
+      }
+      .dash-kpi:hover::after { background: #C9A84C; }
+      .kpi-label {
+        font-size: 0.65rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #64748B;
+        font-family: 'Montserrat', sans-serif;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      .kpi-value {
+        font-size: clamp(1.5rem, 2.5vw, 2rem);
+        font-weight: 800;
+        color: #C9A84C;
+        font-family: 'Montserrat', sans-serif;
+        line-height: 1;
+        display: block;
+        margin-bottom: 0.3rem;
+      }
+      .kpi-sub {
+        font-size: 0.7rem;
+        color: #22C55E;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .kpi-sub.neutral { color: #94A3B8; }
+
+      /* Main Dashboard Grid */
+      .dash-main-grid {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Chart Panel */
+      .dash-panel {
+        background: #0D1528;
+        border: 1px solid rgba(201,168,76,0.1);
+        border-radius: 10px;
+        padding: 1.5rem;
+      }
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .panel-title {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #94A3B8;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+      }
+      .panel-legend {
+        display: flex;
+        gap: 1.25rem;
+      }
+      .pleg {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.72rem;
+        color: #94A3B8;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .pleg-line {
+        width: 18px; height: 2px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+      .pleg-line.dashed {
+        background: repeating-linear-gradient(to right, #64748B 0, #64748B 4px, transparent 4px, transparent 8px);
+      }
+      .chart-canvas-wrap { position: relative; height: 300px; }
+
+      /* Sector Donut Panel */
+      .dash-donut-wrap { position: relative; height: 170px; margin-bottom: 1rem; }
+      .sector-rows { list-style: none; padding: 0; margin: 0; }
+      .sector-rows li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.4rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        font-size: 0.75rem;
+        color: #94A3B8;
+      }
+      .sector-rows li:last-child { border-bottom: none; }
+      .sr-left { display: flex; align-items: center; gap: 0.45rem; }
+      .sr-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+      .sr-pct { color: #fff; font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; }
+
+      /* Bottom Row: Top Performers + Strategy Table */
+      .dash-bottom-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Top Performers */
+      .perf-rows { list-style: none; padding: 0; margin: 0; }
+      .perf-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        gap: 0.5rem;
+      }
+      .perf-row:last-child { border-bottom: none; }
+      .pr-rank {
+        width: 20px;
+        font-size: 0.65rem;
+        color: #475569;
+        font-family: 'Montserrat', sans-serif;
+        flex-shrink: 0;
+        text-align: center;
+      }
+      .pr-name { flex: 1; color: #CBD5E1; font-size: 0.8rem; font-weight: 500; }
+      .pr-sector {
+        font-size: 0.62rem;
+        color: #475569;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .pr-ret {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #22C55E;
+        font-family: 'Montserrat', sans-serif;
+        text-align: right;
+        flex-shrink: 0;
+      }
+
+      /* Strategy Table */
+      .dash-strat-table { width: 100%; border-collapse: collapse; }
+      .dash-strat-table thead tr {
+        border-bottom: 1px solid rgba(201,168,76,0.15);
+      }
+      .dash-strat-table th {
+        padding: 0.6rem 0.75rem;
+        text-align: left;
+        font-size: 0.63rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #C9A84C;
+        font-family: 'Montserrat', sans-serif;
+        white-space: nowrap;
+      }
+      .dash-strat-table th.r { text-align: right; }
+      .dash-strat-table td {
+        padding: 0.65rem 0.75rem;
+        font-size: 0.78rem;
+        color: #94A3B8;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        white-space: nowrap;
+      }
+      .dash-strat-table td.r { text-align: right; }
+      .dash-strat-table tbody tr:last-child td { border-bottom: none; }
+      .dash-strat-table tbody tr:hover { background: rgba(201,168,76,0.03); }
+      .td-strat { color: #fff !important; font-weight: 500; }
+      .td-pos { color: #22C55E !important; font-weight: 700; }
+      .td-bench { color: #64748B !important; }
+      .td-bench-pos { color: #64748B !important; font-weight: 600; }
+
+      /* Dashboard Footer Bar */
+      .dash-footer-bar {
+        background: #0D1528;
+        border: 1px solid rgba(201,168,76,0.1);
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .dash-footer-bar p {
+        font-size: 0.7rem;
+        color: #475569;
+        margin: 0;
+      }
+      .dash-full-link {
+        font-size: 0.78rem;
+        color: #C9A84C;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        text-decoration: none;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+        transition: color 0.2s;
+      }
+      .dash-full-link:hover { color: #fff; }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .dash-main-grid { grid-template-columns: 1fr; }
+        .dash-donut-wrap { height: 220px; }
+      }
+      @media (max-width: 768px) {
+        .dash-kpi-strip { grid-template-columns: repeat(2, 1fr); }
+        .dash-bottom-grid { grid-template-columns: 1fr; }
+        .chart-canvas-wrap { height: 240px; }
+        .dash-section { padding: 60px 0 50px; }
+      }
+      @media (max-width: 480px) {
+        .dash-kpi-strip { grid-template-columns: 1fr 1fr; }
+        .dash-kpi { padding: 1rem; }
+        .kpi-value { font-size: 1.4rem; }
+      }
+    </style>
+
+    <section class="dash-section" id="track-record">
+      <div class="container" style="position:relative;z-index:1;">
+
+        <!-- Header -->
+        <div class="dash-header reveal">
+          <span class="dash-eyebrow">Track Record · 19-Stock Midcap Model Portfolio · May 2022 – May 2026</span>
+          <h2 class="dash-title">Numbers That <span>Speak for Themselves.</span></h2>
+          <p class="dash-subtitle">₹100 Crore deployed across 19 institutional-grade midcap equities. 60/40 sector mandate. SEBI-registered PMS strategy.</p>
         </div>
 
-        <div class="perf-split-grid">
-          
-          <!-- Left Column: Table -->
-          <div class="perf-col-left reveal-left" style="transition: all 0.4s ease;">
-            <div class="perf-table-wrapper">
-              <table class="perf-table-new">
-                <thead>
-                  <tr>
-                    <th>Strategy</th>
-                    <th>1 Year</th>
-                    <th>3 Year</th>
-                    <th>5 Year</th>
-                    <th>Since Inception</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>SPVH Equity PMS</td>
-                    <td class="perf-pos">24.5%</td>
-                    <td class="perf-pos">18.2%</td>
-                    <td class="perf-pos">21.4%</td>
-                    <td class="perf-pos">22.8%</td>
-                  </tr>
-                  <tr>
-                    <td>SPVH Special Situations AIF</td>
-                    <td class="perf-pos">19.2%</td>
-                    <td class="perf-pos">21.0%</td>
-                    <td class="perf-pos">19.8%</td>
-                    <td class="perf-pos">20.5%</td>
-                  </tr>
-                  <tr>
-                    <td>SPVH Private Credit Fund</td>
-                    <td class="perf-pos">14.5%</td>
-                    <td class="perf-pos">13.8%</td>
-                    <td class="perf-pos">14.1%</td>
-                    <td class="perf-pos">14.0%</td>
-                  </tr>
-                  <tr class="perf-row-benchmark">
-                    <td>Benchmark (Nifty 50)</td>
-                    <td class="perf-pos">16.8%</td>
-                    <td class="perf-pos">14.1%</td>
-                    <td class="perf-pos">15.2%</td>
-                    <td class="perf-pos">14.8%</td>
-                  </tr>
-                </tbody>
-              </table>
+        <!-- KPI Strip -->
+        <div class="dash-kpi-strip reveal">
+          <div class="dash-kpi">
+            <span class="kpi-label">Portfolio CAGR</span>
+            <span class="kpi-value">33.6%</span>
+            <span class="kpi-sub">↑ vs Nifty 50: 11.4%</span>
+          </div>
+          <div class="dash-kpi">
+            <span class="kpi-label">Absolute Return</span>
+            <span class="kpi-value">218.7%</span>
+            <span class="kpi-sub neutral">May 2022 → May 2026</span>
+          </div>
+          <div class="dash-kpi">
+            <span class="kpi-label">Portfolio Value</span>
+            <span class="kpi-value">₹318.7 Cr</span>
+            <span class="kpi-sub neutral">From ₹100 Cr deployed</span>
+          </div>
+          <div class="dash-kpi">
+            <span class="kpi-label">Alpha Generated</span>
+            <span class="kpi-value">+22.2%</span>
+            <span class="kpi-sub">CAGR vs benchmark</span>
+          </div>
+        </div>
+
+        <!-- Main Row: Chart + Sector Donut -->
+        <div class="dash-main-grid">
+
+          <!-- Growth Chart -->
+          <div class="dash-panel reveal-left">
+            <div class="panel-header">
+              <span class="panel-title">Portfolio Growth vs Nifty 50 (Indexed · ₹ Cr)</span>
+              <div class="panel-legend">
+                <span class="pleg"><span class="pleg-line" style="background:#C9A84C;"></span>SPVH Portfolio</span>
+                <span class="pleg"><span class="pleg-line dashed"></span>Nifty 50</span>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="dashGrowthChart"></canvas>
             </div>
           </div>
 
-          <!-- Right Column: Chart -->
-          <div class="perf-col-right reveal-right" style="transition: all 0.4s ease; animation-delay: 0.1s;">
-            <div class="perf-chart-container">
-              <h4 class="perf-chart-title">₹100 Invested in SPVH Equity PMS — Growth vs Benchmark</h4>
-              <canvas id="performanceChart"></canvas>
+          <!-- Sector Donut -->
+          <div class="dash-panel reveal-right">
+            <div class="panel-header">
+              <span class="panel-title">Sector Allocation (May 2026)</span>
             </div>
+            <div class="dash-donut-wrap">
+              <canvas id="dashDonutChart"></canvas>
+            </div>
+            <ul class="sector-rows">
+              <li><span class="sr-left"><span class="sr-dot" style="background:#6366F1;"></span>BFSI — Wealth</span><span class="sr-pct">33.6%</span></li>
+              <li><span class="sr-left"><span class="sr-dot" style="background:#F97316;"></span>Metals &amp; Tubes</span><span class="sr-pct">18.8%</span></li>
+              <li><span class="sr-left"><span class="sr-dot" style="background:#EAB308;"></span>Energy Transition</span><span class="sr-pct">17.5%</span></li>
+              <li><span class="sr-left"><span class="sr-dot" style="background:#14B8A6;"></span>Tactical Banks</span><span class="sr-pct">16.7%</span></li>
+              <li><span class="sr-left"><span class="sr-dot" style="background:#EC4899;"></span>Healthcare</span><span class="sr-pct">13.4%</span></li>
+            </ul>
           </div>
 
         </div>
 
-        <div class="perf-banner reveal">
-          <p>All returns are TWRR &nbsp;|&nbsp; Audited figures available on request &nbsp;|&nbsp; SEBI Registered Category II Fund: Reg. No. IN/AIF2/22-23/1248</p>
+        <!-- Bottom Row: Top Performers + Strategy Table -->
+        <div class="dash-bottom-grid">
+
+          <!-- Top Performers -->
+          <div class="dash-panel reveal-left">
+            <div class="panel-header">
+              <span class="panel-title">Top Performing Holdings</span>
+            </div>
+            <ul class="perf-rows">
+              <li class="perf-row">
+                <span class="pr-rank">01</span>
+                <span class="pr-name">Anand Rathi Wealth<br><span class="pr-sector">BFSI — Wealth Mgmt</span></span>
+                <span class="pr-ret">+1,003.7%</span>
+              </li>
+              <li class="perf-row">
+                <span class="pr-rank">02</span>
+                <span class="pr-name">Karur Vysya Bank<br><span class="pr-sector">Tactical Banks</span></span>
+                <span class="pr-ret">+535.6%</span>
+              </li>
+              <li class="perf-row">
+                <span class="pr-rank">03</span>
+                <span class="pr-name">Inox Wind<br><span class="pr-sector">Energy Transition</span></span>
+                <span class="pr-ret">+500.0%</span>
+              </li>
+              <li class="perf-row">
+                <span class="pr-rank">04</span>
+                <span class="pr-name">Motilal Oswal Financial<br><span class="pr-sector">BFSI — Wealth Mgmt</span></span>
+                <span class="pr-ret">+321.5%</span>
+              </li>
+              <li class="perf-row">
+                <span class="pr-rank">05</span>
+                <span class="pr-name">Jindal Stainless<br><span class="pr-sector">Metals &amp; Tubes</span></span>
+                <span class="pr-ret">+344.6%</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Strategy Summary Table -->
+          <div class="dash-panel reveal-right">
+            <div class="panel-header">
+              <span class="panel-title">Strategy Performance Summary</span>
+            </div>
+            <table class="dash-strat-table">
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th class="r">4-Yr CAGR</th>
+                  <th class="r">Abs. Return</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="td-strat">Midcap Model Portfolio</td>
+                  <td class="r td-pos">33.6%</td>
+                  <td class="r td-pos">+218.7%</td>
+                </tr>
+                <tr>
+                  <td class="td-strat">BFSI — Wealth Mgmt</td>
+                  <td class="r td-pos">~58.2%</td>
+                  <td class="r td-pos">+408.1%</td>
+                </tr>
+                <tr>
+                  <td class="td-strat">Metals &amp; Tubes</td>
+                  <td class="r td-pos">~28.4%</td>
+                  <td class="r td-pos">+163.0%</td>
+                </tr>
+                <tr>
+                  <td class="td-strat">Energy Transition</td>
+                  <td class="r td-pos">~26.1%</td>
+                  <td class="r td-pos">+131.1%</td>
+                </tr>
+                <tr>
+                  <td class="td-bench">Nifty 50 (Benchmark)</td>
+                  <td class="r td-bench-pos">~11.4%</td>
+                  <td class="r td-bench-pos">+54.5%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- Footer Bar -->
+        <div class="dash-footer-bar reveal">
+          <p>19-stock equal-weight midcap portfolio · ₹3,500 Cr–₹15,000 Cr M.Cap band at inception · May 2022 – May 2026 &nbsp;|&nbsp; Past performance is not indicative of future results. For illustrative purposes only.</p>
+          <a href="performance.html" class="dash-full-link">View Full Track Record →</a>
         </div>
 
       </div>
     </section>
+
+    <!-- Dashboard Charts Script -->
+    <script>
+    (function(){
+      Chart.defaults.color = '#64748B';
+      Chart.defaults.font.family = "'Inter','Segoe UI',sans-serif";
+
+      /* Growth Line Chart */
+      const gCtx = document.getElementById('dashGrowthChart').getContext('2d');
+      const gradP = gCtx.createLinearGradient(0,0,0,300);
+      gradP.addColorStop(0,'rgba(201,168,76,0.22)');
+      gradP.addColorStop(1,'rgba(201,168,76,0)');
+      const gradN = gCtx.createLinearGradient(0,0,0,300);
+      gradN.addColorStop(0,'rgba(100,116,139,0.12)');
+      gradN.addColorStop(1,'rgba(100,116,139,0)');
+
+      new Chart(gCtx,{
+        type:'line',
+        data:{
+          labels:['May 2022','May 2023','May 2024','May 2025','May 2026'],
+          datasets:[
+            {
+              label:'SPVH Portfolio',
+              data:[100,148,205,260,318.73],
+              borderColor:'#C9A84C',
+              backgroundColor:gradP,
+              borderWidth:2.5,
+              pointBackgroundColor:'#C9A84C',
+              pointBorderColor:'#060C1A',
+              pointBorderWidth:2,
+              pointRadius:5,
+              pointHoverRadius:7,
+              fill:true,
+              tension:0.4
+            },
+            {
+              label:'Nifty 50',
+              data:[100,112.3,136.4,145.9,154.5],
+              borderColor:'#475569',
+              backgroundColor:gradN,
+              borderWidth:2,
+              borderDash:[6,4],
+              pointBackgroundColor:'#475569',
+              pointBorderColor:'#060C1A',
+              pointBorderWidth:2,
+              pointRadius:4,
+              pointHoverRadius:6,
+              fill:true,
+              tension:0.4
+            }
+          ]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          interaction:{mode:'index',intersect:false},
+          plugins:{
+            legend:{display:false},
+            tooltip:{
+              backgroundColor:'#0D1528',
+              borderColor:'rgba(201,168,76,0.25)',
+              borderWidth:1,
+              padding:10,
+              callbacks:{
+                label: ctx => {
+                  const v = ctx.parsed.y;
+                  const gain = (v-100).toFixed(1);
+                  return ctx.datasetIndex===0
+                    ? ` Portfolio: ₹${v.toFixed(2)} Cr  (+${gain}%)`
+                    : ` Nifty 50: ${v.toFixed(1)}  (+${gain}%)`;
+                }
+              }
+            }
+          },
+          scales:{
+            x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{font:{size:11}}},
+            y:{
+              grid:{color:'rgba(255,255,255,0.05)'},
+              min:80,
+              ticks:{font:{size:11},callback:v=>'₹'+v}
+            }
+          }
+        }
+      });
+
+      /* Sector Donut */
+      const dCtx = document.getElementById('dashDonutChart').getContext('2d');
+      new Chart(dCtx,{
+        type:'doughnut',
+        data:{
+          labels:['BFSI — Wealth','Metals & Tubes','Energy Transition','Tactical Banks','Healthcare'],
+          datasets:[{
+            data:[33.6,18.8,17.5,16.7,13.4],
+            backgroundColor:['#6366F1','#F97316','#EAB308','#14B8A6','#EC4899'],
+            borderColor:'#0D1528',
+            borderWidth:3,
+            hoverOffset:6
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          cutout:'70%',
+          plugins:{
+            legend:{display:false},
+            tooltip:{
+              backgroundColor:'#0D1528',
+              borderColor:'rgba(201,168,76,0.2)',
+              borderWidth:1,
+              callbacks:{label: ctx=>` ${ctx.label}: ${ctx.parsed}%`}
+            }
+          }
+        }
+      });
+    })();
+    </script>
 
     <!-- Client Testimonials -->
     <section class="testimonials-dark-section" style="background-color: #0A1628; padding: 100px 0;">
