@@ -447,78 +447,77 @@
       .sr-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
       .sr-pct { color: #0A1628; font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; }
 
-      /* Bottom Row */
+      /* Bottom Row — full width comparison table */
       .dash-bottom-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.25rem;
         margin-bottom: 1.25rem;
       }
 
-      /* Top Performers */
-      .perf-rows { list-style: none; padding: 0; margin: 0; }
-      .perf-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #F1F5F9;
-        gap: 0.5rem;
+      /* Comparison Table */
+      .dash-comp-table { width: 100%; border-collapse: collapse; }
+      .dash-comp-table thead tr {
+        background: #F8FAFC;
+        border-bottom: 2px solid #E2E8F0;
       }
-      .perf-row:last-child { border-bottom: none; }
-      .pr-rank {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background: #F0F4FA;
-        font-size: 0.6rem;
-        color: #A8842E;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 700;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .pr-name { flex: 1; color: #1E293B; font-size: 0.8rem; font-weight: 500; }
-      .pr-sector { font-size: 0.62rem; color: #94A3B8; font-family: 'Montserrat', sans-serif; display: block; }
-      .pr-ret {
-        font-size: 0.82rem;
-        font-weight: 700;
-        color: #16A34A;
-        font-family: 'Montserrat', sans-serif;
-        text-align: right;
-        flex-shrink: 0;
-      }
-
-      /* Strategy Table */
-      .dash-strat-table { width: 100%; border-collapse: collapse; }
-      .dash-strat-table thead tr { border-bottom: 2px solid #F0F4FA; }
-      .dash-strat-table th {
-        padding: 0.6rem 0.75rem;
-        text-align: left;
+      .dash-comp-table th {
+        padding: 0.85rem 1rem;
+        text-align: center;
         font-size: 0.63rem;
         letter-spacing: 0.1em;
         text-transform: uppercase;
         color: #A8842E;
         font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
         white-space: nowrap;
       }
-      .dash-strat-table th.r { text-align: right; }
-      .dash-strat-table td {
-        padding: 0.65rem 0.75rem;
-        font-size: 0.78rem;
+      .dash-comp-table th:first-child { text-align: left; min-width: 200px; }
+      .dash-comp-table td {
+        padding: 0.9rem 1rem;
+        text-align: center;
+        font-size: 0.82rem;
         color: #64748B;
         border-bottom: 1px solid #F1F5F9;
         white-space: nowrap;
       }
-      .dash-strat-table td.r { text-align: right; }
-      .dash-strat-table tbody tr:last-child td { border-bottom: none; }
-      .dash-strat-table tbody tr:hover { background: #FAFBFF; }
-      .td-strat { color: #0A1628 !important; font-weight: 600; }
-      .td-pos { color: #16A34A !important; font-weight: 700; }
-      .td-bench { color: #94A3B8 !important; }
-      .td-bench-pos { color: #94A3B8 !important; font-weight: 600; }
+      .dash-comp-table td:first-child { text-align: left; }
+      .dash-comp-table tbody tr:last-child td { border-bottom: none; }
+      .dash-comp-table tbody tr:hover { background: #FAFBFF; }
+
+      /* Row identity */
+      .ctr-strategy {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .ctr-dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .ctr-name { font-weight: 700; color: #0A1628; font-size: 0.85rem; }
+      .ctr-sub { font-size: 0.68rem; color: #94A3B8; display: block; margin-top: 0.1rem; font-family: 'Montserrat', sans-serif; }
+
+      /* Highlighted row — SPVH portfolio */
+      .ctr-row-spvh { background: rgba(201,168,76,0.04); }
+      .ctr-row-spvh td { border-bottom: 1px solid rgba(201,168,76,0.12) !important; }
+      .ctr-row-spvh:hover { background: rgba(201,168,76,0.07) !important; }
+
+      /* Value colours */
+      .cv-spvh { color: #0A1628; font-weight: 700; font-size: 0.85rem; }
+      .cv-spvh-pos { color: #C9A84C; font-weight: 800; font-size: 0.85rem; }
+      .cv-n50 { color: #64748B; font-weight: 600; }
+      .cv-mid { color: #475569; font-weight: 600; }
+      .cv-inception { font-size: 0.72rem; color: #94A3B8; display: block; margin-top: 0.15rem; font-family: 'Montserrat', sans-serif; }
+
+      /* Period header accent bar */
+      .period-group-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #94A3B8;
+        font-family: 'Montserrat', sans-serif;
+        padding: 0.45rem 1rem 0;
+        display: block;
+      }
 
       /* Footer Bar */
       .dash-footer-bar {
