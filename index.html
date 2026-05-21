@@ -718,8 +718,8 @@
       /* Growth Line Chart */
       const gCtx = document.getElementById('dashGrowthChart').getContext('2d');
       const gradP = gCtx.createLinearGradient(0,0,0,300);
-      gradP.addColorStop(0,'rgba(201,168,76,0.18)');
-      gradP.addColorStop(1,'rgba(201,168,76,0.02)');
+      gradP.addColorStop(0,'rgba(71,169,150,0.18)');
+      gradP.addColorStop(1,'rgba(71,169,150,0.02)');
       const gradN = gCtx.createLinearGradient(0,0,0,300);
       gradN.addColorStop(0,'rgba(148,163,184,0.14)');
       gradN.addColorStop(1,'rgba(148,163,184,0.01)');
@@ -732,10 +732,10 @@
             {
               label:'SPVH Portfolio',
               data:[100,148,205,260,318.73],
-              borderColor:'#C9A84C',
+              borderColor:'#47a996',
               backgroundColor:gradP,
               borderWidth:2.5,
-              pointBackgroundColor:'#C9A84C',
+              pointBackgroundColor:'#47a996',
               pointBorderColor:'#fff',
               pointBorderWidth:2,
               pointRadius:5,
