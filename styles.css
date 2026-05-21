@@ -2033,7 +2033,7 @@ footer { padding: 5rem 0 2rem; }
   
   .key-stats-row { flex-direction: column; gap: 2rem; }
   .stat-divider { width: 60px; height: 1px; }
-  .footer-grid, .footer-top-grid { grid-template-columns: 1fr; }
+  .footer-grid, .footer-top-grid { grid-template-columns: 1fr; column-gap: 0; }
   .footer-bottom-bar { flex-direction: column; align-items: flex-start; gap: 1rem; }
   
   .cta-heading { font-size: 2.5rem; }
