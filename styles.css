@@ -1403,6 +1403,10 @@ footer { padding: 5rem 0 2rem; }
   padding: 60px 0;
 }
 
+.footer-col-brand {
+  padding-left: 0.5rem;
+}
+
 .footer-logo {
   font-family: 'Cinzel', serif;
   font-size: 1.5rem;
