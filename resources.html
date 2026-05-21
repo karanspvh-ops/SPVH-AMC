@@ -1,19 +1,435 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-  <meta charset='UTF-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <title>SPVH AMC | RESOURCES</title>
-  <link rel='stylesheet' href='styles.css'>
-  <link rel='stylesheet' href='responsive.css'>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPVH AMC | Investor Resources</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ── Resources Page ─────────────────────────────────────── */
+    :root {
+      --r-navy:   #0A1628;
+      --r-blue:   #496bad;
+      --r-teal:   #47a996;
+      --r-light:  #F0F4FA;
+      --r-white:  #ffffff;
+      --r-border: #E2E8F0;
+      --r-text:   #475569;
+      --r-muted:  #94A3B8;
+    }
+
+    /* Hero */
+    .res-hero {
+      background: linear-gradient(135deg, #0A1628 0%, #162040 100%);
+      padding: 5rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .res-hero::after {
+      content: '';
+      position: absolute;
+      right: -100px; top: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(71,169,150,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .res-hero-inner { position: relative; z-index: 1; }
+    .res-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--r-teal);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+    .res-hero h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: #fff;
+      line-height: 1.2;
+      margin: 0 0 0.75rem;
+    }
+    .res-hero h1 span { color: var(--r-teal); }
+    .res-hero p {
+      color: #94A3B8;
+      font-size: 0.95rem;
+      max-width: 540px;
+      line-height: 1.7;
+    }
+
+    /* Sticky Tab Nav */
+    .res-tab-nav {
+      background: var(--r-white);
+      border-bottom: 2px solid var(--r-border);
+      position: sticky;
+      top: 68px;
+      z-index: 500;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.06);
+    }
+    .res-tab-list {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .res-tab-list::-webkit-scrollbar { display: none; }
+    .res-tab {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--r-text);
+      padding: 1.1rem 1.6rem;
+      border: none;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .res-tab i { font-size: 0.85rem; }
+    .res-tab:hover { color: var(--r-blue); }
+    .res-tab.active {
+      color: var(--r-blue);
+      border-bottom-color: var(--r-blue);
+    }
+    .res-tab-pill {
+      background: var(--r-teal);
+      color: #fff;
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+    }
+
+    /* Section wrapper */
+    .res-section { display: none; padding: 3.5rem 0 4rem; background: var(--r-light); }
+    .res-section.active { display: block; }
+
+    /* Section Header */
+    .res-sec-header { margin-bottom: 2.5rem; }
+    .res-sec-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--r-teal);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .res-sec-title {
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      color: var(--r-navy);
+      margin: 0 0 0.4rem;
+    }
+    .res-sec-desc { color: var(--r-text); font-size: 0.88rem; line-height: 1.6; margin: 0; }
+
+    /* Category label within a section */
+    .res-cat-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--r-navy);
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid var(--r-border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .res-cat-label i { color: var(--r-teal); font-size: 0.9rem; }
+
+    /* Resource card grid */
+    .res-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Resource card */
+    .res-card {
+      background: var(--r-white);
+      border: 1px solid var(--r-border);
+      border-radius: 10px;
+      padding: 1.25rem 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .res-card:hover {
+      box-shadow: 0 6px 20px rgba(73,107,173,0.1);
+      transform: translateY(-2px);
+    }
+    .res-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+    .res-icon {
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .ri-form  { background: rgba(73,107,173,0.1);  color: var(--r-blue); }
+    .ri-fact  { background: rgba(71,169,150,0.1);  color: var(--r-teal); }
+    .ri-deck  { background: rgba(234,179,8,0.1);   color: #B45309; }
+    .ri-kyc   { background: rgba(139,92,246,0.1);  color: #7C3AED; }
+    .ri-policy{ background: rgba(239,68,68,0.1);   color: #DC2626; }
+    .ri-calc  { background: rgba(16,185,129,0.1);  color: #059669; }
+    .ri-cert  { background: rgba(249,115,22,0.1);  color: #EA580C; }
+
+    .res-card-body { flex: 1; }
+    .res-card-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--r-navy);
+      line-height: 1.3;
+      margin-bottom: 0.25rem;
+    }
+    .res-card-desc {
+      font-size: 0.77rem;
+      color: var(--r-text);
+      line-height: 1.5;
+    }
+    .res-badge {
+      display: inline-block;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.18rem 0.55rem;
+      border-radius: 4px;
+    }
+    .rb-form   { background: rgba(73,107,173,0.1);  color: var(--r-blue); }
+    .rb-fact   { background: rgba(71,169,150,0.1);  color: #0E7A6B; }
+    .rb-deck   { background: rgba(234,179,8,0.12);  color: #92400E; }
+    .rb-kyc    { background: rgba(139,92,246,0.1);  color: #5B21B6; }
+    .rb-policy { background: rgba(239,68,68,0.1);   color: #B91C1C; }
+    .rb-calc   { background: rgba(16,185,129,0.1);  color: #065F46; }
+    .rb-cert   { background: rgba(249,115,22,0.1);  color: #C2410C; }
+
+    .res-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.75rem;
+      border-top: 1px solid #F1F5F9;
+      margin-top: auto;
+    }
+    .res-file-info {
+      font-size: 0.7rem;
+      color: var(--r-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .res-dl-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--r-blue);
+      text-decoration: none;
+      padding: 0.4rem 0.85rem;
+      border: 1.5px solid var(--r-blue);
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+      cursor: pointer;
+      background: transparent;
+    }
+    .res-dl-btn:hover { background: var(--r-blue); color: #fff; }
+    .res-dl-btn i { font-size: 0.7rem; }
+
+    /* Common resources – different bg */
+    #sec-common { background: #fff; }
+    .common-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+    .common-card {
+      background: var(--r-light);
+      border: 1px solid var(--r-border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .common-card:hover {
+      box-shadow: 0 6px 20px rgba(73,107,173,0.09);
+      transform: translateY(-2px);
+    }
+    .common-icon {
+      width: 46px; height: 46px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .common-body { flex: 1; }
+    .common-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--r-navy);
+      margin-bottom: 0.3rem;
+    }
+    .common-desc {
+      font-size: 0.78rem;
+      color: var(--r-text);
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Fees Calculator */
+    .calc-wrap {
+      background: var(--r-white);
+      border: 1px solid var(--r-border);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.06);
+      margin-top: 2rem;
+    }
+    .calc-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--r-navy);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .calc-title i { color: var(--r-teal); }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .calc-field label {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--r-text);
+      margin-bottom: 0.4rem;
+    }
+    .calc-field select,
+    .calc-field input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--r-border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--r-navy);
+      background: #F8FAFC;
+      box-sizing: border-box;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .calc-field select:focus,
+    .calc-field input:focus { border-color: var(--r-teal); }
+    .calc-btn {
+      background: var(--r-teal);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 2rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .calc-btn:hover { background: #3d9485; }
+    .calc-result {
+      margin-top: 1.5rem;
+      padding: 1.25rem 1.5rem;
+      background: linear-gradient(135deg, rgba(71,169,150,0.06), rgba(73,107,173,0.06));
+      border: 1px solid rgba(71,169,150,0.2);
+      border-radius: 10px;
+      display: none;
+    }
+    .calc-result.show { display: block; }
+    .calc-result-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1rem;
+    }
+    .cr-item { text-align: center; }
+    .cr-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--r-text);
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .cr-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--r-navy);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .cr-val.accent { color: var(--r-teal); }
+
+    /* Info note */
+    .res-note {
+      background: rgba(73,107,173,0.05);
+      border-left: 3px solid var(--r-blue);
+      border-radius: 0 6px 6px 0;
+      padding: 0.75rem 1rem;
+      font-size: 0.78rem;
+      color: var(--r-text);
+      margin-top: 2.5rem;
+      line-height: 1.6;
+    }
+    .res-note strong { color: var(--r-navy); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .res-tab { padding: 0.9rem 1rem; font-size: 0.72rem; }
+      .res-grid { grid-template-columns: 1fr; }
+      .common-grid { grid-template-columns: 1fr; }
+      .calc-grid { grid-template-columns: 1fr; }
+      .calc-result-grid { grid-template-columns: 1fr; }
+      .res-hero { padding: 3.5rem 0 2.5rem; }
+    }
+  </style>
 </head>
 <body>
+
   <!-- Sticky Nav -->
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-      
       <ul class="nav-menu">
         <li class="nav-item">
           <a href="#">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
@@ -36,42 +452,1184 @@
         <li class="nav-item"><a href="insights.html">Insights</a></li>
         <li class="nav-item"><a href="resources.html">Resources</a></li>
       </ul>
-
       <div class="nav-actions">
         <a href="#" class="login-link">Investor Login</a>
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
-
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
-      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
   </header>
 
   <main>
-    <!-- Hero (Dark) -->
-    <section class="hero bg-dark">
-      <div class="container">
-        <div class="hero-content reveal">
-          <h1>Generational Wealth.<br><span>Institutional Precision.</span></h1>
-          <p>SPVH AMC delivers specialized alternative and portfolio management solutions designed specifically for family offices and institutional investors. Absolute returns driven by uncompromised research.</p>
-          <a href="about.html" class="btn btn-outline-light" style="margin-top: 1rem;">Discover Our Framework</a>
-        </div>
+
+    <!-- Hero -->
+    <section class="res-hero">
+      <div class="container res-hero-inner">
+        <span class="res-eyebrow">Investor Resources</span>
+        <h1>Forms, Factsheets &amp;<br><span>Fund Documents.</span></h1>
+        <p>Download account opening forms, KYC documents, fund factsheets, and regulatory disclosures across all SPVH AMC investment solutions.</p>
       </div>
     </section>
 
-    <!-- Stats Counters -->
-<main>
-  <section class='hero bg-dark' style='min-height: 40vh; height: 40vh;'>
-    <div class='container'>
-      <div class='hero-content reveal'>
-        <h1 style='font-size: 3rem;'>RESOURCES</h1>
+    <!-- Sticky Tab Navigation -->
+    <nav class="res-tab-nav">
+      <div class="container">
+        <div class="res-tab-list" role="tablist">
+          <button class="res-tab active" data-tab="pms" role="tab">
+            <i class="fas fa-chart-pie"></i> Portfolio Management Services
+          </button>
+          <button class="res-tab" data-tab="aif" role="tab">
+            <i class="fas fa-layer-group"></i> Alternative Investment Funds
+          </button>
+          <button class="res-tab" data-tab="offshore" role="tab">
+            <i class="fas fa-globe"></i> Offshore Funds
+          </button>
+          <button class="res-tab" data-tab="advisory" role="tab">
+            <i class="fas fa-lightbulb"></i> Advisory &amp; Research
+          </button>
+          <button class="res-tab" data-tab="common" role="tab">
+            <i class="fas fa-folder-open"></i> Common Resources
+            <span class="res-tab-pill">7</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ══════════════════════════════════════════
+         TAB 1 · PORTFOLIO MANAGEMENT SERVICES
+    ══════════════════════════════════════════ -->
+    <section class="res-section active" id="sec-pms" role="tabpanel">
+      <div class="container">
+
+        <div class="res-sec-header">
+          <span class="res-sec-eyebrow">SEBI Registered Portfolio Manager · INP000000000</span>
+          <h2 class="res-sec-title">Portfolio Management Services</h2>
+          <p class="res-sec-desc">Discretionary equity portfolio management for HNIs &amp; family offices. Minimum investment ₹50 Lakhs. Download all account opening, KYC, and regulatory documents below.</p>
+        </div>
+
+        <!-- KYC & Account Opening -->
+        <div class="res-cat-label"><i class="fas fa-user-check"></i> KYC &amp; Account Opening Forms</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-kyc"><i class="fas fa-id-card"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-kyc">KYC</span>
+                <div class="res-card-name">KYC Application Form — Individual</div>
+                <div class="res-card-desc">Know Your Customer form for resident individual investors. Includes Aadhaar, PAN, and address proof requirements.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-kyc"><i class="fas fa-building"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-kyc">KYC</span>
+                <div class="res-card-name">KYC Application Form — Non-Individual</div>
+                <div class="res-card-desc">For HUF, companies, LLPs, trusts, and other non-individual entities. Includes UBO declaration.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 4 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-file-signature"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">PMS Account Opening Form</div>
+                <div class="res-card-desc">Complete account on-boarding form including investment mandate, strategy selection, and bank account details.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 8 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-handshake"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Portfolio Management Agreement</div>
+                <div class="res-card-desc">Legally binding agreement between client and SPVH AMC governing the discretionary management of funds.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 12 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-chart-bar"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Risk Profiling Questionnaire</div>
+                <div class="res-card-desc">SEBI-mandated risk assessment form to determine investor's risk appetite and suitable strategy allocation.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-file-alt"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Power of Attorney (POA)</div>
+                <div class="res-card-desc">Grants SPVH AMC authority to operate the demat account and execute portfolio transactions on your behalf.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-user-plus"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Nomination Form</div>
+                <div class="res-card-desc">Register or change nominee details for your PMS account as per SEBI guidelines.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 1 page</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-minus-circle"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Partial / Full Withdrawal Form</div>
+                <div class="res-card-desc">Request form for partial or full withdrawal of funds from your PMS portfolio.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Factsheets -->
+        <div class="res-cat-label"><i class="fas fa-chart-line"></i> Monthly Factsheets</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-file-chart-line"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Factsheet</span>
+                <div class="res-card-name">SPVH Equity PMS — May 2026 Factsheet</div>
+                <div class="res-card-desc">Monthly portfolio snapshot including holdings, sector allocation, return attribution, and benchmark comparison.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · May 2026</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-calendar-alt"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Factsheet</span>
+                <div class="res-card-name">SPVH Equity PMS — Q1 2026 Quarterly Report</div>
+                <div class="res-card-desc">Quarterly performance review with detailed commentary, top contributors, detractors, and outlook.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · Q1 2026</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-history"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Factsheet</span>
+                <div class="res-card-name">Annual Performance Report — FY 2025–26</div>
+                <div class="res-card-desc">Full-year audited performance report with SEBI-prescribed disclosures and TWRR/XIRR comparison.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · FY 2025–26</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fund Deck -->
+        <div class="res-cat-label"><i class="fas fa-presentation-screen"></i> Fund Deck &amp; Strategy Documents</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-layer-group"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">Fund Deck</span>
+                <div class="res-card-name">SPVH Equity PMS — Investor Presentation</div>
+                <div class="res-card-desc">Comprehensive strategy presentation covering investment philosophy, process, portfolio construction, and historical track record.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 28 slides</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-search-dollar"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">Strategy Note</span>
+                <div class="res-card-name">Midcap Conviction Portfolio — Strategy Brief</div>
+                <div class="res-card-desc">Deep-dive into the 19-stock midcap institutional model portfolio — thesis, allocation, and 4-year track record.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 14 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-file-invoice"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">Disclosure</span>
+                <div class="res-card-name">PMS Disclosure Document (SEBI)</div>
+                <div class="res-card-desc">Mandatory SEBI disclosure document covering fees, risks, investment approach, and conflict of interest policies.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 20 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="res-note"><strong>Note:</strong> All forms must be duly signed and submitted along with self-attested KYC documents to the registered SPVH AMC office or your designated relationship manager. Original documents may be required for verification.</div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         TAB 2 · ALTERNATIVE INVESTMENT FUNDS
+    ══════════════════════════════════════════ -->
+    <section class="res-section" id="sec-aif" role="tabpanel">
+      <div class="container">
+
+        <div class="res-sec-header">
+          <span class="res-sec-eyebrow">SEBI Registered AIF · Category II &amp; III · IN/AIF2/00-00/0000</span>
+          <h2 class="res-sec-title">Alternative Investment Funds</h2>
+          <p class="res-sec-desc">Private equity, pre-IPO, and special situations strategies for sophisticated investors. Minimum commitment ₹1 Crore. All subscription documents are private placement basis.</p>
+        </div>
+
+        <!-- KYC & Subscription -->
+        <div class="res-cat-label"><i class="fas fa-user-check"></i> KYC &amp; Subscription Forms</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-kyc"><i class="fas fa-id-card"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-kyc">KYC</span>
+                <div class="res-card-name">Individual Investor KYC Form</div>
+                <div class="res-card-desc">KYC form for individual accredited investors including income proof, networth certificate, and address verification.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 3 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-kyc"><i class="fas fa-building"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-kyc">KYC</span>
+                <div class="res-card-name">Entity KYC &amp; KYB Form</div>
+                <div class="res-card-desc">Know Your Business form for corporate, trust, and institutional investors. Includes UBO declaration and board resolution requirements.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 6 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-file-contract"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">AIF Subscription / Application Form</div>
+                <div class="res-card-desc">Primary subscription form for committing capital to SPVH AIF funds including drawdown schedule and bank mandates.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 10 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-handshake"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Contribution Agreement</div>
+                <div class="res-card-desc">Legal agreement governing investor rights, obligations, drawdown notices, and distribution waterfall.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 16 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-globe-asia"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">FATCA / CRS Self-Certification</div>
+                <div class="res-card-desc">Foreign Account Tax Compliance Act and Common Reporting Standard declaration for all AIF investors.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-user-shield"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Ultimate Beneficial Owner (UBO) Declaration</div>
+                <div class="res-card-desc">Mandatory declaration identifying beneficial owners with 25%+ economic interest per SEBI/RBI guidelines.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-exchange-alt"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Unit Transfer / Transmission Form</div>
+                <div class="res-card-desc">Form for transfer of AIF units between investors or transmission to legal heirs in case of death of investor.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 3 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-minus-circle"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Redemption / Withdrawal Request Form</div>
+                <div class="res-card-desc">Request form for redemption of AIF units subject to lock-in and fund-level liquidity terms.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Factsheets -->
+        <div class="res-cat-label"><i class="fas fa-chart-line"></i> Fund Factsheets &amp; NAV Reports</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-file-chart-line"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Factsheet</span>
+                <div class="res-card-name">SPVH Special Situations Fund — Q1 2026</div>
+                <div class="res-card-desc">Quarterly factsheet with NAV, portfolio summary, drawdown status, and investment-level commentary.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · Q1 2026</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-rupee-sign"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">NAV Report</span>
+                <div class="res-card-name">Monthly NAV Statement — May 2026</div>
+                <div class="res-card-desc">Monthly Net Asset Value statement for all AIF series with per-unit NAV and total corpus disclosure.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · May 2026</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-history"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Annual Report</span>
+                <div class="res-card-name">AIF Annual Report — FY 2025–26</div>
+                <div class="res-card-desc">Audited annual accounts, portfolio disclosures, and investor communication as required under SEBI AIF Regulations.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · FY 2025–26</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fund Deck -->
+        <div class="res-cat-label"><i class="fas fa-presentation-screen"></i> Fund Deck &amp; Placement Documents</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-layer-group"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">Fund Deck</span>
+                <div class="res-card-name">SPVH Special Situations AIF — Investor Presentation</div>
+                <div class="res-card-desc">Investment strategy overview, deal sourcing approach, exit mechanisms, and return waterfall structure for AIF investors.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 32 slides</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-file-invoice"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">PPM</span>
+                <div class="res-card-name">Private Placement Memorandum (PPM)</div>
+                <div class="res-card-desc">Comprehensive fund offering document covering investment objectives, risk factors, fees, and terms under SEBI AIF Regulations.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 48 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-search-dollar"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">Strategy Note</span>
+                <div class="res-card-name">SPVH Value Discovery Fund — Strategy Brief</div>
+                <div class="res-card-desc">Investment thesis, sector focus, deal pipeline overview, and targeted return profile for the Value Discovery strategy.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 18 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="res-note"><strong>Note:</strong> AIF documents are strictly for accredited investors and are shared on a private placement basis. Redistribution or sharing of these documents with non-qualified investors is prohibited under SEBI AIF Regulations 2012.</div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         TAB 3 · OFFSHORE FUNDS
+    ══════════════════════════════════════════ -->
+    <section class="res-section" id="sec-offshore" role="tabpanel">
+      <div class="container">
+
+        <div class="res-sec-header">
+          <span class="res-sec-eyebrow">GIFT City &amp; International Fund Structures · FPI / FOF</span>
+          <h2 class="res-sec-title">Offshore &amp; Global Funds</h2>
+          <p class="res-sec-desc">Access to global markets through GIFT City IFSC structures and international fund-of-fund schemes. Minimum investment ₹1 Crore. Subject to RBI LRS limits and FEMA regulations.</p>
+        </div>
+
+        <!-- KYC & Subscription -->
+        <div class="res-cat-label"><i class="fas fa-user-check"></i> KYC &amp; Subscription Forms</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-kyc"><i class="fas fa-passport"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-kyc">KYC</span>
+                <div class="res-card-name">Offshore Investor KYC / AML Form</div>
+                <div class="res-card-desc">Anti-Money Laundering compliant KYC form for offshore investment. Includes source of funds, PEP declaration, and passport verification.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 4 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-file-contract"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Offshore Fund Subscription Agreement</div>
+                <div class="res-card-desc">Subscription agreement for GIFT City / international fund participation covering investor representations and warranties.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 14 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-globe-asia"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">FATCA &amp; CRS Declaration Form</div>
+                <div class="res-card-desc">Mandatory tax residency and self-certification form required for all offshore fund investments under global reporting standards.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-university"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">LRS Remittance Declaration (Form A2)</div>
+                <div class="res-card-desc">RBI Liberalised Remittance Scheme Form A2 for resident Indians investing overseas up to USD 250,000 per financial year.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-user-shield"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">UBO &amp; Politically Exposed Person (PEP) Declaration</div>
+                <div class="res-card-desc">Mandatory declarations for AML compliance identifying beneficial ownership and political exposure status.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-minus-circle"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Offshore Redemption Request Form</div>
+                <div class="res-card-desc">Form for redeeming offshore fund units and repatriating proceeds as per FEMA / RBI repatriation guidelines.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Factsheets -->
+        <div class="res-cat-label"><i class="fas fa-chart-line"></i> Fund Factsheets</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-file-chart-line"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Factsheet</span>
+                <div class="res-card-name">SPVH Global Opportunities Fund — Q1 2026</div>
+                <div class="res-card-desc">Quarterly factsheet showing NAV, currency exposure, geography allocation, and benchmark comparison against MSCI indices.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · Q1 2026</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-chart-bar"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Factsheet</span>
+                <div class="res-card-name">GIFT City FOF — Monthly Portfolio Report</div>
+                <div class="res-card-desc">Monthly update on the Fund-of-Funds portfolio including underlying fund allocations and currency-adjusted returns.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · May 2026</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fund Deck -->
+        <div class="res-cat-label"><i class="fas fa-presentation-screen"></i> Fund Deck</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-globe"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">Fund Deck</span>
+                <div class="res-card-name">SPVH Offshore &amp; Global Funds — Investor Deck</div>
+                <div class="res-card-desc">Presentation covering GIFT City structure, international fund universe, FPI strategy, and regulatory framework.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 24 slides</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-map-marked-alt"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">Strategy Note</span>
+                <div class="res-card-name">Global Diversification via GIFT City — Structure Guide</div>
+                <div class="res-card-desc">A guide to the GIFT City IFSC framework for resident Indians seeking global portfolio diversification legally.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 10 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="res-note"><strong>Note:</strong> Offshore investments are subject to FEMA regulations, RBI LRS limits, and applicable tax treaties. Please consult your tax advisor before investing. Remittances are subject to bank processing and prevailing exchange rates.</div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         TAB 4 · INVESTMENT ADVISORY & RESEARCH
+    ══════════════════════════════════════════ -->
+    <section class="res-section" id="sec-advisory" role="tabpanel">
+      <div class="container">
+
+        <div class="res-sec-header">
+          <span class="res-sec-eyebrow">Research-Backed Equity Advisory · Retainer &amp; Subscription Based</span>
+          <h2 class="res-sec-title">Investment Advisory &amp; Research</h2>
+          <p class="res-sec-desc">Institutional-grade investment research and portfolio advisory for family offices, corporates, and sophisticated investors. Engagement available on retainer or subscription basis.</p>
+        </div>
+
+        <!-- KYC & On-boarding -->
+        <div class="res-cat-label"><i class="fas fa-user-check"></i> Client On-boarding Forms</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-kyc"><i class="fas fa-id-card"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-kyc">KYC</span>
+                <div class="res-card-name">Advisory Client KYC Form</div>
+                <div class="res-card-desc">Know Your Customer form for investment advisory clients. Captures financial profile, investment goals, and risk tolerance.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-clipboard-list"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Client On-boarding &amp; Mandate Form</div>
+                <div class="res-card-desc">Captures advisory scope, investment universe, benchmark preferences, reporting frequency, and fee structure agreement.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 4 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-handshake"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Agreement</span>
+                <div class="res-card-name">Investment Advisory Services Agreement</div>
+                <div class="res-card-desc">Legal engagement agreement defining advisory services, confidentiality, IP rights, and liability clauses.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 8 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-chart-bar"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Risk Profile &amp; Investment Objective Questionnaire</div>
+                <div class="res-card-desc">SEBI-compliant risk profiling form for advisory mandate. Determines suitable strategy, asset allocation, and reporting standards.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-envelope-open-text"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Research Subscription Request Form</div>
+                <div class="res-card-desc">Subscribe to SPVH AMC's institutional research, sector reports, and model portfolio updates on a periodic basis.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 1 page</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-form"><i class="fas fa-times-circle"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-form">Form</span>
+                <div class="res-card-name">Advisory Termination / Closure Form</div>
+                <div class="res-card-desc">Form to formally terminate the advisory mandate with 30-day notice period and final reporting obligations.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 1 page</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Factsheets -->
+        <div class="res-cat-label"><i class="fas fa-chart-line"></i> Model Portfolio Factsheets &amp; Research</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-file-chart-line"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Factsheet</span>
+                <div class="res-card-name">Midcap Model Portfolio — May 2026 Update</div>
+                <div class="res-card-desc">Monthly update on the 19-stock institutional model portfolio including performance, rebalancing notes, and forward thesis.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · May 2026</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-search"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Research</span>
+                <div class="res-card-name">Q1 2026 — India Macro &amp; Market Outlook</div>
+                <div class="res-card-desc">Quarterly macro research covering GDP, earnings outlook, sector rotation, and top stock ideas for the quarter ahead.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · Q1 2026</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-fact"><i class="fas fa-industry"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-fact">Sector Report</span>
+                <div class="res-card-name">India BFSI Deep-Dive — FY 2026 Edition</div>
+                <div class="res-card-desc">Comprehensive sector report on India's BFSI landscape including wealth management, banking, and insurance sub-sectors.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 36 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fund Deck -->
+        <div class="res-cat-label"><i class="fas fa-presentation-screen"></i> Advisory Credentials &amp; Deck</div>
+        <div class="res-grid">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-layer-group"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">Credentials Deck</span>
+                <div class="res-card-name">SPVH Advisory — Capabilities Presentation</div>
+                <div class="res-card-desc">Overview of advisory services, research methodology, team credentials, coverage universe, and engagement models.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 20 slides</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-deck"><i class="fas fa-file-invoice-dollar"></i></div>
+              <div class="res-card-body">
+                <span class="res-badge rb-deck">Schedule</span>
+                <div class="res-card-name">Advisory Fee Schedule &amp; Engagement Terms</div>
+                <div class="res-card-desc">Detailed fee structure for retainer-based advisory, research subscriptions, and bespoke investment study engagements.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-file-pdf"></i> PDF · 2 pages</span>
+              <a href="#" class="res-dl-btn"><i class="fas fa-download"></i> Download</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="res-note"><strong>Note:</strong> All research and advisory outputs are confidential and for the exclusive use of engaged clients. SPVH AMC research does not constitute investment advice for third parties. Past model portfolio performance is not indicative of future results.</div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         TAB 5 · COMMON RESOURCES
+    ══════════════════════════════════════════ -->
+    <section class="res-section" id="sec-common" role="tabpanel">
+      <div class="container">
+
+        <div class="res-sec-header">
+          <span class="res-sec-eyebrow">Applicable Across All Investment Solutions</span>
+          <h2 class="res-sec-title">Common Investor Resources</h2>
+          <p class="res-sec-desc">Regulatory documents, grievance policies, and investor tools applicable across all SPVH AMC products. All documents are updated as per current SEBI guidelines.</p>
+        </div>
+
+        <div class="common-grid">
+
+          <!-- Investor Charter -->
+          <div class="common-card">
+            <div class="common-icon ri-policy" style="background:rgba(239,68,68,0.1);color:#DC2626;">
+              <i class="fas fa-award"></i>
+            </div>
+            <div class="common-body">
+              <div class="common-name">Investor Charter</div>
+              <div class="common-desc">SEBI-mandated charter outlining investor rights, obligations of SPVH AMC, service standards, and redressal timelines across all registered products.</div>
+              <a href="#" class="res-dl-btn" style="display:inline-flex;"><i class="fas fa-download"></i> Download PDF</a>
+            </div>
+          </div>
+
+          <!-- Grievance Redressal -->
+          <div class="common-card">
+            <div class="common-icon" style="background:rgba(249,115,22,0.1);color:#EA580C;">
+              <i class="fas fa-headset"></i>
+            </div>
+            <div class="common-body">
+              <div class="common-name">Grievance Redressal Policy</div>
+              <div class="common-desc">Policy document detailing the investor complaint process, escalation matrix, SEBI SCORES registration, and resolution timelines (T+30 days).</div>
+              <a href="#" class="res-dl-btn" style="display:inline-flex;"><i class="fas fa-download"></i> Download PDF</a>
+            </div>
+          </div>
+
+          <!-- Service Request Form -->
+          <div class="common-card">
+            <div class="common-icon ri-form" style="background:rgba(73,107,173,0.1);color:#496bad;">
+              <i class="fas fa-clipboard-check"></i>
+            </div>
+            <div class="common-body">
+              <div class="common-name">Service Request Form</div>
+              <div class="common-desc">Universal service form for address change, bank account update, email/mobile change, statement requests, and other operational changes.</div>
+              <a href="#" class="res-dl-btn" style="display:inline-flex;"><i class="fas fa-download"></i> Download PDF</a>
+            </div>
+          </div>
+
+          <!-- Disclosure Document -->
+          <div class="common-card">
+            <div class="common-icon" style="background:rgba(139,92,246,0.1);color:#7C3AED;">
+              <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="common-body">
+              <div class="common-name">Disclosure Document (General)</div>
+              <div class="common-desc">Consolidated SEBI-prescribed disclosure document covering conflict of interest policy, related party transactions, and material changes.</div>
+              <a href="#" class="res-dl-btn" style="display:inline-flex;"><i class="fas fa-download"></i> Download PDF</a>
+            </div>
+          </div>
+
+          <!-- Registration Information -->
+          <div class="common-card">
+            <div class="common-icon ri-cert" style="background:rgba(249,115,22,0.1);color:#EA580C;">
+              <i class="fas fa-certificate"></i>
+            </div>
+            <div class="common-body">
+              <div class="common-name">SEBI Registration Information</div>
+              <div class="common-desc">SEBI registration certificates for Portfolio Manager and AIF Manager. Includes registration numbers, validity, and regulatory contact details.</div>
+              <a href="#" class="res-dl-btn" style="display:inline-flex;"><i class="fas fa-download"></i> Download PDF</a>
+            </div>
+          </div>
+
+          <!-- Dispute Resolution -->
+          <div class="common-card">
+            <div class="common-icon" style="background:rgba(16,185,129,0.1);color:#059669;">
+              <i class="fas fa-balance-scale"></i>
+            </div>
+            <div class="common-body">
+              <div class="common-name">Dispute Resolution Mechanism</div>
+              <div class="common-desc">Step-by-step guide to resolving investor disputes including SEBI SCORES portal, SMARTODR platform, and arbitration procedures under SEBI regulations.</div>
+              <a href="#" class="res-dl-btn" style="display:inline-flex;"><i class="fas fa-download"></i> Download PDF</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Fees Calculator -->
+        <div class="calc-wrap">
+          <div class="calc-title"><i class="fas fa-calculator"></i> Fees &amp; Returns Estimator</div>
+          <div class="calc-grid">
+            <div class="calc-field">
+              <label>Investment Product</label>
+              <select id="calc-product">
+                <option value="pms">Portfolio Management Services (PMS)</option>
+                <option value="aif">Alternative Investment Fund (AIF)</option>
+                <option value="offshore">Offshore Fund</option>
+                <option value="advisory">Investment Advisory</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>Investment Amount (₹ Crore)</label>
+              <input type="number" id="calc-amount" placeholder="e.g. 1" min="0.5" step="0.5" value="1">
+            </div>
+            <div class="calc-field">
+              <label>Investment Horizon (Years)</label>
+              <input type="number" id="calc-years" placeholder="e.g. 5" min="1" max="20" value="5">
+            </div>
+            <div class="calc-field">
+              <label>Expected Annual Return (%)</label>
+              <input type="number" id="calc-return" placeholder="e.g. 20" min="5" max="50" value="20">
+            </div>
+          </div>
+          <button class="calc-btn" onclick="runCalc()">Calculate Estimated Returns</button>
+          <div class="calc-result" id="calcResult">
+            <div class="calc-result-grid">
+              <div class="cr-item">
+                <span class="cr-label">Gross Portfolio Value</span>
+                <span class="cr-val" id="cr-gross">—</span>
+              </div>
+              <div class="cr-item">
+                <span class="cr-label">Estimated Fees</span>
+                <span class="cr-val" id="cr-fees">—</span>
+              </div>
+              <div class="cr-item">
+                <span class="cr-label">Net Value to Investor</span>
+                <span class="cr-val accent" id="cr-net">—</span>
+              </div>
+            </div>
+            <p style="font-size:0.72rem;color:#94A3B8;margin-top:1rem;text-align:center;">Estimates are illustrative only. Actual fees vary based on fee schedules. Consult your relationship manager for exact fee structures. Past performance is not indicative of future results.</p>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="res-cat-label" style="margin-top:2.5rem;"><i class="fas fa-external-link-alt"></i> Regulatory Quick Links</div>
+        <div class="res-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px,1fr));">
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-cert"><i class="fas fa-gavel"></i></div>
+              <div class="res-card-body">
+                <div class="res-card-name">SEBI SCORES — File a Complaint</div>
+                <div class="res-card-desc">Register investor complaints directly with SEBI through the SCORES portal for timely resolution.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-link"></i> External Link</span>
+              <a href="https://scores.sebi.gov.in" target="_blank" rel="noopener" class="res-dl-btn"><i class="fas fa-external-link-alt"></i> Visit</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-calc"><i class="fas fa-laptop"></i></div>
+              <div class="res-card-body">
+                <div class="res-card-name">SMARTODR — Online Dispute Resolution</div>
+                <div class="res-card-desc">SEBI's online dispute resolution platform for resolving investor-intermediary disputes digitally.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-link"></i> External Link</span>
+              <a href="https://smartodr.in" target="_blank" rel="noopener" class="res-dl-btn"><i class="fas fa-external-link-alt"></i> Visit</a>
+            </div>
+          </div>
+
+          <div class="res-card">
+            <div class="res-card-top">
+              <div class="res-icon ri-policy"><i class="fas fa-shield-alt"></i></div>
+              <div class="res-card-body">
+                <div class="res-card-name">SEBI Investor Awareness Portal</div>
+                <div class="res-card-desc">Official SEBI portal for investor education, market regulations, and KYC compliance information.</div>
+              </div>
+            </div>
+            <div class="res-card-footer">
+              <span class="res-file-info"><i class="fas fa-link"></i> External Link</span>
+              <a href="https://investor.sebi.gov.in" target="_blank" rel="noopener" class="res-dl-btn"><i class="fas fa-external-link-alt"></i> Visit</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (shared) -->
+  <footer class="footer-new">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-col-brand">
+          <a href="index.html" class="footer-logo-img" style="display:inline-block;margin-bottom:1.25rem;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height:73px;width:auto;display:block;">
+          </a>
+          <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col-links">
+          <h4 class="footer-heading">COMPANY</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="team.html">Leadership Team</a></li>
+            <li><a href="philosophy.html">Investment Philosophy</a></li>
+            <li><a href="#">Why SPVH</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-links">
+          <h4 class="footer-heading">OUR SOLUTIONS</h4>
+          <ul>
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-contact">
+          <h4 class="footer-heading">GET IN TOUCH</h4>
+          <div class="contact-line"><i class="fas fa-map-marker-alt"></i><span>Registered Office Address, Mumbai &mdash; 400051</span></div>
+          <div class="contact-line"><i class="fas fa-phone-alt"></i><span>+91 22 4000 0000</span></div>
+          <div class="contact-line"><i class="fas fa-envelope"></i><span>info@spvhamc.com</span></div>
+          <a href="contact.html" class="footer-cta-link">Schedule Consultation &rarr;</a>
+        </div>
       </div>
     </div>
-  </section>
-  <section class='section-padding' style='min-height: 50vh;'><div class='container'><h2 style='text-align:center;'>RESOURCES Module Under Construction</h2></div></section>
-</main>
-  <footer class="bg-dark">    <div class="container">       <div class="footer-grid">         <div>           <a href="index.html" class="logo" style="color: white;">SPVH<span style="color: var(--secondary);">AMC</span></a>           <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1.5rem;">Corporate Headquarters:<br>SPVH Tower, Bandra Kurla Complex,<br>Mumbai, Maharashtra 400051.</p>           <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1rem;">Email: ir@spvhamc.com<br>Tel: +91 22 4000 0000</p>         </div>         <div>           <h4 class="footer-title">Strategies</h4>           <ul class="footer-links">             <li><a href="pms.html">Portfolio Management</a></li>             <li><a href="aif.html">Alternative Funds</a></li>             <li><a href="offshore.html">FPI Structuring</a></li>             <li><a href="performance.html">Performance Data</a></li>           </ul>         </div>         <div>           <h4 class="footer-title">Firm</h4>           <ul class="footer-links">             <li><a href="about.html">About Us</a></li>             <li><a href="team.html">Leadership</a></li>             <li><a href="philosophy.html">Philosophy</a></li>             <li><a href="insights.html">Insights</a></li>             <li><a href="contact.html">Contact Us</a></li>           </ul>         </div>         <div>           <h4 class="footer-title">Secure Portals</h4>           <ul class="footer-links">             <li><a href="#">Client Login</a></li>             <li><a href="#">Distributor Login</a></li>             <li><a href="resources.html">Factsheets Download</a></li>             <li><a href="#">Governance Disclosures</a></li>           </ul>         </div>       </div>       <div class="footer-bottom">         <div class="legal-text">           <strong style="color:white; margin-bottom: 0.5rem; display:block;">SEBI REGULATORY DISCLAIMER</strong>           SPVH Asset Management Company is registered with the Securities and Exchange Board of India (SEBI) as a Portfolio Manager (Registration No. INP000000000) and Alternative Investment Fund Manager (Registration No. IN/AIF2/00-00/0000).            Information provided on this website is for educational and informational purposes only for High Net Worth Individuals and Institutional Entities. It does not constitute an offer to sell or a solicitation to buy any security or investment product.            Investments in securities market are subject to market risks. Read all the related documents carefully before investing. Past performance of the Portfolio Manager/Record of the fund manager is not indicative of future results.         </div>         <div class="copyright">           <span>&copy; 2026 SPVH Asset Management Company. All Rights Reserved.</span>           <span style="font-family: 'Montserrat', sans-serif;">Privacy Policy | Terms of Use</span>         </div>       </div>     </div>   </footer>    <script src="script.js"></script> </body> </html>
+    <div class="footer-divider"></div>
+    <div class="container">
+      <div class="footer-bottom-bar" style="flex-wrap:wrap;gap:0.75rem;">
+        <div class="footer-copyright" style="flex:1 1 100%;">
+          &copy; 2026 SPVH Asset Management Company (SPVH Private Limited | CIN: U67110MH2022PTC381574). All Rights Reserved. &nbsp;&nbsp;SPVH AMC is a fund manager across all SEBI regulated alternative products.
+        </div>
+        <div class="footer-legal-links" style="margin-left:auto;">
+          <a href="#">Privacy Policy</a><span class="dot">&middot;</span>
+          <a href="#">Disclaimer</a><span class="dot">&middot;</span>
+          <a href="#">Regulatory Information</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
+  <script src="script.js"></script>
+  <script>
+  // ── Tab switching ───────────────────────────────────────
+  (function () {
+    const tabs     = document.querySelectorAll('.res-tab');
+    const sections = document.querySelectorAll('.res-section');
+    const map = { pms:'sec-pms', aif:'sec-aif', offshore:'sec-offshore', advisory:'sec-advisory', common:'sec-common' };
 
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        const id = map[tab.dataset.tab];
+        if (id) document.getElementById(id).classList.add('active');
+        // Scroll to just below the sticky nav
+        document.querySelector('.res-tab-nav').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  })();
 
+  // ── Fees Calculator ──────────────────────────────────────
+  function runCalc() {
+    const product = document.getElementById('calc-product').value;
+    const amount  = parseFloat(document.getElementById('calc-amount').value) || 1;
+    const years   = parseInt(document.getElementById('calc-years').value)    || 5;
+    const ret     = parseFloat(document.getElementById('calc-return').value) / 100 || 0.20;
+
+    // Simple fee structures (indicative)
+    const feeMap = { pms: 0.025, aif: 0.02, offshore: 0.02, advisory: 0.01 };
+    const mgmtFee = feeMap[product] || 0.02;
+
+    const grossFinal = amount * Math.pow(1 + ret, years);
+    const netRet     = ret - mgmtFee;
+    const netFinal   = amount * Math.pow(1 + netRet, years);
+    const totalFees  = grossFinal - netFinal;
+
+    const fmt = v => '₹' + v.toFixed(2) + ' Cr';
+
+    document.getElementById('cr-gross').textContent = fmt(grossFinal);
+    document.getElementById('cr-fees').textContent  = fmt(totalFees);
+    document.getElementById('cr-net').textContent   = fmt(netFinal);
+    document.getElementById('calcResult').classList.add('show');
+  }
+  </script>
+</body>
+</html>
