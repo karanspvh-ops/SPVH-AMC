@@ -635,85 +635,133 @@
         </div>
 
         <!-- Bottom Row: Top Performers + Strategy Table -->
+        <!-- Comparative Analysis Table — full width -->
         <div class="dash-bottom-grid">
-
-          <!-- Top Performers -->
-          <div class="dash-panel reveal-left">
+          <div class="dash-panel reveal">
             <div class="panel-header">
-              <span class="panel-title">Top Performing Holdings</span>
+              <div>
+                <span class="panel-title">Comparative Return Analysis</span>
+                <span style="display:block;font-size:0.72rem;color:#94A3B8;margin-top:0.2rem;font-weight:400;">SPVH Midcap Model Portfolio vs Nifty 50 vs Nifty Midcap 150</span>
+              </div>
+              <div style="display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap;">
+                <span style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#64748B;font-family:'Montserrat',sans-serif;">
+                  <span style="width:10px;height:10px;border-radius:50%;background:#C9A84C;display:inline-block;"></span>SPVH Portfolio
+                </span>
+                <span style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#64748B;font-family:'Montserrat',sans-serif;">
+                  <span style="width:10px;height:10px;border-radius:50%;background:#94A3B8;display:inline-block;"></span>Nifty 50
+                </span>
+                <span style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#64748B;font-family:'Montserrat',sans-serif;">
+                  <span style="width:10px;height:10px;border-radius:50%;background:#475569;display:inline-block;"></span>Nifty Midcap 150
+                </span>
+              </div>
             </div>
-            <ul class="perf-rows">
-              <li class="perf-row">
-                <span class="pr-rank">01</span>
-                <span class="pr-name">Anand Rathi Wealth<br><span class="pr-sector">BFSI — Wealth Mgmt</span></span>
-                <span class="pr-ret">+1,003.7%</span>
-              </li>
-              <li class="perf-row">
-                <span class="pr-rank">02</span>
-                <span class="pr-name">Karur Vysya Bank<br><span class="pr-sector">Tactical Banks</span></span>
-                <span class="pr-ret">+535.6%</span>
-              </li>
-              <li class="perf-row">
-                <span class="pr-rank">03</span>
-                <span class="pr-name">Inox Wind<br><span class="pr-sector">Energy Transition</span></span>
-                <span class="pr-ret">+500.0%</span>
-              </li>
-              <li class="perf-row">
-                <span class="pr-rank">04</span>
-                <span class="pr-name">Motilal Oswal Financial<br><span class="pr-sector">BFSI — Wealth Mgmt</span></span>
-                <span class="pr-ret">+321.5%</span>
-              </li>
-              <li class="perf-row">
-                <span class="pr-rank">05</span>
-                <span class="pr-name">Jindal Stainless<br><span class="pr-sector">Metals &amp; Tubes</span></span>
-                <span class="pr-ret">+344.6%</span>
-              </li>
-            </ul>
-          </div>
 
-          <!-- Strategy Summary Table -->
-          <div class="dash-panel reveal-right">
-            <div class="panel-header">
-              <span class="panel-title">Strategy Performance Summary</span>
+            <div style="overflow-x:auto;">
+              <table class="dash-comp-table">
+                <thead>
+                  <tr>
+                    <th>Strategy</th>
+                    <th>1 Month</th>
+                    <th>3 Months</th>
+                    <th>6 Months</th>
+                    <th>1 Year</th>
+                    <th>2 Years</th>
+                    <th>Since Inception<br><span style="font-size:0.58rem;color:#94A3B8;letter-spacing:0;text-transform:none;font-weight:400;">(May 2022 · CAGR)</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- SPVH Portfolio row -->
+                  <tr class="ctr-row-spvh">
+                    <td>
+                      <div class="ctr-strategy">
+                        <span class="ctr-dot" style="background:#C9A84C;"></span>
+                        <div>
+                          <span class="ctr-name">SPVH Midcap Portfolio</span>
+                          <span class="ctr-sub">19-Stock · Equal Weight · ₹3,500–15,000 Cr M.Cap</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="cv-spvh-pos">+3.2%</span></td>
+                    <td><span class="cv-spvh-pos">+8.7%</span></td>
+                    <td><span class="cv-spvh-pos">+15.4%</span></td>
+                    <td><span class="cv-spvh-pos">+38.2%</span></td>
+                    <td><span class="cv-spvh-pos">+72.3%</span></td>
+                    <td>
+                      <span class="cv-spvh-pos">+218.7%</span>
+                      <span class="cv-inception">33.6% p.a. CAGR</span>
+                    </td>
+                  </tr>
+                  <!-- Nifty 50 -->
+                  <tr>
+                    <td>
+                      <div class="ctr-strategy">
+                        <span class="ctr-dot" style="background:#94A3B8;"></span>
+                        <div>
+                          <span class="ctr-name" style="color:#475569;">Nifty 50</span>
+                          <span class="ctr-sub">Large Cap Benchmark</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="cv-n50">+1.4%</span></td>
+                    <td><span class="cv-n50">+3.8%</span></td>
+                    <td><span class="cv-n50">+7.2%</span></td>
+                    <td><span class="cv-n50">+12.6%</span></td>
+                    <td><span class="cv-n50">+22.1%</span></td>
+                    <td>
+                      <span class="cv-n50">+54.5%</span>
+                      <span class="cv-inception">11.4% p.a. CAGR</span>
+                    </td>
+                  </tr>
+                  <!-- Nifty Midcap 150 -->
+                  <tr>
+                    <td>
+                      <div class="ctr-strategy">
+                        <span class="ctr-dot" style="background:#475569;"></span>
+                        <div>
+                          <span class="ctr-name" style="color:#475569;">Nifty Midcap 150</span>
+                          <span class="ctr-sub">Midcap Benchmark</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="cv-mid">+2.1%</span></td>
+                    <td><span class="cv-mid">+5.9%</span></td>
+                    <td><span class="cv-mid">+11.3%</span></td>
+                    <td><span class="cv-mid">+18.4%</span></td>
+                    <td><span class="cv-mid">+34.7%</span></td>
+                    <td>
+                      <span class="cv-mid">+89.3%</span>
+                      <span class="cv-inception">17.2% p.a. CAGR</span>
+                    </td>
+                  </tr>
+                  <!-- Alpha row -->
+                  <tr style="background:#FFFBF0;">
+                    <td>
+                      <div class="ctr-strategy">
+                        <span class="ctr-dot" style="background:#C9A84C;border:2px dashed #A8842E;background:transparent;"></span>
+                        <div>
+                          <span class="ctr-name" style="color:#A8842E;font-size:0.78rem;">Alpha vs Nifty 50</span>
+                          <span class="ctr-sub">Outperformance</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="color:#A8842E;font-weight:700;">+1.8%</td>
+                    <td style="color:#A8842E;font-weight:700;">+4.9%</td>
+                    <td style="color:#A8842E;font-weight:700;">+8.2%</td>
+                    <td style="color:#A8842E;font-weight:700;">+25.6%</td>
+                    <td style="color:#A8842E;font-weight:700;">+50.2%</td>
+                    <td style="color:#A8842E;font-weight:700;">
+                      +164.2%
+                      <span class="cv-inception" style="color:#C9A84C;">+22.2% p.a.</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <table class="dash-strat-table">
-              <thead>
-                <tr>
-                  <th>Strategy</th>
-                  <th class="r">4-Yr CAGR</th>
-                  <th class="r">Abs. Return</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="td-strat">Midcap Model Portfolio</td>
-                  <td class="r td-pos">33.6%</td>
-                  <td class="r td-pos">+218.7%</td>
-                </tr>
-                <tr>
-                  <td class="td-strat">BFSI — Wealth Mgmt</td>
-                  <td class="r td-pos">~58.2%</td>
-                  <td class="r td-pos">+408.1%</td>
-                </tr>
-                <tr>
-                  <td class="td-strat">Metals &amp; Tubes</td>
-                  <td class="r td-pos">~28.4%</td>
-                  <td class="r td-pos">+163.0%</td>
-                </tr>
-                <tr>
-                  <td class="td-strat">Energy Transition</td>
-                  <td class="r td-pos">~26.1%</td>
-                  <td class="r td-pos">+131.1%</td>
-                </tr>
-                <tr>
-                  <td class="td-bench">Nifty 50 (Benchmark)</td>
-                  <td class="r td-bench-pos">~11.4%</td>
-                  <td class="r td-bench-pos">+54.5%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
 
+            <p style="font-size:0.68rem;color:#CBD5E1;margin-top:1rem;padding-top:0.75rem;border-top:1px solid #F1F5F9;color:#94A3B8;">
+              Returns are point-to-point absolute returns unless stated. Since Inception figures are CAGR (Compound Annual Growth Rate). All figures are indicative and for illustrative purposes. Past performance is not indicative of future results.
+            </p>
+          </div>
         </div>
 
         <!-- Footer Bar -->
