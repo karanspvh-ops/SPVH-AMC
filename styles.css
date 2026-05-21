@@ -1572,13 +1572,14 @@ footer { padding: 5rem 0 2rem; }
 
 /* About Page */
 .about-hero-new {
-  height: 520px;
+  min-height: 560px;
   background-color: #0A1628;
   position: relative;
   overflow: hidden;
   display: flex;
-  align-items: center;
-  padding-top: 90px;
+  align-items: flex-start;
+  padding-top: 170px;
+  padding-bottom: 60px;
 }
 
 .about-hero-content {

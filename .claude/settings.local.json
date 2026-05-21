@@ -16,7 +16,8 @@
       "Bash(python -c \"import sys,json; r=json.load\\(sys.stdin\\); print\\('Visibility:', r.get\\('visibility','unknown'\\)\\); print\\('Private:', r.get\\('private'\\)\\); print\\('Plan:', r.get\\('owner',{}\\).get\\('plan',{}\\).get\\('name','N/A'\\) if 'owner' in r else 'N/A'\\)\")",
       "Skill(update-config)",
       "Skill(update-config:*)",
-      "WebFetch(domain:abakkusinvest.com)"
+      "WebFetch(domain:abakkusinvest.com)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp"
     ]
   },
   "hooks": {
