@@ -1,19 +1,331 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-  <meta charset='UTF-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <title>SPVH AMC | PERFORMANCE</title>
-  <link rel='stylesheet' href='styles.css'>
-  <link rel='stylesheet' href='responsive.css'>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPVH AMC | Track Record &amp; Performance</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ── Performance Page Scoped Styles ─────────────────────────── */
+    :root {
+      --perf-gold:   #C9A84C;
+      --perf-dark:   #0A0F1E;
+      --perf-mid:    #111827;
+      --perf-card:   #161D2F;
+      --perf-border: rgba(201,168,76,0.18);
+      --perf-text:   #CBD5E1;
+      --perf-green:  #22C55E;
+      --perf-red:    #EF4444;
+    }
+
+    /* Hero */
+    .perf-hero {
+      background: linear-gradient(135deg, var(--perf-dark) 0%, #0E1A38 100%);
+      padding: 5rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .perf-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(201,168,76,0.06) 0%, transparent 70%);
+    }
+    .perf-hero-inner { position: relative; z-index: 1; }
+    .perf-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--perf-gold);
+      margin-bottom: 0.75rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+    }
+    .perf-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .perf-hero h1 span { color: var(--perf-gold); }
+    .perf-hero p {
+      color: var(--perf-text);
+      max-width: 560px;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* Stat Strip */
+    .stat-strip {
+      background: var(--perf-mid);
+      border-top: 1px solid var(--perf-border);
+      border-bottom: 1px solid var(--perf-border);
+      padding: 2.5rem 0;
+    }
+    .stat-strip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-cell {
+      padding: 0 2rem;
+      border-right: 1px solid var(--perf-border);
+      text-align: center;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--perf-text);
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.5rem;
+    }
+    .stat-val {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700;
+      color: var(--perf-gold);
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1;
+    }
+    .stat-sub {
+      font-size: 0.75rem;
+      color: var(--perf-text);
+      margin-top: 0.35rem;
+    }
+    .badge-green { color: var(--perf-green); font-weight: 600; }
+
+    /* Sections */
+    .perf-section {
+      background: var(--perf-dark);
+      padding: 4rem 0;
+    }
+    .perf-section.alt { background: var(--perf-mid); }
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--perf-gold);
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .section-desc {
+      color: var(--perf-text);
+      font-size: 0.9rem;
+      max-width: 600px;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Chart Card */
+    .chart-card {
+      background: var(--perf-card);
+      border: 1px solid var(--perf-border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .chart-legend {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--perf-text);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .chart-wrapper { position: relative; height: 380px; }
+    .chart-note {
+      margin-top: 1rem;
+      font-size: 0.72rem;
+      color: #64748B;
+      font-style: italic;
+    }
+
+    /* Two-col layout for chart + donut */
+    .perf-two-col {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .donut-card {
+      background: var(--perf-card);
+      border: 1px solid var(--perf-border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .donut-title {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--perf-gold);
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 1.25rem;
+    }
+    .donut-wrapper { position: relative; height: 220px; margin-bottom: 1.5rem; }
+    .donut-legend-list { list-style: none; padding: 0; margin: 0; }
+    .donut-legend-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.8rem;
+      color: var(--perf-text);
+    }
+    .donut-legend-list li:last-child { border-bottom: none; }
+    .dl-left { display: flex; align-items: center; gap: 0.5rem; }
+    .dl-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+    .dl-pct { font-weight: 600; color: #fff; font-family: 'Montserrat', sans-serif; }
+
+    /* Filter Tabs */
+    .sector-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .sector-tab {
+      padding: 0.45rem 1.1rem;
+      border-radius: 20px;
+      border: 1px solid var(--perf-border);
+      background: transparent;
+      color: var(--perf-text);
+      font-size: 0.78rem;
+      font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sector-tab:hover,
+    .sector-tab.active {
+      background: var(--perf-gold);
+      border-color: var(--perf-gold);
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* Holdings Table */
+    .holdings-table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--perf-border);
+    }
+    .holdings-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+    .holdings-table thead {
+      background: #0E1830;
+    }
+    .holdings-table th {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      color: var(--perf-gold);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--perf-border);
+    }
+    .holdings-table th.num { text-align: right; }
+    .holdings-table td {
+      padding: 0.9rem 1.25rem;
+      color: var(--perf-text);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .holdings-table td.num { text-align: right; }
+    .holdings-table tbody tr { transition: background 0.15s; }
+    .holdings-table tbody tr:hover { background: rgba(201,168,76,0.04); }
+    .holdings-table tbody tr:last-child td { border-bottom: none; }
+    .stock-name { color: #fff; font-weight: 600; }
+    .sector-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .badge-bfsi    { background: rgba(99,102,241,0.2); color: #818CF8; }
+    .badge-banks   { background: rgba(20,184,166,0.2); color: #2DD4BF; }
+    .badge-energy  { background: rgba(234,179,8,0.2);  color: #EAB308; }
+    .badge-health  { background: rgba(236,72,153,0.2); color: #F472B6; }
+    .badge-metals  { background: rgba(249,115,22,0.2); color: #FB923C; }
+    .ret-positive { color: var(--perf-green); font-weight: 600; }
+    .ret-negative { color: var(--perf-red);   font-weight: 600; }
+    .val-col { color: #fff; font-weight: 600; font-family: 'Montserrat', sans-serif; }
+    .table-footer-row td {
+      background: rgba(201,168,76,0.06) !important;
+      color: var(--perf-gold) !important;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      border-top: 1px solid var(--perf-border) !important;
+    }
+
+    /* Disclaimer */
+    .perf-disclaimer {
+      background: #080D1A;
+      padding: 2rem 0;
+      border-top: 1px solid var(--perf-border);
+    }
+    .perf-disclaimer p {
+      font-size: 0.72rem;
+      color: #475569;
+      line-height: 1.7;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .perf-two-col { grid-template-columns: 1fr; }
+      .donut-wrapper { height: 260px; }
+    }
+    @media (max-width: 768px) {
+      .stat-strip-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 0; }
+      .stat-cell { border-right: none; border-bottom: 1px solid var(--perf-border); padding: 0 1rem; }
+      .stat-cell:nth-child(2n) { border-right: none; }
+      .stat-cell:nth-last-child(-n+2) { border-bottom: none; }
+      .chart-wrapper { height: 280px; }
+    }
+    @media (max-width: 480px) {
+      .stat-strip-grid { grid-template-columns: 1fr 1fr; }
+      .perf-hero { padding: 3.5rem 0 2.5rem; }
+    }
+  </style>
 </head>
 <body>
+
   <!-- Sticky Nav -->
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-      
       <ul class="nav-menu">
         <li class="nav-item">
           <a href="#">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
@@ -36,42 +348,536 @@
         <li class="nav-item"><a href="insights.html">Insights</a></li>
         <li class="nav-item"><a href="resources.html">Resources</a></li>
       </ul>
-
       <div class="nav-actions">
         <a href="#" class="login-link">Investor Login</a>
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
-
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
-      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
   </header>
 
   <main>
-    <!-- Hero (Dark) -->
-    <section class="hero bg-dark">
+
+    <!-- ── Hero ──────────────────────────────────────────────── -->
+    <section class="perf-hero">
+      <div class="container perf-hero-inner">
+        <p class="perf-eyebrow">Track Record &amp; Performance</p>
+        <h1>Institutional Discipline.<br><span>Measurable Alpha.</span></h1>
+        <p>19-Stock Midcap Institutional Model Portfolio · May 2022 – May 2026 · ₹100 Crore Deployment</p>
+      </div>
+    </section>
+
+    <!-- ── Stat Strip ─────────────────────────────────────────── -->
+    <section class="stat-strip">
       <div class="container">
-        <div class="hero-content reveal">
-          <h1>Generational Wealth.<br><span>Institutional Precision.</span></h1>
-          <p>SPVH AMC delivers specialized alternative and portfolio management solutions designed specifically for family offices and institutional investors. Absolute returns driven by uncompromised research.</p>
-          <a href="about.html" class="btn btn-outline-light" style="margin-top: 1rem;">Discover Our Framework</a>
+        <div class="stat-strip-grid">
+          <div class="stat-cell">
+            <p class="stat-label">Portfolio CAGR</p>
+            <p class="stat-val">33.6%</p>
+            <p class="stat-sub badge-green">vs Nifty 50 ~11.4% CAGR</p>
+          </div>
+          <div class="stat-cell">
+            <p class="stat-label">Absolute Return</p>
+            <p class="stat-val">218.7%</p>
+            <p class="stat-sub">May 2022 → May 2026</p>
+          </div>
+          <div class="stat-cell">
+            <p class="stat-label">AUM Growth</p>
+            <p class="stat-val">₹318.7 Cr</p>
+            <p class="stat-sub">From ₹100 Crore deployed</p>
+          </div>
+          <div class="stat-cell">
+            <p class="stat-label">Alpha Generated</p>
+            <p class="stat-val">+22.2%</p>
+            <p class="stat-sub">CAGR outperformance vs benchmark</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Stats Counters -->
-<main>
-  <section class='hero bg-dark' style='min-height: 40vh; height: 40vh;'>
-    <div class='container'>
-      <div class='hero-content reveal'>
-        <h1 style='font-size: 3rem;'>PERFORMANCE</h1>
+    <!-- ── Growth Chart + Sector Donut ──────────────────────────── -->
+    <section class="perf-section">
+      <div class="container">
+        <p class="section-label">Portfolio vs Benchmark</p>
+        <h2 class="section-title">4-Year Growth Trajectory</h2>
+        <p class="section-desc">Indexed to ₹100 at inception (May 2022). Portfolio compounded at 33.6% CAGR vs Nifty 50's ~11.4% CAGR over the same period.</p>
+
+        <div class="perf-two-col">
+          <!-- Line Chart -->
+          <div class="chart-card">
+            <div class="chart-legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background:#C9A84C;"></span>
+                SPVH Model Portfolio (₹ Cr)
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background:#64748B;"></span>
+                Nifty 50 (Indexed)
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="growthChart"></canvas>
+            </div>
+            <p class="chart-note">* Nifty 50 values indexed to ₹100 at May 2022 for comparison. Intermediate portfolio values are illustrative interpolations based on documented May 2022 and May 2026 endpoints. Past performance is not indicative of future results.</p>
+          </div>
+
+          <!-- Sector Donut -->
+          <div class="donut-card">
+            <p class="donut-title">Current Sector Allocation (May 2026)</p>
+            <div class="donut-wrapper">
+              <canvas id="sectorDonut"></canvas>
+            </div>
+            <ul class="donut-legend-list">
+              <li>
+                <span class="dl-left"><span class="dl-dot" style="background:#6366F1;"></span>BFSI — Wealth Mgmt</span>
+                <span class="dl-pct">33.6%</span>
+              </li>
+              <li>
+                <span class="dl-left"><span class="dl-dot" style="background:#14B8A6;"></span>Tactical Banks</span>
+                <span class="dl-pct">16.7%</span>
+              </li>
+              <li>
+                <span class="dl-left"><span class="dl-dot" style="background:#EAB308;"></span>Energy Transition</span>
+                <span class="dl-pct">17.5%</span>
+              </li>
+              <li>
+                <span class="dl-left"><span class="dl-dot" style="background:#EC4899;"></span>Healthcare &amp; Diagnostics</span>
+                <span class="dl-pct">13.4%</span>
+              </li>
+              <li>
+                <span class="dl-left"><span class="dl-dot" style="background:#F97316;"></span>Metals &amp; Tubes</span>
+                <span class="dl-pct">18.8%</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Holdings Table ─────────────────────────────────────── -->
+    <section class="perf-section alt">
+      <div class="container">
+        <p class="section-label">Portfolio Holdings</p>
+        <h2 class="section-title">19-Stock Model Portfolio</h2>
+        <p class="section-desc">Equal-weight deployment of ~₹5.26 Crore per stock at inception (May 2022). All entries within ₹3,500 Cr – ₹15,000 Cr market-cap band.</p>
+
+        <!-- Sector Filter Tabs -->
+        <div class="sector-tabs">
+          <button class="sector-tab active" data-filter="all">All Holdings</button>
+          <button class="sector-tab" data-filter="bfsi">BFSI — Wealth</button>
+          <button class="sector-tab" data-filter="banks">Tactical Banks</button>
+          <button class="sector-tab" data-filter="energy">Energy Transition</button>
+          <button class="sector-tab" data-filter="health">Healthcare</button>
+          <button class="sector-tab" data-filter="metals">Metals &amp; Tubes</button>
+        </div>
+
+        <div class="holdings-table-wrap">
+          <table class="holdings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Stock</th>
+                <th>Sector</th>
+                <th class="num">Entry Price<br><span style="font-weight:400;color:#64748B;">May '22</span></th>
+                <th class="num">Current Price<br><span style="font-weight:400;color:#64748B;">May '26</span></th>
+                <th class="num">Return</th>
+                <th class="num">Current Value</th>
+              </tr>
+            </thead>
+            <tbody id="holdingsBody">
+              <!-- BFSI Wealth -->
+              <tr data-sector="bfsi">
+                <td style="color:#64748B;">01</td>
+                <td class="stock-name">Anand Rathi Wealth</td>
+                <td><span class="sector-badge badge-bfsi">BFSI — Wealth</span></td>
+                <td class="num">₹323</td>
+                <td class="num">₹3,566</td>
+                <td class="num ret-positive">+1,003.7%</td>
+                <td class="num val-col">₹58.07 Cr</td>
+              </tr>
+              <tr data-sector="bfsi">
+                <td style="color:#64748B;">02</td>
+                <td class="stock-name">360 ONE WAM</td>
+                <td><span class="sector-badge badge-bfsi">BFSI — Wealth</span></td>
+                <td class="num">₹350</td>
+                <td class="num">₹1,098</td>
+                <td class="num ret-positive">+213.7%</td>
+                <td class="num val-col">₹16.46 Cr</td>
+              </tr>
+              <tr data-sector="bfsi">
+                <td style="color:#64748B;">03</td>
+                <td class="stock-name">CDSL</td>
+                <td><span class="sector-badge badge-bfsi">BFSI — Wealth</span></td>
+                <td class="num">₹606</td>
+                <td class="num">₹1,208</td>
+                <td class="num ret-positive">+99.3%</td>
+                <td class="num val-col">₹10.46 Cr</td>
+              </tr>
+              <tr data-sector="bfsi">
+                <td style="color:#64748B;">04</td>
+                <td class="stock-name">Motilal Oswal Financial</td>
+                <td><span class="sector-badge badge-bfsi">BFSI — Wealth</span></td>
+                <td class="num">₹200</td>
+                <td class="num">₹843</td>
+                <td class="num ret-positive">+321.5%</td>
+                <td class="num val-col">₹22.14 Cr</td>
+              </tr>
+              <!-- Tactical Banks -->
+              <tr data-sector="banks">
+                <td style="color:#64748B;">05</td>
+                <td class="stock-name">Karur Vysya Bank</td>
+                <td><span class="sector-badge badge-banks">Tactical Banks</span></td>
+                <td class="num">₹45</td>
+                <td class="num">₹286</td>
+                <td class="num ret-positive">+535.6%</td>
+                <td class="num val-col">₹33.40 Cr</td>
+              </tr>
+              <tr data-sector="banks">
+                <td style="color:#64748B;">06</td>
+                <td class="stock-name">City Union Bank</td>
+                <td><span class="sector-badge badge-banks">Tactical Banks</span></td>
+                <td class="num">₹130</td>
+                <td class="num">₹160</td>
+                <td class="num ret-positive">+23.1%</td>
+                <td class="num val-col">₹6.46 Cr</td>
+              </tr>
+              <tr data-sector="banks">
+                <td style="color:#64748B;">07</td>
+                <td class="stock-name">Equitas Small Finance Bank</td>
+                <td><span class="sector-badge badge-banks">Tactical Banks</span></td>
+                <td class="num">₹40</td>
+                <td class="num">₹100</td>
+                <td class="num ret-positive">+150.0%</td>
+                <td class="num val-col">₹13.15 Cr</td>
+              </tr>
+              <!-- Energy -->
+              <tr data-sector="energy">
+                <td style="color:#64748B;">08</td>
+                <td class="stock-name">Borosil Renewables</td>
+                <td><span class="sector-badge badge-energy">Energy Transition</span></td>
+                <td class="num">₹723</td>
+                <td class="num">₹515</td>
+                <td class="num ret-negative">−28.8%</td>
+                <td class="num val-col">₹3.73 Cr</td>
+              </tr>
+              <tr data-sector="energy">
+                <td style="color:#64748B;">09</td>
+                <td class="stock-name">Praj Industries</td>
+                <td><span class="sector-badge badge-energy">Energy Transition</span></td>
+                <td class="num">₹350</td>
+                <td class="num">₹500</td>
+                <td class="num ret-positive">+42.9%</td>
+                <td class="num val-col">₹7.46 Cr</td>
+              </tr>
+              <tr data-sector="energy">
+                <td style="color:#64748B;">10</td>
+                <td class="stock-name">Sterling &amp; Wilson</td>
+                <td><span class="sector-badge badge-energy">Energy Transition</span></td>
+                <td class="num">₹250</td>
+                <td class="num">₹600</td>
+                <td class="num ret-positive">+140.0%</td>
+                <td class="num val-col">₹12.62 Cr</td>
+              </tr>
+              <tr data-sector="energy">
+                <td style="color:#64748B;">11</td>
+                <td class="stock-name">Inox Wind</td>
+                <td><span class="sector-badge badge-energy">Energy Transition</span></td>
+                <td class="num">₹25</td>
+                <td class="num">₹150</td>
+                <td class="num ret-positive">+500.0%</td>
+                <td class="num val-col">₹31.56 Cr</td>
+              </tr>
+              <!-- Healthcare -->
+              <tr data-sector="health">
+                <td style="color:#64748B;">12</td>
+                <td class="stock-name">KIMS Hospitals</td>
+                <td><span class="sector-badge badge-health">Healthcare</span></td>
+                <td class="num">₹266</td>
+                <td class="num">₹748</td>
+                <td class="num ret-positive">+181.2%</td>
+                <td class="num val-col">₹14.78 Cr</td>
+              </tr>
+              <tr data-sector="health">
+                <td style="color:#64748B;">13</td>
+                <td class="stock-name">Narayana Health</td>
+                <td><span class="sector-badge badge-health">Healthcare</span></td>
+                <td class="num">₹650</td>
+                <td class="num">₹1,200</td>
+                <td class="num ret-positive">+84.6%</td>
+                <td class="num val-col">₹9.67 Cr</td>
+              </tr>
+              <tr data-sector="health">
+                <td style="color:#64748B;">14</td>
+                <td class="stock-name">Aster DM Healthcare</td>
+                <td><span class="sector-badge badge-health">Healthcare</span></td>
+                <td class="num">₹180</td>
+                <td class="num">₹400</td>
+                <td class="num ret-positive">+122.2%</td>
+                <td class="num val-col">₹11.67 Cr</td>
+              </tr>
+              <tr data-sector="health">
+                <td style="color:#64748B;">15</td>
+                <td class="stock-name">Metropolis Healthcare</td>
+                <td><span class="sector-badge badge-health">Healthcare</span></td>
+                <td class="num">₹1,600</td>
+                <td class="num">₹2,000</td>
+                <td class="num ret-positive">+25.0%</td>
+                <td class="num val-col">₹6.57 Cr</td>
+              </tr>
+              <!-- Metals -->
+              <tr data-sector="metals">
+                <td style="color:#64748B;">16</td>
+                <td class="stock-name">Jindal Stainless</td>
+                <td><span class="sector-badge badge-metals">Metals &amp; Tubes</span></td>
+                <td class="num">₹166</td>
+                <td class="num">₹738</td>
+                <td class="num ret-positive">+344.6%</td>
+                <td class="num val-col">₹23.35 Cr</td>
+              </tr>
+              <tr data-sector="metals">
+                <td style="color:#64748B;">17</td>
+                <td class="stock-name">Ratnamani Metals</td>
+                <td><span class="sector-badge badge-metals">Metals &amp; Tubes</span></td>
+                <td class="num">₹1,200</td>
+                <td class="num">₹3,500</td>
+                <td class="num ret-positive">+191.7%</td>
+                <td class="num val-col">₹15.30 Cr</td>
+              </tr>
+              <tr data-sector="metals">
+                <td style="color:#64748B;">18</td>
+                <td class="stock-name">Shyam Metalics</td>
+                <td><span class="sector-badge badge-metals">Metals &amp; Tubes</span></td>
+                <td class="num">₹300</td>
+                <td class="num">₹650</td>
+                <td class="num ret-positive">+116.7%</td>
+                <td class="num val-col">₹11.36 Cr</td>
+              </tr>
+              <tr data-sector="metals">
+                <td style="color:#64748B;">19</td>
+                <td class="stock-name">Maharashtra Seamless</td>
+                <td><span class="sector-badge badge-metals">Metals &amp; Tubes</span></td>
+                <td class="num">₹300</td>
+                <td class="num">₹600</td>
+                <td class="num ret-positive">+100.0%</td>
+                <td class="num val-col">₹10.52 Cr</td>
+              </tr>
+              <!-- Total row -->
+              <tr class="table-footer-row">
+                <td colspan="3"><strong>PORTFOLIO TOTAL</strong></td>
+                <td class="num"><strong>₹100.00 Cr</strong></td>
+                <td class="num">—</td>
+                <td class="num"><strong>+218.7%</strong></td>
+                <td class="num"><strong>₹318.73 Cr</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Disclaimer ─────────────────────────────────────────── -->
+    <div class="perf-disclaimer">
+      <div class="container">
+        <p>This model portfolio is presented for illustrative and informational purposes only. It does not constitute an offer to sell or a solicitation to buy any security or investment product. Past performance is not indicative of future results. Investments in securities markets are subject to market risks. SPVH Asset Management Company is registered with SEBI as a Portfolio Manager (Registration No. INP000000000). Please read all related documents carefully before investing.</p>
       </div>
     </div>
-  </section>
-  <section class='section-padding' style='min-height: 50vh;'><div class='container'><h2 style='text-align:center;'>PERFORMANCE Module Under Construction</h2></div></section>
-</main>
-  <footer class="bg-dark">    <div class="container">       <div class="footer-grid">         <div>           <a href="index.html" class="logo" style="color: white;">SPVH<span style="color: var(--secondary);">AMC</span></a>           <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1.5rem;">Corporate Headquarters:<br>SPVH Tower, Bandra Kurla Complex,<br>Mumbai, Maharashtra 400051.</p>           <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1rem;">Email: ir@spvhamc.com<br>Tel: +91 22 4000 0000</p>         </div>         <div>           <h4 class="footer-title">Strategies</h4>           <ul class="footer-links">             <li><a href="pms.html">Portfolio Management</a></li>             <li><a href="aif.html">Alternative Funds</a></li>             <li><a href="offshore.html">FPI Structuring</a></li>             <li><a href="performance.html">Performance Data</a></li>           </ul>         </div>         <div>           <h4 class="footer-title">Firm</h4>           <ul class="footer-links">             <li><a href="about.html">About Us</a></li>             <li><a href="team.html">Leadership</a></li>             <li><a href="philosophy.html">Philosophy</a></li>             <li><a href="insights.html">Insights</a></li>             <li><a href="contact.html">Contact Us</a></li>           </ul>         </div>         <div>           <h4 class="footer-title">Secure Portals</h4>           <ul class="footer-links">             <li><a href="#">Client Login</a></li>             <li><a href="#">Distributor Login</a></li>             <li><a href="resources.html">Factsheets Download</a></li>             <li><a href="#">Governance Disclosures</a></li>           </ul>         </div>       </div>       <div class="footer-bottom">         <div class="legal-text">           <strong style="color:white; margin-bottom: 0.5rem; display:block;">SEBI REGULATORY DISCLAIMER</strong>           SPVH Asset Management Company is registered with the Securities and Exchange Board of India (SEBI) as a Portfolio Manager (Registration No. INP000000000) and Alternative Investment Fund Manager (Registration No. IN/AIF2/00-00/0000).            Information provided on this website is for educational and informational purposes only for High Net Worth Individuals and Institutional Entities. It does not constitute an offer to sell or a solicitation to buy any security or investment product.            Investments in securities market are subject to market risks. Read all the related documents carefully before investing. Past performance of the Portfolio Manager/Record of the fund manager is not indicative of future results.         </div>         <div class="copyright">           <span>&copy; 2026 SPVH Asset Management Company. All Rights Reserved.</span>           <span style="font-family: 'Montserrat', sans-serif;">Privacy Policy | Terms of Use</span>         </div>       </div>     </div>   </footer>    <script src="script.js"></script> </body> </html>
 
+  </main>
 
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="bg-dark">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="logo" style="color: white;">SPVH<span style="color: var(--secondary);">AMC</span></a>
+          <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1.5rem;">Corporate Headquarters:<br>SPVH Tower, Bandra Kurla Complex,<br>Mumbai, Maharashtra 400051.</p>
+          <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1rem;">Email: ir@spvhamc.com<br>Tel: +91 22 4000 0000</p>
+        </div>
+        <div>
+          <h4 class="footer-title">Strategies</h4>
+          <ul class="footer-links">
+            <li><a href="pms.html">Portfolio Management</a></li>
+            <li><a href="aif.html">Alternative Funds</a></li>
+            <li><a href="offshore.html">FPI Structuring</a></li>
+            <li><a href="performance.html">Performance Data</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-title">Firm</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="team.html">Leadership</a></li>
+            <li><a href="philosophy.html">Philosophy</a></li>
+            <li><a href="insights.html">Insights</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-title">Secure Portals</h4>
+          <ul class="footer-links">
+            <li><a href="#">Client Login</a></li>
+            <li><a href="#">Distributor Login</a></li>
+            <li><a href="resources.html">Factsheets Download</a></li>
+            <li><a href="#">Governance Disclosures</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="legal-text">
+          <strong style="color:white; margin-bottom: 0.5rem; display:block;">SEBI REGULATORY DISCLAIMER</strong>
+          SPVH Asset Management Company is registered with the Securities and Exchange Board of India (SEBI) as a Portfolio Manager (Registration No. INP000000000) and Alternative Investment Fund Manager (Registration No. IN/AIF2/00-00/0000). Information provided on this website is for educational and informational purposes only for High Net Worth Individuals and Institutional Entities. It does not constitute an offer to sell or a solicitation to buy any security or investment product. Investments in securities market are subject to market risks. Read all the related documents carefully before investing. Past performance of the Portfolio Manager/Record of the fund manager is not indicative of future results.
+        </div>
+        <div class="copyright">
+          <span>&copy; 2026 SPVH Asset Management Company. All Rights Reserved.</span>
+          <span style="font-family: 'Montserrat', sans-serif;">Privacy Policy | Terms of Use</span>
+        </div>
+      </div>
+    </div>
+  </footer>
 
+  <script src="script.js"></script>
+  <script>
+  (function () {
+    /* ── Chart.js defaults ───────────────────────────── */
+    Chart.defaults.color = '#94A3B8';
+    Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+
+    /* ── Growth Line Chart ───────────────────────────── */
+    const growthCtx = document.getElementById('growthChart').getContext('2d');
+
+    // Gradient fill for portfolio line
+    const gradPort = growthCtx.createLinearGradient(0, 0, 0, 380);
+    gradPort.addColorStop(0,   'rgba(201,168,76,0.25)');
+    gradPort.addColorStop(1,   'rgba(201,168,76,0)');
+
+    const gradNifty = growthCtx.createLinearGradient(0, 0, 0, 380);
+    gradNifty.addColorStop(0, 'rgba(100,116,139,0.15)');
+    gradNifty.addColorStop(1, 'rgba(100,116,139,0)');
+
+    new Chart(growthCtx, {
+      type: 'line',
+      data: {
+        labels: ['May 2022', 'May 2023', 'May 2024', 'May 2025', 'May 2026'],
+        datasets: [
+          {
+            label: 'SPVH Model Portfolio (₹ Cr)',
+            data: [100, 148, 205, 260, 318.73],
+            borderColor: '#C9A84C',
+            backgroundColor: gradPort,
+            borderWidth: 2.5,
+            pointBackgroundColor: '#C9A84C',
+            pointBorderColor: '#0A0F1E',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'Nifty 50 (Indexed to ₹100)',
+            data: [100, 112.3, 136.4, 145.9, 154.5],
+            borderColor: '#64748B',
+            backgroundColor: gradNifty,
+            borderWidth: 2,
+            borderDash: [6, 4],
+            pointBackgroundColor: '#64748B',
+            pointBorderColor: '#0A0F1E',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            fill: true,
+            tension: 0.4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#161D2F',
+            borderColor: 'rgba(201,168,76,0.3)',
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+              label: ctx => {
+                const v = ctx.parsed.y;
+                return ctx.datasetIndex === 0
+                  ? ` Portfolio: ₹${v.toFixed(2)} Cr  (+${((v-100)).toFixed(1)}%)`
+                  : ` Nifty 50: ${v.toFixed(1)}  (+${((v-100)).toFixed(1)}%)`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: { font: { size: 12 } }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            ticks: {
+              font: { size: 12 },
+              callback: v => '₹' + v
+            },
+            min: 80
+          }
+        }
+      }
+    });
+
+    /* ── Sector Donut ─────────────────────────────────── */
+    const donutCtx = document.getElementById('sectorDonut').getContext('2d');
+    new Chart(donutCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['BFSI — Wealth', 'Tactical Banks', 'Energy Transition', 'Healthcare', 'Metals & Tubes'],
+        datasets: [{
+          data: [33.6, 16.7, 17.5, 13.4, 18.8],
+          backgroundColor: ['#6366F1','#14B8A6','#EAB308','#EC4899','#F97316'],
+          borderColor: '#161D2F',
+          borderWidth: 3,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '68%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#161D2F',
+            borderColor: 'rgba(201,168,76,0.3)',
+            borderWidth: 1,
+            callbacks: {
+              label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+            }
+          }
+        }
+      }
+    });
+
+    /* ── Sector Filter Tabs ───────────────────────────── */
+    const tabs = document.querySelectorAll('.sector-tab');
+    const rows = document.querySelectorAll('#holdingsBody tr[data-sector]');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.dataset.filter;
+        rows.forEach(row => {
+          row.style.display = (filter === 'all' || row.dataset.sector === filter) ? '' : 'none';
+        });
+        // Always show the total footer row
+        const footer = document.querySelector('.table-footer-row');
+        if (footer) footer.style.display = filter === 'all' ? '' : 'none';
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
