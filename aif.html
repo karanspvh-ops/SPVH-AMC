@@ -5,18 +5,416 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SPVH AMC | Alternative Investment Funds</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="aif_styles.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ============================================================
+       AIF PAGE — FULL REDESIGN
+    ============================================================ */
+
+    /* ---------- HERO ---------- */
+    .aif-hero {
+      background: linear-gradient(135deg, #0A1628 0%, #0f1f3d 60%, #122040 100%);
+      padding: 130px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .aif-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(71,169,150,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(73,107,173,0.10) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .aif-hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 4rem;
+      align-items: center;
+      position: relative; z-index: 2;
+    }
+    .aif-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: #47a996; font-size: 12px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .aif-hero-eyebrow::before {
+      content: ''; width: 32px; height: 2px; background: #47a996;
+    }
+    .aif-hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2.4rem, 4vw, 3.5rem);
+      font-weight: 800; color: #fff;
+      line-height: 1.1; margin-bottom: 1.5rem;
+    }
+    .aif-hero h1 span { color: #47a996; }
+    .aif-hero-body {
+      color: #94A3B8; font-size: 1.05rem; line-height: 1.8; max-width: 560px; margin-bottom: 2.5rem;
+    }
+    .aif-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .aif-btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #47a996; color: #fff; padding: 14px 28px;
+      border-radius: 4px; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.88rem; letter-spacing: 0.5px;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .aif-btn-primary:hover { background: #3d9688; color: #fff; transform: translateY(-2px); }
+    .aif-btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: #fff; padding: 14px 28px;
+      border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.25);
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      font-size: 0.88rem; text-decoration: none; transition: all 0.3s;
+    }
+    .aif-btn-ghost:hover { border-color: #47a996; color: #47a996; }
+    .aif-hero-stats {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 32px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    .aif-hero-stat { display: flex; flex-direction: column; gap: 4px; }
+    .aif-hero-stat-val {
+      font-family: 'Montserrat', sans-serif; font-size: 2rem;
+      font-weight: 800; color: #fff;
+    }
+    .aif-hero-stat-val span { color: #47a996; }
+    .aif-hero-stat-lbl { font-size: 0.8rem; color: #64748B; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+    .aif-hero-stat-div { height: 1px; background: rgba(255,255,255,0.06); }
+    .aif-hero-sebi {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(71,169,150,0.1); border: 1px solid rgba(71,169,150,0.2);
+      border-radius: 4px; padding: 8px 14px;
+      color: #47a996; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.5px;
+      margin-top: 8px; width: fit-content;
+    }
+
+    /* ---------- CATEGORY OVERVIEW ---------- */
+    .aif-cat-section {
+      background: #fff; padding: 90px 0;
+    }
+    .aif-cat-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .aif-cat-card {
+      border: 1.5px solid #E2E8F0; border-radius: 10px;
+      padding: 32px 28px; position: relative; overflow: hidden;
+      transition: all 0.3s;
+    }
+    .aif-cat-card:hover { border-color: #47a996; box-shadow: 0 12px 40px rgba(71,169,150,0.10); transform: translateY(-3px); }
+    .aif-cat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; border-radius: 10px 10px 0 0;
+    }
+    .aif-cat-card.cat1::before { background: #47a996; }
+    .aif-cat-card.cat2::before { background: #496bad; }
+    .aif-cat-card.cat3::before { background: #8B5CF6; }
+    .aif-cat-icon {
+      width: 52px; height: 52px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1.2rem;
+    }
+    .aif-cat-card.cat1 .aif-cat-icon { background: rgba(71,169,150,0.1); color: #47a996; }
+    .aif-cat-card.cat2 .aif-cat-icon { background: rgba(73,107,173,0.1); color: #496bad; }
+    .aif-cat-card.cat3 .aif-cat-icon { background: rgba(139,92,246,0.1); color: #8B5CF6; }
+    .aif-cat-num {
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .cat1 .aif-cat-num { color: #47a996; }
+    .cat2 .aif-cat-num { color: #496bad; }
+    .cat3 .aif-cat-num { color: #8B5CF6; }
+    .aif-cat-title {
+      font-family: 'Montserrat', sans-serif; font-size: 1.15rem; font-weight: 700;
+      color: #1A202C; margin-bottom: 0.75rem;
+    }
+    .aif-cat-desc { font-size: 0.9rem; color: #64748B; line-height: 1.7; margin-bottom: 1.2rem; }
+    .aif-cat-types { display: flex; flex-wrap: wrap; gap: 6px; }
+    .aif-type-pill {
+      font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 20px;
+      background: #F1F5F9; color: #475569;
+    }
+    .aif-spvh-badge {
+      font-size: 0.68rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+      background: rgba(71,169,150,0.12); color: #47a996; margin-left: 2px;
+    }
+
+    /* ---------- FUND CARDS ---------- */
+    .aif-funds-section {
+      background: #F0F4FA; padding: 100px 0;
+    }
+    .aif-funds-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; margin-top: 3.5rem;
+    }
+    .fund-card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      display: flex; flex-direction: column;
+      overflow: hidden; transition: all 0.35s;
+      position: relative;
+    }
+    .fund-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.12); }
+    .fund-card-bar {
+      height: 4px; width: 100%;
+    }
+    .fund-card-bar.active  { background: linear-gradient(90deg, #47a996, #3ECFB8); }
+    .fund-card-bar.closed  { background: #9CA3AF; }
+    .fund-card-bar.soon    { background: linear-gradient(90deg, #496bad, #6B8FD8); }
+    .fund-card-header {
+      padding: 28px 28px 0;
+    }
+    .fund-status-row {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+    }
+    .fund-cat-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 3px;
+    }
+    .fund-cat-badge.catii  { background: rgba(73,107,173,0.1); color: #496bad; }
+    .fund-cat-badge.catiii { background: rgba(139,92,246,0.1); color: #8B5CF6; }
+    .fund-status-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 3px; display: flex; align-items: center; gap: 5px;
+    }
+    .fund-status-badge.open   { background: rgba(71,169,150,0.1); color: #47a996; }
+    .fund-status-badge.closed { background: rgba(156,163,175,0.15); color: #6B7280; }
+    .fund-status-badge.soon   { background: rgba(73,107,173,0.1); color: #496bad; }
+    .fund-status-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    }
+    .fund-status-badge.open .dot   { background: #47a996; }
+    .fund-status-badge.closed .dot { background: #9CA3AF; }
+    .fund-status-badge.soon .dot   { background: #496bad; animation: pulse-blue 1.8s infinite; }
+    @keyframes pulse-blue {
+      0%,100% { opacity:1; } 50% { opacity:0.3; }
+    }
+    .fund-name {
+      font-family: 'Montserrat', sans-serif; font-size: 1.4rem; font-weight: 800;
+      color: #1A202C; line-height: 1.2; margin-bottom: 6px;
+    }
+    .fund-strategy {
+      font-size: 0.85rem; font-weight: 600; color: #47a996; margin-bottom: 0;
+    }
+    .fund-card-body {
+      padding: 20px 28px 24px; flex: 1; display: flex; flex-direction: column; gap: 20px;
+    }
+    .fund-divider { height: 1px; background: #E8EEF4; }
+    .fund-desc { font-size: 0.92rem; color: #475569; line-height: 1.75; }
+    .fund-metrics {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: #E8EEF4; border-radius: 8px; overflow: hidden;
+    }
+    .fund-metric {
+      background: #F8FAFC; padding: 14px 16px; display: flex; flex-direction: column; gap: 3px;
+    }
+    .fund-metric-val {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 800; color: #1A202C;
+    }
+    .fund-metric-val.highlight { color: #47a996; }
+    .fund-metric-lbl { font-size: 0.72rem; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .fund-highlights { display: flex; flex-direction: column; gap: 10px; }
+    .fund-highlights h5 {
+      font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px; color: #94A3B8; margin-bottom: 2px;
+    }
+    .fund-hl-item { display: flex; align-items: flex-start; gap: 9px; }
+    .fund-hl-item i { color: #47a996; font-size: 0.75rem; margin-top: 4px; flex-shrink: 0; }
+    .fund-hl-text { font-size: 0.88rem; color: #475569; line-height: 1.55; }
+    .fund-fees {
+      background: #F8FAFC; border-radius: 8px; padding: 14px 16px;
+      display: flex; gap: 16px;
+    }
+    .fund-fee-item { flex: 1; }
+    .fund-fee-val {
+      font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 800; color: #1A202C;
+    }
+    .fund-fee-lbl { font-size: 0.7rem; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .fund-fee-div { width: 1px; background: #E2E8F0; }
+    .fund-card-footer { padding: 0 28px 28px; }
+    .fund-cta-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 14px; border-radius: 6px;
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.88rem;
+      text-decoration: none; transition: all 0.3s; letter-spacing: 0.3px;
+    }
+    .fund-cta-btn.btn-teal   { background: #47a996; color: #fff; }
+    .fund-cta-btn.btn-teal:hover   { background: #3d9688; }
+    .fund-cta-btn.btn-grey   { background: #F1F5F9; color: #6B7280; cursor: default; }
+    .fund-cta-btn.btn-blue   { background: #496bad; color: #fff; }
+    .fund-cta-btn.btn-blue:hover   { background: #3f5f9f; }
+    /* Coming Soon overlay effect */
+    .fund-card.coming-soon .fund-card-body { position: relative; }
+    .fund-coming-overlay {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; padding: 32px 0; text-align: center;
+    }
+    .fund-coming-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(73,107,173,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; color: #496bad; margin: 0 auto;
+    }
+    .fund-coming-label {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 800; color: #1A202C;
+    }
+    .fund-coming-sub { font-size: 0.88rem; color: #64748B; line-height: 1.65; max-width: 240px; }
+    .fund-interest-input {
+      width: 100%; padding: 11px 14px; border: 1.5px solid #E2E8F0; border-radius: 6px;
+      font-size: 0.88rem; color: #1A202C; outline: none; font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .fund-interest-input:focus { border-color: #496bad; }
+
+    /* ---------- WHY AIF WITH SPVH ---------- */
+    .aif-why-section {
+      background: #0A1628; padding: 90px 0;
+    }
+    .aif-why-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .aif-why-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 32px 28px; transition: all 0.3s;
+    }
+    .aif-why-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(71,169,150,0.3); }
+    .aif-why-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: rgba(71,169,150,0.1); border: 1px solid rgba(71,169,150,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: #47a996; font-size: 1.1rem; margin-bottom: 1.2rem;
+    }
+    .aif-why-title {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 700;
+      color: #fff; margin-bottom: 0.6rem;
+    }
+    .aif-why-desc { font-size: 0.88rem; color: #64748B; line-height: 1.7; }
+
+    /* ---------- PROCESS ---------- */
+    .aif-process-section { background: #fff; padding: 90px 0; }
+    .aif-process-steps {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 3.5rem;
+      position: relative;
+    }
+    .aif-process-steps::before {
+      content: ''; position: absolute; top: 28px; left: calc(12.5% + 28px); right: calc(12.5% + 28px);
+      height: 2px; background: linear-gradient(90deg, #47a996, #496bad);
+      z-index: 0;
+    }
+    .aif-step { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 16px; position: relative; }
+    .aif-step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #47a996, #496bad);
+      color: #fff; font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; position: relative; z-index: 1;
+      margin-bottom: 1.2rem; flex-shrink: 0;
+    }
+    .aif-step-title {
+      font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 700;
+      color: #1A202C; margin-bottom: 0.5rem;
+    }
+    .aif-step-desc { font-size: 0.84rem; color: #64748B; line-height: 1.65; }
+
+    /* ---------- ELIGIBILITY ---------- */
+    .aif-elig-section { background: #F0F4FA; padding: 90px 0; }
+    .aif-elig-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; margin-top: 3.5rem;
+    }
+    .aif-elig-panel {
+      background: #fff; border-radius: 12px; padding: 36px; box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    }
+    .aif-elig-panel-title {
+      font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 800;
+      color: #1A202C; margin-bottom: 1.5rem; padding-bottom: 1rem;
+      border-bottom: 2px solid #47a996; display: flex; align-items: center; gap: 10px;
+    }
+    .aif-elig-panel-title i { color: #47a996; }
+    .aif-elig-list { display: flex; flex-direction: column; gap: 14px; }
+    .aif-elig-item { display: flex; align-items: flex-start; gap: 12px; }
+    .aif-elig-item i { color: #47a996; font-size: 0.85rem; margin-top: 3px; flex-shrink: 0; }
+    .aif-elig-item-text { font-size: 0.9rem; color: #475569; line-height: 1.6; }
+    .aif-elig-item-text strong { color: #1A202C; font-weight: 700; }
+    .aif-reg-row { display: flex; flex-direction: column; gap: 12px; }
+    .aif-reg-item {
+      display: flex; align-items: center; gap: 14px; padding: 14px;
+      background: #F8FAFC; border-radius: 8px; border-left: 3px solid #496bad;
+    }
+    .aif-reg-icon { color: #496bad; font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
+    .aif-reg-label { font-size: 0.78rem; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .aif-reg-val { font-size: 0.9rem; color: #1A202C; font-weight: 700; }
+
+    /* ---------- CTA SECTION ---------- */
+    .aif-cta-section {
+      background: linear-gradient(135deg, #0A1628 0%, #12243E 100%);
+      padding: 90px 0; position: relative; overflow: hidden;
+    }
+    .aif-cta-section::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(71,169,150,0.15) 0%, transparent 60%);
+    }
+    .aif-cta-inner {
+      text-align: center; position: relative; z-index: 2; max-width: 680px; margin: 0 auto;
+    }
+    .aif-cta-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: #47a996; margin-bottom: 1rem; display: block;
+    }
+    .aif-cta-h2 {
+      font-family: 'Montserrat', sans-serif; font-size: 2.4rem; font-weight: 800;
+      color: #fff; line-height: 1.2; margin-bottom: 1.2rem;
+    }
+    .aif-cta-h2 span { color: #47a996; }
+    .aif-cta-body { color: #94A3B8; font-size: 1rem; line-height: 1.75; margin-bottom: 2.5rem; }
+    .aif-cta-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .aif-cta-disclaimer {
+      margin-top: 2.5rem; font-size: 0.75rem; color: #475569; line-height: 1.7; max-width: 580px; margin-left: auto; margin-right: auto;
+    }
+
+    /* ---------- SECTION HEADER (shared) ---------- */
+    .aif-section-hd { text-align: center; }
+    .aif-section-hd .eyebrow {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: #47a996; display: block; margin-bottom: 0.75rem;
+    }
+    .aif-section-hd h2 {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 800; color: #1A202C; line-height: 1.2;
+    }
+    .aif-section-hd h2 span { color: #496bad; }
+    .aif-section-hd.light h2 { color: #fff; }
+    .aif-section-hd .sub {
+      font-size: 0.95rem; color: #64748B; margin-top: 1rem; max-width: 560px; margin-left: auto; margin-right: auto; line-height: 1.7;
+    }
+    .aif-section-hd.light .sub { color: #64748B; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1024px) {
+      .aif-hero-grid { grid-template-columns: 1fr; }
+      .aif-hero-stats { flex-direction: row; flex-wrap: wrap; }
+      .aif-hero-stat { flex: 1; min-width: 130px; }
+      .aif-funds-grid { grid-template-columns: 1fr 1fr; }
+      .aif-cat-grid { grid-template-columns: 1fr 1fr; }
+      .aif-why-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .aif-hero { padding: 100px 0 60px; }
+      .aif-funds-grid, .aif-cat-grid, .aif-why-grid, .aif-elig-grid { grid-template-columns: 1fr; }
+      .aif-process-steps { grid-template-columns: 1fr 1fr; }
+      .aif-process-steps::before { display: none; }
+    }
+    @media (max-width: 480px) {
+      .aif-process-steps { grid-template-columns: 1fr; }
+      .aif-hero-actions { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Sticky Nav -->
+  <!-- ===================== NAV ===================== -->
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-      
       <ul class="nav-menu">
         <li class="nav-item">
           <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
@@ -39,112 +437,501 @@
         <li class="nav-item"><a href="insights.html">Insights</a></li>
         <li class="nav-item"><a href="resources.html">Resources</a></li>
       </ul>
-
       <div class="nav-actions">
         <a href="#" class="login-link">Investor Login</a>
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
-
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
-      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
   </header>
 
   <main>
-    <!-- AIF Hero Banner -->
-    <section class="philosophy-page-hero">
-      <div class="pattern-overlay"></div>
-      <div class="container" style="position: relative; z-index: 2;">
-        <span class="about-hero-label" style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 20px;">ALTERNATIVE INVESTMENT FUNDS</span>
-        <h1 style="color: white; font-size: 52px; font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem; margin-top:0;">Institutional Access.<br><span style="color: #47a996;">Uncorrelated Returns.</span></h1>
-        <div style="width: 60px; height: 3px; background-color: #47a996;"></div>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="aif-hero">
+      <div class="container">
+        <div class="aif-hero-grid">
+
+          <!-- Left: Text -->
+          <div class="aif-hero-left reveal">
+            <div class="aif-hero-eyebrow">Alternative Investment Funds</div>
+            <h1>Institutional Access.<br><span>Uncorrelated Returns.</span><br>Beyond the Ordinary.</h1>
+            <p class="aif-hero-body">SPVH's AIF platform offers sophisticated investors access to curated private market opportunities — from pre-IPO SME strategies to long-short equity — delivering returns that are structurally independent of public market cycles.</p>
+            <div class="aif-hero-actions">
+              <a href="#our-funds" class="aif-btn-primary"><i class="fas fa-layer-group"></i> Explore Our Funds</a>
+              <a href="contact.html" class="aif-btn-ghost"><i class="fas fa-calendar-alt"></i> Schedule Consultation</a>
+            </div>
+            <div class="aif-hero-sebi" style="margin-top: 2rem;">
+              <i class="fas fa-shield-alt"></i>
+              SEBI Registered AIF Manager &nbsp;|&nbsp; Regulated under SEBI (AIF) Regulations, 2012
+            </div>
+          </div>
+
+          <!-- Right: Stats Panel -->
+          <div class="aif-hero-stats reveal" style="animation-delay:0.15s;">
+            <div class="aif-hero-stat">
+              <div class="aif-hero-stat-val">&#8377;350 <span>Cr+</span></div>
+              <div class="aif-hero-stat-lbl">Total AIF AUM &amp; Commitments</div>
+            </div>
+            <div class="aif-hero-stat-div"></div>
+            <div class="aif-hero-stat">
+              <div class="aif-hero-stat-val">2 <span>Active</span></div>
+              <div class="aif-hero-stat-lbl">Fund Strategies Currently Deployed</div>
+            </div>
+            <div class="aif-hero-stat-div"></div>
+            <div class="aif-hero-stat">
+              <div class="aif-hero-stat-val">45<span>%+</span></div>
+              <div class="aif-hero-stat-lbl">Target IRR — Value Discovery Fund</div>
+            </div>
+            <div class="aif-hero-stat-div"></div>
+            <div class="aif-hero-stat">
+              <div class="aif-hero-stat-val">Cat <span>II &amp; III</span></div>
+              <div class="aif-hero-stat-lbl">SEBI AIF Category Coverage</div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </section>
 
-    <!-- Section 1 — Two Fund Cards -->
-    <section class="aif-cards-section" style="background-color: white; padding: 100px 0;">
+    <!-- ===================== WHAT IS AN AIF ===================== -->
+    <section class="aif-cat-section">
       <div class="container">
-        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
-          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">OUR AIF PLATFORM</span>
-          <h2 style="color: #1A1A1A; font-size: 40px; font-weight: 700; margin-top:0; margin-bottom: 0;">Category II &amp; III <span style="color: #496bad;">Fund Offerings.</span></h2>
+        <div class="aif-section-hd reveal">
+          <span class="eyebrow">Understanding AIFs</span>
+          <h2>Three Regulatory <span>Categories.</span> Distinct Mandates.</h2>
+          <p class="sub">Alternative Investment Funds are pooled vehicles registered under SEBI (AIF) Regulations, 2012. Each category serves a distinct investment purpose and investor profile.</p>
+        </div>
+        <div class="aif-cat-grid">
+
+          <!-- Category I -->
+          <div class="aif-cat-card cat1 reveal">
+            <div class="aif-cat-icon"><i class="fas fa-seedling"></i></div>
+            <div class="aif-cat-num">Category I AIF</div>
+            <div class="aif-cat-title">Venture &amp; Social Impact</div>
+            <p class="aif-cat-desc">Funds that invest in start-ups, early-stage ventures, social ventures, SMEs, infrastructure, and other sectors which the government or regulators consider socially or economically desirable.</p>
+            <div class="aif-cat-types">
+              <span class="aif-type-pill">Venture Capital</span>
+              <span class="aif-type-pill">Angel Funds</span>
+              <span class="aif-type-pill">SME Funds</span>
+              <span class="aif-type-pill">Infrastructure</span>
+            </div>
+          </div>
+
+          <!-- Category II -->
+          <div class="aif-cat-card cat2 reveal" style="animation-delay:0.1s;">
+            <div class="aif-cat-icon"><i class="fas fa-sitemap"></i></div>
+            <div class="aif-cat-num">Category II AIF</div>
+            <div class="aif-cat-title">Private Equity &amp; Debt</div>
+            <p class="aif-cat-desc">Funds that do not fall in Category I or III and do not undertake leverage or borrowing other than to meet day-to-day operational requirements. Includes PE, real estate, and debt funds.</p>
+            <div class="aif-cat-types">
+              <span class="aif-type-pill">Private Equity</span>
+              <span class="aif-type-pill">Pre-IPO</span>
+              <span class="aif-type-pill">Debt Funds</span>
+              <span class="aif-type-pill">Real Assets</span>
+              <span class="aif-spvh-badge"><i class="fas fa-circle" style="font-size:0.5rem;"></i> SPVH Operates Here</span>
+            </div>
+          </div>
+
+          <!-- Category III -->
+          <div class="aif-cat-card cat3 reveal" style="animation-delay:0.2s;">
+            <div class="aif-cat-icon"><i class="fas fa-exchange-alt"></i></div>
+            <div class="aif-cat-num">Category III AIF</div>
+            <div class="aif-cat-title">Hedge &amp; Long-Short Equity</div>
+            <p class="aif-cat-desc">Funds that employ diverse or complex trading strategies and may employ leverage, including investments in listed or unlisted derivatives. Targets absolute returns across market cycles.</p>
+            <div class="aif-cat-types">
+              <span class="aif-type-pill">Long-Short Equity</span>
+              <span class="aif-type-pill">Hedge Funds</span>
+              <span class="aif-type-pill">Derivatives</span>
+              <span class="aif-spvh-badge"><i class="fas fa-circle" style="font-size:0.5rem;"></i> SPVH Launching</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== OUR FUND PLATFORM ===================== -->
+    <section class="aif-funds-section" id="our-funds">
+      <div class="container">
+        <div class="aif-section-hd reveal">
+          <span class="eyebrow">Our AIF Platform</span>
+          <h2>Three Funds. <span>One Vision.</span></h2>
+          <p class="sub">From closed-end unlisted equity to high-conviction Pre-IPO and long-short absolute return — our fund suite is designed to access India's most compelling opportunity sets.</p>
         </div>
 
-        <div class="aif-row reveal">
-          
-          <!-- Card 0 — Weave Capital Fund (Closed) -->
-          <div class="aif-card aif-card-closed">
-            <span class="aif-tag-closed">CATEGORY II AIF &middot; CLOSED FOR SUBSCRIPTION</span>
-            <h3 class="aif-title">Weave Capital Fund</h3>
-            <div class="aif-subtitle">Sector Agnostic &middot; Unlisted Segment</div>
-            
-            <p class="aif-desc">A sector-agnostic fund investing exclusively in the unlisted segment, targeting tomorrow's market leaders with a ticket size of $1M to $5M USD.</p>
-            
-            <div class="aif-stats-grid">
-              <div class="aif-stat-item"><i class="fas fa-bullseye" style="color: #47a996; margin-right: 5px;"></i> Target Corpus: $50M + $25M</div>
-              <div class="aif-stat-item"><i class="fas fa-coins" style="color: #47a996; margin-right: 5px;"></i> Min. Investment: &#8377;1 Cr (Individual) / &#8377;10 Cr (Inst.)</div>
-              <div class="aif-stat-item"><i class="fas fa-hourglass-half" style="color: #47a996; margin-right: 5px;"></i> Fund Tenure: 6+1 Years</div>
-              <div class="aif-stat-item"><i class="fas fa-ticket-alt" style="color: #47a996; margin-right: 5px;"></i> Ticket Size: $1M - $5M USD</div>
+        <div class="aif-funds-grid">
+
+          <!-- ===== FUND 1: Weave Capital (Closed) ===== -->
+          <div class="fund-card reveal">
+            <div class="fund-card-bar closed"></div>
+            <div class="fund-card-header">
+              <div class="fund-status-row">
+                <span class="fund-cat-badge catii">Category II AIF</span>
+                <span class="fund-status-badge closed"><span class="dot"></span>Closed</span>
+              </div>
+              <div class="fund-name">Weave Capital Fund</div>
+              <div class="fund-strategy">Sector Agnostic &middot; Unlisted Segment</div>
             </div>
-            
-            <div style="margin-top: auto;">
-              <a href="#" class="aif-btn-full">Explore Fund Details &rarr;</a>
+            <div class="fund-card-body">
+              <div class="fund-divider"></div>
+              <p class="fund-desc">A sector-agnostic closed-end fund targeting the unlisted equity segment with a focus on high-growth companies poised to become tomorrow's market leaders. Ticket size structured for global family offices and institutions.</p>
+              <div class="fund-divider"></div>
+              <div class="fund-metrics">
+                <div class="fund-metric">
+                  <div class="fund-metric-val">$50M + $25M</div>
+                  <div class="fund-metric-lbl">Target Corpus</div>
+                </div>
+                <div class="fund-metric">
+                  <div class="fund-metric-val">$1M – $5M</div>
+                  <div class="fund-metric-lbl">Ticket Size (USD)</div>
+                </div>
+                <div class="fund-metric">
+                  <div class="fund-metric-val highlight">6 + 1 Yrs</div>
+                  <div class="fund-metric-lbl">Fund Tenure</div>
+                </div>
+                <div class="fund-metric">
+                  <div class="fund-metric-val">&#8377;1 Cr / &#8377;10 Cr</div>
+                  <div class="fund-metric-lbl">Min. Investment (Ind/Inst)</div>
+                </div>
+              </div>
+              <div class="fund-highlights">
+                <h5>Investment Highlights</h5>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Targets unlisted companies across sectors — no sector concentration bias</span></div>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">USD-denominated ticket size attracts global family office capital</span></div>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">6+1 year structure allows sufficient runway for value unlocking via IPO or strategic sale</span></div>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Pass-through tax status under Cat II — tax efficiency at investor level</span></div>
+              </div>
+              <div class="fund-divider"></div>
+              <div class="fund-fees">
+                <div class="fund-fee-item">
+                  <div class="fund-fee-val">2% p.a.</div>
+                  <div class="fund-fee-lbl">Management Fee</div>
+                </div>
+                <div class="fund-fee-div"></div>
+                <div class="fund-fee-item">
+                  <div class="fund-fee-val">20% Carry</div>
+                  <div class="fund-fee-lbl">Performance Fee</div>
+                </div>
+              </div>
+            </div>
+            <div class="fund-card-footer">
+              <a href="resources.html" class="fund-cta-btn btn-grey">
+                <i class="fas fa-lock" style="font-size:0.8rem;"></i> Closed for Subscription
+              </a>
             </div>
           </div>
 
-          <!-- Card 1 — SPVH Value Discovery Fund -->
-          <div class="aif-card">
-            <span class="aif-tag-active">CATEGORY II AIF &middot; OPEN FOR SUBSCRIPTION</span>
-            <h3 class="aif-title">SPVH Value Discovery Fund</h3>
-            <div class="aif-subtitle">SME Focused Pre-IPO Cat II AIF</div>
-            
-            <p class="aif-desc">A high-conviction SME Pre-IPO strategy targeting 10X returns by identifying tomorrow's market leaders at their pre-IPO stage &mdash; before institutional discovery.</p>
-            
-            <div class="aif-stats-grid">
-              <div class="aif-stat-item"><i class="fas fa-bullseye" style="color: #47a996; margin-right: 5px;"></i> Target Corpus: &#8377;250 Cr + &#8377;100 Cr Greenshoe</div>
-              <div class="aif-stat-item"><i class="fas fa-coins" style="color: #47a996; margin-right: 5px;"></i> Min. Investment: &#8377;1 Cr (Retail) / &#8377;10 Cr (Institutional)</div>
-              <div class="aif-stat-item"><i class="fas fa-hourglass-half" style="color: #47a996; margin-right: 5px;"></i> Fund Tenure: 6 Years</div>
-              <div class="aif-stat-item"><i class="fas fa-chart-line" style="color: #47a996; margin-right: 5px;"></i> Target IRR: 45%+ CAGR on Pre-IPO</div>
+          <!-- ===== FUND 2: SPVH Value Discovery Fund (Active) ===== -->
+          <div class="fund-card reveal" style="animation-delay:0.1s;">
+            <div class="fund-card-bar active"></div>
+            <div class="fund-card-header">
+              <div class="fund-status-row">
+                <span class="fund-cat-badge catii">Category II AIF</span>
+                <span class="fund-status-badge open"><span class="dot"></span>Open</span>
+              </div>
+              <div class="fund-name">SPVH Value Discovery Fund</div>
+              <div class="fund-strategy">SME Focused Pre-IPO Strategy</div>
             </div>
-            
-            <div style="margin-top: auto;">
-              <a href="value-discovery-fund.html" class="aif-btn-full">Explore Fund Details &rarr;</a>
+            <div class="fund-card-body">
+              <div class="fund-divider"></div>
+              <p class="fund-desc">A high-conviction SME Pre-IPO strategy targeting 10X returns by identifying tomorrow's market leaders at their pre-IPO stage — before institutional discovery. Capturing the SME-to-Mainboard listing premium at scale.</p>
+              <div class="fund-divider"></div>
+              <div class="fund-metrics">
+                <div class="fund-metric">
+                  <div class="fund-metric-val highlight">45%+ CAGR</div>
+                  <div class="fund-metric-lbl">Target IRR (Pre-IPO)</div>
+                </div>
+                <div class="fund-metric">
+                  <div class="fund-metric-val">&#8377;250 Cr</div>
+                  <div class="fund-metric-lbl">Target Corpus</div>
+                </div>
+                <div class="fund-metric">
+                  <div class="fund-metric-val">&#8377;100 Cr</div>
+                  <div class="fund-metric-lbl">Greenshoe Option</div>
+                </div>
+                <div class="fund-metric">
+                  <div class="fund-metric-val">6 Years</div>
+                  <div class="fund-metric-lbl">Fund Tenure</div>
+                </div>
+                <div class="fund-metric">
+                  <div class="fund-metric-val">&#8377;1 Cr</div>
+                  <div class="fund-metric-lbl">Min. (Retail)</div>
+                </div>
+                <div class="fund-metric">
+                  <div class="fund-metric-val">&#8377;10 Cr</div>
+                  <div class="fund-metric-lbl">Min. (Institutional)</div>
+                </div>
+              </div>
+              <div class="fund-highlights">
+                <h5>Investment Highlights</h5>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Pre-IPO entry in SME companies preparing for mainboard listing — captures the maximum listing premium</span></div>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Proprietary screening: revenue growth, promoter quality, sector tailwinds, and IPO readiness</span></div>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Portfolio of 15–20 carefully selected companies — diversified yet concentrated for alpha</span></div>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Quarterly NAV reporting + active portfolio monitoring throughout the fund lifecycle</span></div>
+              </div>
+              <div class="fund-divider"></div>
+              <div class="fund-fees">
+                <div class="fund-fee-item">
+                  <div class="fund-fee-val">2% p.a.</div>
+                  <div class="fund-fee-lbl">Management Fee</div>
+                </div>
+                <div class="fund-fee-div"></div>
+                <div class="fund-fee-item">
+                  <div class="fund-fee-val">20% Carry</div>
+                  <div class="fund-fee-lbl">Above 12% Hurdle</div>
+                </div>
+              </div>
+            </div>
+            <div class="fund-card-footer">
+              <a href="value-discovery-fund.html" class="fund-cta-btn btn-teal">
+                Explore Fund Details <i class="fas fa-arrow-right" style="font-size:0.8rem;"></i>
+              </a>
             </div>
           </div>
 
-          <!-- Card 2 — Cat III Fund (Coming Soon) -->
-          <div class="aif-card coming-soon">
-            <div style="width: 100%; text-align: left;">
-              <span class="aif-tag-soon">CATEGORY III AIF &middot; COMING SOON</span>
-              <h3 class="aif-title">SPVH Alpha Fund</h3>
-              <div class="aif-subtitle">Long-Short Equity Strategy</div>
+          <!-- ===== FUND 3: SPVH Alpha Fund (Coming Soon) ===== -->
+          <div class="fund-card coming-soon reveal" style="animation-delay:0.2s;">
+            <div class="fund-card-bar soon"></div>
+            <div class="fund-card-header">
+              <div class="fund-status-row">
+                <span class="fund-cat-badge catiii">Category III AIF</span>
+                <span class="fund-status-badge soon"><span class="dot"></span>Launching Soon</span>
+              </div>
+              <div class="fund-name">SPVH Alpha Fund</div>
+              <div class="fund-strategy">Long-Short Equity Strategy</div>
             </div>
-            
-            <i class="fas fa-lock aif-locked-icon"></i>
-            
-            <div class="aif-coming-text">Coming Soon</div>
-            <p class="aif-soon-desc">Our Category III Long-Short equity fund is currently in development. Register your interest to be the first to know when it opens.</p>
-            
-            <div style="margin-top: auto; padding-bottom: 10px;">
-              <a href="#" class="aif-btn-outline">Register Interest &rarr;</a>
+            <div class="fund-card-body">
+              <div class="fund-divider"></div>
+              <p class="fund-desc">A Category III absolute return fund deploying a disciplined long-short equity strategy to generate alpha in both bull and bear markets. Designed to deliver consistent returns irrespective of broader market direction.</p>
+              <div class="fund-divider"></div>
+              <div class="fund-coming-overlay">
+                <div class="fund-coming-icon"><i class="fas fa-rocket"></i></div>
+                <div class="fund-coming-label">Currently In Development</div>
+                <p class="fund-coming-sub">Our Category III long-short equity fund is being structured and will be launched in due course. Be the first to receive the fund deck when it goes live.</p>
+              </div>
+              <div class="fund-highlights">
+                <h5>Strategy Preview</h5>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Long high-conviction quality compounders / Short overvalued or structurally declining businesses</span></div>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Market-neutral positioning — targets positive returns across all market cycles</span></div>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Derivatives permitted for hedging and alpha generation under Cat III mandate</span></div>
+                <div class="fund-hl-item"><i class="fas fa-check-circle"></i><span class="fund-hl-text">Target Gross Exposure: 150–200% | Net Exposure: 30–70%</span></div>
+              </div>
+              <div class="fund-divider"></div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <input type="email" class="fund-interest-input" placeholder="Enter your email to register interest">
+              </div>
+            </div>
+            <div class="fund-card-footer">
+              <a href="contact.html" class="fund-cta-btn btn-blue">
+                <i class="fas fa-bell" style="font-size:0.8rem;"></i> Register Interest
+              </a>
             </div>
           </div>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== WHY AIF WITH SPVH ===================== -->
+    <section class="aif-why-section">
+      <div class="container">
+        <div class="aif-section-hd light reveal">
+          <span class="eyebrow">Why Invest Through SPVH</span>
+          <h2>The SPVH <span style="color:#47a996;">Institutional Edge.</span></h2>
+          <p class="sub" style="color:#64748B;">What separates a disciplined AIF manager from the rest is not just strategy — it is execution, governance, and the alignment of manager and investor interests.</p>
+        </div>
+        <div class="aif-why-grid">
+          <div class="aif-why-card reveal">
+            <div class="aif-why-icon"><i class="fas fa-search-dollar"></i></div>
+            <div class="aif-why-title">Proprietary Deal Sourcing</div>
+            <p class="aif-why-desc">Our pre-IPO and unlisted deal flow is sourced through a network of promoters, investment bankers, and sector advisors — not secondary marketplaces. First-mover advantage is our structural edge.</p>
+          </div>
+          <div class="aif-why-card reveal" style="animation-delay:0.08s;">
+            <div class="aif-why-icon"><i class="fas fa-balance-scale"></i></div>
+            <div class="aif-why-title">Institutional-Grade Due Diligence</div>
+            <p class="aif-why-desc">Every investment undergoes rigorous financial, legal, and operational due diligence. Our structured DD framework mirrors global PE standards — financial modeling, reference checks, and regulatory screening.</p>
+          </div>
+          <div class="aif-why-card reveal" style="animation-delay:0.16s;">
+            <div class="aif-why-icon"><i class="fas fa-align-center"></i></div>
+            <div class="aif-why-title">Manager-Investor Alignment</div>
+            <p class="aif-why-desc">SPVH invests its own capital alongside LPs. Our team's economics are structurally tied to fund performance — ensuring our interests are completely aligned with yours across the fund lifecycle.</p>
+          </div>
+          <div class="aif-why-card reveal" style="animation-delay:0.24s;">
+            <div class="aif-why-icon"><i class="fas fa-file-invoice"></i></div>
+            <div class="aif-why-title">Transparent Reporting</div>
+            <p class="aif-why-desc">Quarterly portfolio updates, NAV statements, and detailed investee company reports. All reporting follows SEBI AIF disclosure standards. No black boxes — complete visibility into every rupee deployed.</p>
+          </div>
+          <div class="aif-why-card reveal" style="animation-delay:0.32s;">
+            <div class="aif-why-icon"><i class="fas fa-leaf"></i></div>
+            <div class="aif-why-title">Pass-Through Tax Structure</div>
+            <p class="aif-why-desc">Category I &amp; II AIFs enjoy pass-through tax status. Tax is computed and paid at the LP level — not at the fund level — maximising post-tax returns for individual and institutional investors alike.</p>
+          </div>
+          <div class="aif-why-card reveal" style="animation-delay:0.40s;">
+            <div class="aif-why-icon"><i class="fas fa-globe-asia"></i></div>
+            <div class="aif-why-title">Cross-Border Expertise</div>
+            <p class="aif-why-desc">Our team has structured AIF investments for NRIs, foreign investors, family offices, and HNIs across geographies. We navigate FEMA, FATCA, and cross-border structuring with proven expertise.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== INVESTMENT PROCESS ===================== -->
+    <section class="aif-process-section">
+      <div class="container">
+        <div class="aif-section-hd reveal">
+          <span class="eyebrow">Investment Process</span>
+          <h2>From Onboarding to <span>Exit.</span></h2>
+          <p class="sub">A structured, transparent journey from your first conversation to your final distribution. Here is what investing with SPVH AIFs looks like.</p>
+        </div>
+        <div class="aif-process-steps">
+          <div class="aif-step reveal">
+            <div class="aif-step-num">1</div>
+            <div class="aif-step-title">Qualification &amp; KYC</div>
+            <p class="aif-step-desc">SEBI mandates a minimum ₹1 Cr investment. Complete investor KYC, accreditation, and suitability assessment with our onboarding team.</p>
+          </div>
+          <div class="aif-step reveal" style="animation-delay:0.1s;">
+            <div class="aif-step-num">2</div>
+            <div class="aif-step-title">Fund Review &amp; PPM</div>
+            <p class="aif-step-desc">Receive and review the Private Placement Memorandum (PPM). Our team walks you through the strategy, risk factors, fee structure, and liquidity terms in detail.</p>
+          </div>
+          <div class="aif-step reveal" style="animation-delay:0.2s;">
+            <div class="aif-step-num">3</div>
+            <div class="aif-step-title">Subscription &amp; Capital Call</div>
+            <p class="aif-step-desc">Execute subscription agreement and complete capital commitment. Funds are called down as investment opportunities are identified and approved by the investment committee.</p>
+          </div>
+          <div class="aif-step reveal" style="animation-delay:0.3s;">
+            <div class="aif-step-num">4</div>
+            <div class="aif-step-title">Monitoring &amp; Distribution</div>
+            <p class="aif-step-desc">Receive quarterly reports, NAV updates, and portfolio commentary. Returns are distributed as investee companies list, are sold, or declare dividends — per the waterfall mechanism.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ELIGIBILITY & COMPLIANCE ===================== -->
+    <section class="aif-elig-section">
+      <div class="container">
+        <div class="aif-section-hd reveal">
+          <span class="eyebrow">Eligibility &amp; Regulatory Framework</span>
+          <h2>Who Can Invest. <span>What Governs It.</span></h2>
+          <p class="sub">SEBI has defined clear eligibility criteria and a robust regulatory framework for AIF investments. Here is what you need to know before committing capital.</p>
+        </div>
+        <div class="aif-elig-grid">
+
+          <!-- Eligible Investors -->
+          <div class="aif-elig-panel reveal">
+            <div class="aif-elig-panel-title">
+              <i class="fas fa-users"></i> Eligible Investor Categories
+            </div>
+            <div class="aif-elig-list">
+              <div class="aif-elig-item">
+                <i class="fas fa-check-circle"></i>
+                <div class="aif-elig-item-text"><strong>High Net-Worth Individuals (HNIs)</strong> — resident Indians with minimum ₹1 Cr investable surplus and risk appetite for illiquid alternatives</div>
+              </div>
+              <div class="aif-elig-item">
+                <i class="fas fa-check-circle"></i>
+                <div class="aif-elig-item-text"><strong>Ultra HNIs (UHNIs) &amp; Family Offices</strong> — single and multi-family offices with institutional-grade governance seeking private market exposure</div>
+              </div>
+              <div class="aif-elig-item">
+                <i class="fas fa-check-circle"></i>
+                <div class="aif-elig-item-text"><strong>Non-Resident Indians (NRIs)</strong> — can invest via NRE / NRO accounts subject to FEMA regulations and applicable tax treaties</div>
+              </div>
+              <div class="aif-elig-item">
+                <i class="fas fa-check-circle"></i>
+                <div class="aif-elig-item-text"><strong>Foreign Portfolio Investors (FPIs)</strong> — registered FPIs and foreign institutions with appropriate SEBI clearances</div>
+              </div>
+              <div class="aif-elig-item">
+                <i class="fas fa-check-circle"></i>
+                <div class="aif-elig-item-text"><strong>Corporates &amp; Trusts</strong> — duly incorporated companies, LLPs, and registered trusts meeting the accredited investor criteria</div>
+              </div>
+              <div class="aif-elig-item">
+                <i class="fas fa-check-circle"></i>
+                <div class="aif-elig-item-text"><strong>Institutional Investors</strong> — insurance companies, provident funds, endowments, and regulated entities seeking uncorrelated return streams</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Regulatory Framework -->
+          <div class="aif-elig-panel reveal" style="animation-delay:0.12s;">
+            <div class="aif-elig-panel-title">
+              <i class="fas fa-gavel"></i> Regulatory Framework
+            </div>
+            <div class="aif-reg-row">
+              <div class="aif-reg-item">
+                <div class="aif-reg-icon"><i class="fas fa-book"></i></div>
+                <div>
+                  <div class="aif-reg-label">Governing Regulation</div>
+                  <div class="aif-reg-val">SEBI (Alternative Investment Funds) Regulations, 2012</div>
+                </div>
+              </div>
+              <div class="aif-reg-item">
+                <div class="aif-reg-icon"><i class="fas fa-rupee-sign"></i></div>
+                <div>
+                  <div class="aif-reg-label">Minimum Investment (SEBI Mandate)</div>
+                  <div class="aif-reg-val">&#8377;1 Crore per investor (Retail) &nbsp;|&nbsp; &#8377;10 Crore (Institutional)</div>
+                </div>
+              </div>
+              <div class="aif-reg-item">
+                <div class="aif-reg-icon"><i class="fas fa-lock"></i></div>
+                <div>
+                  <div class="aif-reg-label">Lock-in / Minimum Commitment</div>
+                  <div class="aif-reg-val">Minimum 3 years or full fund tenure (as per PPM)</div>
+                </div>
+              </div>
+              <div class="aif-reg-item">
+                <div class="aif-reg-icon"><i class="fas fa-percentage"></i></div>
+                <div>
+                  <div class="aif-reg-label">Tax Treatment (Cat I &amp; II)</div>
+                  <div class="aif-reg-val">Pass-through status — tax computed &amp; paid at LP level</div>
+                </div>
+              </div>
+              <div class="aif-reg-item">
+                <div class="aif-reg-icon"><i class="fas fa-users-cog"></i></div>
+                <div>
+                  <div class="aif-reg-label">Maximum Investors per Scheme</div>
+                  <div class="aif-reg-val">1,000 investors (excluding employee/director co-investments)</div>
+                </div>
+              </div>
+              <div class="aif-reg-item">
+                <div class="aif-reg-icon"><i class="fas fa-chart-bar"></i></div>
+                <div>
+                  <div class="aif-reg-label">Reporting Obligations</div>
+                  <div class="aif-reg-val">Quarterly reports to SEBI + Annual Audit + NAV disclosure</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CTA SECTION ===================== -->
+    <section class="aif-cta-section">
+      <div class="container">
+        <div class="aif-cta-inner reveal">
+          <span class="aif-cta-label">Begin Your Alternative Investment Journey</span>
+          <h2 class="aif-cta-h2">Ready to Access <span>Private Markets?</span></h2>
+          <p class="aif-cta-body">Speak with our AIF team to understand how our fund strategies align with your wealth goals, risk profile, and portfolio construction objectives. Private access. Institutional discipline.</p>
+          <div class="aif-cta-actions">
+            <a href="contact.html" class="aif-btn-primary"><i class="fas fa-calendar-alt"></i> Schedule a Meeting</a>
+            <a href="resources.html" class="aif-btn-ghost"><i class="fas fa-file-download"></i> Download Fund Deck</a>
+          </div>
+          <p class="aif-cta-disclaimer">This page is for informational purposes only and does not constitute an offer or solicitation to buy or sell any securities. Investment in AIFs involves substantial risk, including the possible loss of principal. Past performance is not indicative of future results. Please read the PPM carefully before investing.</p>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Footer -->
+  <!-- ===================== FOOTER ===================== -->
   <footer class="footer-new">
     <div class="container">
       <div class="footer-top-grid">
-        
-        <!-- Column 1: Brand -->
-        <div class="footer-col-brand reveal" style="animation-delay: 0s;">
-          <a href="index.html" class="footer-logo-img" style="display: inline-block; margin-bottom: 1.25rem;">
-            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height: 73px; width: auto; display: block;">
+        <div class="footer-col-brand reveal" style="animation-delay:0s;">
+          <a href="index.html" class="footer-logo-img" style="display:inline-block;margin-bottom:1.25rem;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height:73px;width:auto;display:block;">
           </a>
           <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
           <div class="footer-socials">
@@ -153,22 +940,16 @@
             <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
           </div>
         </div>
-
-        <!-- Column 2: Quick Links -->
-        <div class="footer-col-links reveal" style="animation-delay: 0.1s;">
+        <div class="footer-col-links reveal" style="animation-delay:0.1s;">
           <h4 class="footer-heading">COMPANY</h4>
           <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Leadership Team</a></li>
-            <li><a href="#">Investment Philosophy</a></li>
-            <li><a href="#">Why SPVH</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Contact Us</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
           </ul>
         </div>
-
-        <!-- Column 3: Solutions -->
-        <div class="footer-col-links reveal" style="animation-delay: 0.2s;">
+        <div class="footer-col-links reveal" style="animation-delay:0.2s;">
           <h4 class="footer-heading">OUR SOLUTIONS</h4>
           <ul>
             <li><a href="pms.html">Portfolio Management Services</a></li>
@@ -177,41 +958,24 @@
             <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
           </ul>
         </div>
-
-        <!-- Column 4: Contact -->
-        <div class="footer-col-contact reveal" style="animation-delay: 0.3s;">
+        <div class="footer-col-contact reveal" style="animation-delay:0.3s;">
           <h4 class="footer-heading">GET IN TOUCH</h4>
-          <div class="contact-line">
-            <i class="fas fa-map-marker-alt"></i>
-            <span>Registered Office Address, Mumbai &mdash; 400051</span>
-          </div>
-          <div class="contact-line">
-            <i class="fas fa-phone-alt"></i>
-            <span>+91 22 4000 0000</span>
-          </div>
-          <div class="contact-line">
-            <i class="fas fa-envelope"></i>
-            <span>info@spvhamc.com</span>
-          </div>
-          <a href="#" class="footer-cta-link">Schedule Consultation &rarr;</a>
+          <div class="contact-line"><i class="fas fa-map-marker-alt"></i><span>Registered Office Address, Mumbai &mdash; 400051</span></div>
+          <div class="contact-line"><i class="fas fa-phone-alt"></i><span>+91 22 4000 0000</span></div>
+          <div class="contact-line"><i class="fas fa-envelope"></i><span>info@spvhamc.com</span></div>
+          <a href="contact.html" class="footer-cta-link">Schedule Consultation &rarr;</a>
         </div>
-
       </div>
     </div>
-    
     <div class="footer-divider"></div>
-    
     <div class="container">
-      <div class="footer-bottom-bar reveal" style="animation-delay: 0.4s;">
-        <div class="footer-copyright">&copy; 2025 SPVH Asset Management Company. All Rights Reserved.</div>
+      <div class="footer-bottom-bar reveal" style="animation-delay:0.4s;">
+        <div class="footer-copyright">&copy; 2026 SPVH Asset Management Company (SPVH Private Limited | CIN: U67110MH2022PTC381574). All Rights Reserved. &nbsp;&nbsp;SPVH AMC is a fund manager across all SEBI regulated alternative products.</div>
         <div class="footer-legal-links">
-          <a href="#">Privacy Policy</a>
-          <span class="dot">&middot;</span>
-          <a href="#">Disclaimer</a>
-          <span class="dot">&middot;</span>
+          <a href="#">Privacy Policy</a><span class="dot">&middot;</span>
+          <a href="#">Disclaimer</a><span class="dot">&middot;</span>
           <a href="#">Regulatory Information</a>
         </div>
-        <div class="footer-sebi">SEBI Registered Portfolio Manager | Reg. No. INP00000XXXX | Investments are subject to market risk.</div>
       </div>
     </div>
   </footer>
@@ -219,5 +983,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
