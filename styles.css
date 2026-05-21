@@ -168,8 +168,10 @@ header {
    sections that sit beneath the fixed floating nav.
    Nav: top 1.5rem (24px) + height 112px = 136px bottom.
    170px gives 34px breathing room above first content.
+   .cinematic-hero is excluded — it is 100vh with
+   flex-centered content already far below the nav.
 ====================================================== */
-.hero {
+.hero.bg-dark {
   padding-top: 170px;
 }
 
