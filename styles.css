@@ -163,6 +163,16 @@ header {
 .hamburger { display: none; font-size: 1.5rem; color: var(--bg-dark); cursor: pointer; }
 
 
+/* =====================================================
+   NAV CLEARANCE — applies to all hero / page-header
+   sections that sit beneath the fixed floating nav.
+   Nav: top 1.5rem (24px) + height 112px = 136px bottom.
+   170px gives 34px breathing room above first content.
+====================================================== */
+.hero {
+  padding-top: 170px;
+}
+
 /* Cinematic Hero */
 .cinematic-hero {
   position: relative;
