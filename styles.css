@@ -2001,7 +2001,8 @@ footer { padding: 5rem 0 2rem; }
   .story-grid, .group-grid, .culture-flex-grid { grid-template-columns: 1fr; flex-direction: column; }
   .values-grid { grid-template-columns: repeat(2, 1fr); }
   .leadership-grid { grid-template-columns: repeat(2, 1fr); }
-  .footer-grid, .footer-top-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-top-grid { grid-template-columns: 1fr 1fr; column-gap: 2rem; }
 }
 
 @media (max-width: 768px) {
