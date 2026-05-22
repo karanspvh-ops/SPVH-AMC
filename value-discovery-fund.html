@@ -3,27 +3,819 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPVH AMC | Value Discovery Fund</title>
+  <title>SPVH AMC | Value Discovery Fund — Cat II AIF</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="fund_styles.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    /* ============================================================
+       SPVH VALUE DISCOVERY FUND — FULL REBUILD  (prefix: .vdf-*)
+    ============================================================ */
+
+    /* ---------- HERO ---------- */
+    .vdf-hero {
+      background: linear-gradient(135deg, #070f1e 0%, #0A1628 50%, #0d1b36 100%);
+      padding: 170px 0 90px;
+      position: relative; overflow: hidden;
+    }
+    /* circuit grid overlay */
+    .vdf-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(71,169,150,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(71,169,150,0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .vdf-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 40%, rgba(73,107,173,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 70%, rgba(71,169,150,0.12) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .vdf-hero-grid {
+      display: grid; grid-template-columns: 1fr 360px;
+      gap: 4rem; align-items: center;
+      position: relative; z-index: 2;
+    }
+    .vdf-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: #47a996; font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.25rem;
+    }
+    .vdf-hero-eyebrow::before {
+      content: ''; width: 28px; height: 2px; background: #47a996; flex-shrink: 0;
+    }
+    .vdf-hero-fund-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(73,107,173,0.15); border: 1px solid rgba(73,107,173,0.3);
+      border-radius: 4px; padding: 6px 14px;
+      color: #7BA3E8; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .vdf-hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 900; color: #fff; line-height: 1.1; margin-bottom: 0.5rem;
+    }
+    .vdf-hero h1 span { color: #47a996; }
+    .vdf-hero-sub {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem; font-style: italic; font-weight: 500;
+      color: #47a996; margin-bottom: 1.5rem;
+    }
+    .vdf-hero-body {
+      color: #94A3B8; font-size: 1rem; line-height: 1.8;
+      max-width: 540px; margin-bottom: 2rem;
+    }
+    .vdf-hero-pills {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 2.5rem;
+    }
+    .vdf-hero-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 30px; padding: 8px 18px;
+      color: #E2E8F0; font-size: 0.82rem; font-weight: 600;
+    }
+    .vdf-hero-pill i { color: #47a996; font-size: 0.75rem; }
+    .vdf-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .vdf-btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #496bad; color: #fff; padding: 14px 28px;
+      border-radius: 4px; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.88rem; letter-spacing: 0.5px;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .vdf-btn-primary:hover { background: #3f5f9f; color: #fff; transform: translateY(-2px); }
+    .vdf-btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: #fff; padding: 14px 28px;
+      border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.25);
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      font-size: 0.88rem; text-decoration: none; transition: all 0.3s;
+    }
+    .vdf-btn-ghost:hover { border-color: #47a996; color: #47a996; }
+    /* Right panel */
+    .vdf-hero-panel {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; overflow: hidden;
+    }
+    .vdf-hero-panel-head {
+      background: rgba(73,107,173,0.2); padding: 18px 28px;
+      font-family: 'Montserrat', sans-serif; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #7BA3E8;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .vdf-panel-stat {
+      padding: 22px 28px; border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .vdf-panel-stat:last-child { border-bottom: none; }
+    .vdf-ps-val {
+      font-family: 'Montserrat', sans-serif; font-size: 1.75rem;
+      font-weight: 900; color: #fff; line-height: 1;
+    }
+    .vdf-ps-val span { color: #47a996; }
+    .vdf-ps-lbl { font-size: 0.75rem; color: #64748B; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+    .vdf-ps-note { font-size: 0.72rem; color: #94A3B8; }
+
+    /* --------- SECTION HEADER HELPERS --------- */
+    .vdf-sec-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: #47a996;
+      display: block; margin-bottom: 0.6rem;
+    }
+    .vdf-sec-heading {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800; color: #0A1628; line-height: 1.2; margin-bottom: 0;
+    }
+    .vdf-sec-heading span { color: #496bad; }
+    .vdf-sec-heading.light { color: #fff; }
+    .vdf-sec-heading.light span { color: #47a996; }
+    .vdf-sec-rule { width: 52px; height: 3px; background: #47a996; margin: 1rem 0 1.5rem; }
+    .vdf-sec-sub { color: #64748B; font-size: 0.95rem; line-height: 1.75; max-width: 600px; }
+    .vdf-sec-sub.light { color: #94A3B8; }
+
+    /* ---------- FUND VISION ---------- */
+    .vdf-vision {
+      background: #fff; padding: 100px 0;
+    }
+    .vdf-vision-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    }
+    .vdf-vision-body { color: #475569; font-size: 1rem; line-height: 1.8; margin-bottom: 1.5rem; }
+    .vdf-tenet-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.5rem; }
+    .vdf-tenet-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #F0F4FA; border: 1px solid #E2E8F0;
+      border-radius: 30px; padding: 9px 20px;
+      font-size: 0.85rem; font-weight: 600; color: #334155;
+    }
+    .vdf-tenet-pill i { color: #47a996; }
+    /* 10X showcase box */
+    .vdf-tenx-box {
+      background: linear-gradient(135deg, #0A1628, #112240);
+      border: 1px solid rgba(71,169,150,0.25);
+      border-radius: 14px; padding: 48px 40px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25), inset 0 0 40px rgba(71,169,150,0.04);
+      text-align: center;
+    }
     @keyframes breatheGlow {
-      0% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
-      50% { text-shadow: 0 0 40px rgba(71, 169, 150, 0.9); }
-      100% { text-shadow: 0 0 20px rgba(73, 107, 173, 0.8); }
+      0%   { text-shadow: 0 0 30px rgba(255,255,255,0.5); }
+      50%  { text-shadow: 0 0 60px rgba(71,169,150,0.9), 0 0 100px rgba(71,169,150,0.4); }
+      100% { text-shadow: 0 0 30px rgba(73,107,173,0.7); }
+    }
+    .vdf-tenx-number {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 120px; font-weight: 900; line-height: 1;
+      background: linear-gradient(180deg, #fff 40%, rgba(255,255,255,0.55));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: breatheGlow 4s infinite alternate ease-in-out;
+      display: block; margin-bottom: 12px;
+    }
+    .vdf-tenx-caption {
+      color: #94A3B8; font-size: 0.95rem; line-height: 1.6;
+      max-width: 260px; margin: 0 auto 2.5rem;
+    }
+    .vdf-alloc-row {
+      display: flex; gap: 0; border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 2rem;
+    }
+    .vdf-alloc-item {
+      flex: 1; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+    .vdf-alloc-item:last-child { border-right: none; }
+    .vdf-alloc-pct {
+      font-family: 'Montserrat', sans-serif; font-size: 1.6rem;
+      font-weight: 900; margin-bottom: 4px;
+    }
+    .vdf-alloc-item:nth-child(1) .vdf-alloc-pct { color: #47a996; }
+    .vdf-alloc-item:nth-child(2) .vdf-alloc-pct { color: #496bad; }
+    .vdf-alloc-item:nth-child(3) .vdf-alloc-pct { color: #C9A84C; }
+    .vdf-alloc-lbl { font-size: 0.72rem; color: #64748B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ---------- THE OPPORTUNITY ---------- */
+    .vdf-opportunity {
+      background: #F0F4FA; padding: 100px 0;
+    }
+    .vdf-opp-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .vdf-opp-card {
+      background: #fff; border-radius: 12px;
+      padding: 32px 28px; text-align: center;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .vdf-opp-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(73,107,173,0.10); border-color: #496bad; }
+    .vdf-opp-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; background: linear-gradient(90deg, #47a996, #496bad);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .vdf-opp-card:hover::before { opacity: 1; }
+    .vdf-opp-num {
+      font-family: 'Montserrat', sans-serif; font-size: 2.2rem;
+      font-weight: 900; color: #496bad; line-height: 1; margin-bottom: 10px;
+    }
+    .vdf-opp-lbl { font-size: 0.9rem; color: #475569; line-height: 1.5; font-weight: 500; }
+    .vdf-highlight-banner {
+      margin-top: 2.5rem; padding: 28px 36px;
+      background: linear-gradient(135deg, #0A1628, #112240);
+      border-radius: 12px; border-left: 4px solid #47a996;
+      color: #94A3B8; font-size: 1rem; line-height: 1.75;
+      position: relative; overflow: hidden;
+    }
+    .vdf-highlight-banner strong { color: #47a996; }
+    .vdf-highlight-banner::after {
+      content: '\f200'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+      position: absolute; right: 36px; top: 50%; transform: translateY(-50%);
+      font-size: 5rem; color: rgba(73,107,173,0.08);
+    }
+
+    /* ---------- FUND STRUCTURE & TERMS (NEW) ---------- */
+    .vdf-structure {
+      background: #fff; padding: 100px 0;
+    }
+    .vdf-structure-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3.5rem; align-items: start;
+    }
+    .vdf-terms-table { width: 100%; border-collapse: collapse; }
+    .vdf-terms-table tr { border-bottom: 1px solid #E8EEF4; }
+    .vdf-terms-table tr:last-child { border-bottom: none; }
+    .vdf-terms-table td {
+      padding: 14px 16px; font-size: 0.9rem; vertical-align: top;
+    }
+    .vdf-terms-table td:first-child {
+      font-weight: 700; color: #64748B; font-size: 0.82rem;
+      text-transform: uppercase; letter-spacing: 0.5px; width: 42%;
+      background: #F8FAFC;
+    }
+    .vdf-terms-table td:last-child { color: #1A202C; font-weight: 600; }
+    .vdf-terms-table td span.highlight { color: #47a996; font-weight: 700; }
+    .vdf-eligibility-card {
+      background: #0A1628; border-radius: 12px; padding: 36px;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .vdf-elig-title {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 800;
+      color: #fff; margin-bottom: 1.5rem; padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .vdf-elig-item {
+      display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px;
+    }
+    .vdf-elig-item:last-child { margin-bottom: 0; }
+    .vdf-elig-icon {
+      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+      background: rgba(71,169,150,0.12); border: 1px solid rgba(71,169,150,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: #47a996; font-size: 0.85rem;
+    }
+    .vdf-elig-text { font-size: 0.88rem; color: #94A3B8; line-height: 1.6; }
+    .vdf-elig-text strong { color: #fff; display: block; margin-bottom: 2px; font-size: 0.9rem; }
+    .vdf-distribution-strip {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: #E2E8F0; border-radius: 10px; overflow: hidden; margin-top: 2.5rem;
+    }
+    .vdf-dist-cell {
+      background: #F8FAFC; padding: 20px; text-align: center;
+    }
+    .vdf-dist-val {
+      font-family: 'Montserrat', sans-serif; font-size: 1.2rem;
+      font-weight: 800; color: #496bad; margin-bottom: 4px;
+    }
+    .vdf-dist-lbl { font-size: 0.75rem; color: #64748B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ---------- FUND THESIS & SUJI ---------- */
+    .vdf-thesis {
+      background: #F0F4FA; padding: 100px 0;
+    }
+    .vdf-thesis-body {
+      max-width: 780px; margin: 1.5rem auto 3.5rem;
+      color: #475569; font-size: 1rem; line-height: 1.8; text-align: center;
+    }
+    .vdf-suji-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; position: relative;
+    }
+    .vdf-suji-center {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 140px; height: 140px; border-radius: 50%;
+      background: #fff; box-shadow: 0 16px 48px rgba(0,0,0,0.14);
+      border: 8px solid #F0F4FA; z-index: 10;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .vdf-suji-word {
+      font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 900;
+      color: #496bad; line-height: 1;
+    }
+    .vdf-suji-badge {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #47a996; margin-top: 4px;
+    }
+    .vdf-suji-card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      padding: 36px; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      border-top: 4px solid #496bad; transition: all 0.3s;
+    }
+    .vdf-suji-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(73,107,173,0.12); }
+    .vdf-suji-letter {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #496bad, #6b8fd8);
+      color: #fff; font-family: 'Montserrat', sans-serif;
+      font-size: 1.4rem; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 8px 24px rgba(73,107,173,0.3);
+    }
+    .vdf-suji-card-title {
+      font-family: 'Montserrat', sans-serif; font-size: 0.95rem;
+      font-weight: 700; color: #47a996; margin-bottom: 10px;
+    }
+    .vdf-suji-card-desc { font-size: 0.88rem; color: #475569; line-height: 1.7; }
+
+    /* ---------- PORTFOLIO CONSTRUCTION ---------- */
+    .vdf-portfolio {
+      background: #0A1628; padding: 100px 0;
+    }
+    .vdf-portfolio-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
+      align-items: center; margin-top: 3.5rem;
+    }
+    .vdf-donut-wrap {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 40px;
+      display: flex; flex-direction: column; align-items: center; gap: 2rem;
+    }
+    .vdf-chart-container { position: relative; width: 260px; height: 260px; }
+    .vdf-chart-center {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      text-align: center;
+    }
+    .vdf-chart-center-val {
+      font-family: 'Montserrat', sans-serif; font-size: 2rem;
+      font-weight: 900; color: #fff; line-height: 1;
+    }
+    .vdf-chart-center-lbl {
+      font-size: 0.7rem; color: #64748B; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .vdf-alloc-legend { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+    .vdf-legend-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07); border-radius: 8px;
+    }
+    .vdf-legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+    .vdf-legend-label { font-size: 0.88rem; color: #94A3B8; flex: 1; }
+    .vdf-legend-pct {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem;
+      font-weight: 800; color: #fff;
+    }
+    /* right: allocation detail */
+    .vdf-alloc-detail { display: flex; flex-direction: column; gap: 2rem; }
+    .vdf-alloc-block {
+      padding: 28px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03); transition: all 0.3s;
+    }
+    .vdf-alloc-block:hover { background: rgba(255,255,255,0.06); }
+    .vdf-alloc-block-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .vdf-alloc-block-name {
+      font-family: 'Montserrat', sans-serif; font-size: 0.95rem;
+      font-weight: 700; color: #fff;
+    }
+    .vdf-alloc-block-pct {
+      font-family: 'Montserrat', sans-serif; font-size: 1.2rem;
+      font-weight: 900;
+    }
+    .vdf-alloc-block:nth-child(1) .vdf-alloc-block-pct { color: #47a996; }
+    .vdf-alloc-block:nth-child(2) .vdf-alloc-block-pct { color: #496bad; }
+    .vdf-alloc-block:nth-child(3) .vdf-alloc-block-pct { color: #C9A84C; }
+    .vdf-alloc-bar-track {
+      width: 100%; height: 6px; background: rgba(255,255,255,0.07);
+      border-radius: 3px; overflow: hidden; margin-bottom: 10px;
+    }
+    .vdf-alloc-bar-fill {
+      height: 100%; border-radius: 3px; transition: width 1s ease;
+    }
+    .vdf-alloc-block:nth-child(1) .vdf-alloc-bar-fill { background: #47a996; }
+    .vdf-alloc-block:nth-child(2) .vdf-alloc-bar-fill { background: #496bad; }
+    .vdf-alloc-block:nth-child(3) .vdf-alloc-bar-fill { background: #C9A84C; }
+    .vdf-alloc-block-desc { font-size: 0.85rem; color: #64748B; line-height: 1.65; }
+
+    /* ---------- THE MOONSHOT TIMELINE ---------- */
+    .vdf-moonshot {
+      background: #fff; padding: 100px 0;
+    }
+    .vdf-moonshot-track {
+      margin-top: 3.5rem; position: relative;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+    }
+    .vdf-moonshot-track::before {
+      content: ''; position: absolute; top: 46px;
+      left: calc(10% + 20px); right: calc(10% + 20px);
+      height: 3px;
+      background: linear-gradient(90deg, #47a996 0%, #496bad 50%, #C9A84C 100%);
+      z-index: 0;
+    }
+    .vdf-ms-step {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 0 8px; position: relative;
+    }
+    .vdf-ms-node {
+      width: 92px; height: 92px; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; z-index: 1; margin-bottom: 1.2rem;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+      transition: transform 0.3s;
+    }
+    .vdf-ms-node:hover { transform: scale(1.06); }
+    .vdf-ms-step:nth-child(1) .vdf-ms-node { background: linear-gradient(135deg, #1e3a5f, #2a4f7a); border: 2px solid #47a996; }
+    .vdf-ms-step:nth-child(2) .vdf-ms-node { background: linear-gradient(135deg, #1a4a3a, #256b54); border: 2px solid #47a996; }
+    .vdf-ms-step:nth-child(3) .vdf-ms-node { background: linear-gradient(135deg, #1a3560, #2a4f88); border: 2px solid #496bad; }
+    .vdf-ms-step:nth-child(4) .vdf-ms-node { background: linear-gradient(135deg, #2a3a1a, #3d5428); border: 2px solid #6db33f; }
+    .vdf-ms-step:nth-child(5) .vdf-ms-node { background: linear-gradient(135deg, #4a2a0a, #7a4a14); border: 2px solid #C9A84C; }
+    .vdf-ms-multiple {
+      font-family: 'Montserrat', sans-serif; font-size: 1.15rem;
+      font-weight: 900; color: #fff; line-height: 1;
+    }
+    .vdf-ms-node-lbl {
+      font-size: 0.6rem; color: rgba(255,255,255,0.6);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px;
+    }
+    .vdf-ms-stage {
+      font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
+      font-weight: 700; color: #1A202C; margin-bottom: 6px;
+    }
+    .vdf-ms-timeline {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #F0F4FA; border-radius: 20px; padding: 4px 12px;
+      font-size: 0.75rem; font-weight: 600; color: #64748B; margin-bottom: 10px;
+    }
+    .vdf-ms-timeline i { font-size: 0.65rem; color: #47a996; }
+    .vdf-ms-desc { font-size: 0.8rem; color: #64748B; line-height: 1.55; }
+
+    /* ---------- DEAL FLOW & SOURCING EDGE (NEW) ---------- */
+    .vdf-dealflow {
+      background: #F0F4FA; padding: 100px 0;
+    }
+    .vdf-dealflow-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.75rem; margin-top: 3.5rem;
+    }
+    .vdf-df-card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      padding: 32px; display: flex; gap: 20px; align-items: flex-start;
+      border: 1px solid #E2E8F0; transition: all 0.3s;
+    }
+    .vdf-df-card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(73,107,173,0.10); border-color: #496bad; }
+    .vdf-df-icon {
+      width: 52px; height: 52px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(73,107,173,0.1); border: 1px solid rgba(73,107,173,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: #496bad; font-size: 1.15rem;
+    }
+    .vdf-df-title {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 700;
+      color: #1A202C; margin-bottom: 8px;
+    }
+    .vdf-df-desc { font-size: 0.88rem; color: #475569; line-height: 1.7; }
+    .vdf-df-tag {
+      display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
+      background: rgba(71,169,150,0.08); border: 1px solid rgba(71,169,150,0.15);
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 0.72rem; font-weight: 700; color: #47a996;
+    }
+    .vdf-funnel-strip {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-top: 3rem; flex-wrap: wrap;
+    }
+    .vdf-funnel-stage {
+      background: #fff; border: 1px solid #E2E8F0;
+      border-radius: 8px; padding: 16px 22px; text-align: center;
+      min-width: 110px;
+    }
+    .vdf-funnel-num {
+      font-family: 'Montserrat', sans-serif; font-size: 1.5rem;
+      font-weight: 900; color: #496bad;
+    }
+    .vdf-funnel-lbl { font-size: 0.72rem; color: #64748B; font-weight: 600; text-transform: uppercase; }
+    .vdf-funnel-arrow {
+      font-size: 1.2rem; color: #D1D5DB; padding: 0 8px;
+    }
+
+    /* ---------- CASE STUDIES ---------- */
+    .vdf-cases {
+      background: #fff; padding: 100px 0;
+    }
+    .vdf-case-grid {
+      display: flex; flex-direction: column; gap: 1.75rem; margin-top: 3.5rem;
+    }
+    .vdf-case-card {
+      background: #fff; border-radius: 14px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      overflow: hidden; transition: all 0.35s;
+    }
+    .vdf-case-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.12); transform: translateY(-3px); }
+    .vdf-case-inner {
+      display: grid; grid-template-columns: 200px 1fr auto;
+      align-items: stretch;
+    }
+    .vdf-case-multiple-col {
+      background: linear-gradient(135deg, #0A1628, #112240);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 32px 24px; text-align: center;
+    }
+    .vdf-case-mult-val {
+      font-family: 'Montserrat', sans-serif; font-size: 3rem;
+      font-weight: 900; color: #47a996; line-height: 1;
+    }
+    .vdf-case-mult-lbl {
+      font-size: 0.7rem; color: #64748B; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
+    }
+    .vdf-case-holding {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(71,169,150,0.1); border: 1px solid rgba(71,169,150,0.2);
+      border-radius: 20px; padding: 5px 12px;
+      font-size: 0.72rem; font-weight: 700; color: #47a996; margin-top: 12px;
+    }
+    .vdf-case-body {
+      padding: 28px 32px; display: flex; flex-direction: column; justify-content: center;
+      gap: 16px; border-right: 1px solid #E8EEF4;
+    }
+    .vdf-case-name {
+      font-family: 'Montserrat', sans-serif; font-size: 1.25rem;
+      font-weight: 800; color: #1A202C; margin-bottom: 4px;
+    }
+    .vdf-case-sector {
+      font-size: 0.78rem; color: #64748B; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .vdf-case-prices {
+      display: flex; gap: 0; background: #F8FAFC;
+      border: 1px solid #E8EEF4; border-radius: 8px; overflow: hidden;
+    }
+    .vdf-price-item {
+      flex: 1; padding: 14px 16px; text-align: center;
+      border-right: 1px solid #E8EEF4;
+    }
+    .vdf-price-item:last-child { border-right: none; }
+    .vdf-price-val {
+      font-family: 'Montserrat', sans-serif; font-size: 1.05rem;
+      font-weight: 800; color: #1A202C; margin-bottom: 3px;
+    }
+    .vdf-price-val.exit { color: #47a996; }
+    .vdf-price-lbl { font-size: 0.7rem; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .vdf-case-tags-col {
+      padding: 28px 28px; display: flex; flex-direction: column;
+      justify-content: center; gap: 8px; min-width: 200px;
+    }
+    .vdf-case-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #F0F4FA; border: 1px solid #E2E8F0;
+      border-radius: 6px; padding: 8px 14px;
+      font-size: 0.78rem; font-weight: 600; color: #475569;
+    }
+    .vdf-case-tag i { color: #47a996; font-size: 0.7rem; }
+    .vdf-track-summary {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: #E2E8F0; border-radius: 10px; overflow: hidden; margin-top: 2.5rem;
+    }
+    .vdf-track-cell {
+      background: #F8FAFC; padding: 24px 20px; text-align: center;
+    }
+    .vdf-track-val {
+      font-family: 'Montserrat', sans-serif; font-size: 1.75rem;
+      font-weight: 900; color: #496bad; margin-bottom: 4px;
+    }
+    .vdf-track-lbl { font-size: 0.78rem; color: #64748B; font-weight: 600; }
+    .vdf-track-note { font-size: 0.68rem; color: #94A3B8; font-style: italic; margin-top: 2px; }
+
+    /* ---------- RISK MANAGEMENT (NEW) ---------- */
+    .vdf-risk {
+      background: #0A1628; padding: 100px 0;
+    }
+    .vdf-risk-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .vdf-risk-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 30px 26px; transition: all 0.3s;
+    }
+    .vdf-risk-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(73,107,173,0.35); }
+    .vdf-risk-icon {
+      width: 48px; height: 48px; border-radius: 10px; margin-bottom: 1.2rem;
+      background: rgba(73,107,173,0.12); border: 1px solid rgba(73,107,173,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: #7BA3E8; font-size: 1.1rem;
+    }
+    .vdf-risk-title {
+      font-family: 'Montserrat', sans-serif; font-size: 0.95rem;
+      font-weight: 700; color: #fff; margin-bottom: 8px;
+    }
+    .vdf-risk-desc { font-size: 0.87rem; color: #64748B; line-height: 1.7; }
+
+    /* ---------- FUND TEAM ---------- */
+    .vdf-team {
+      background: #F0F4FA; padding: 100px 0;
+    }
+    .vdf-team-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3.5rem;
+    }
+    .vdf-team-card {
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      padding: 40px 32px; text-align: center;
+      border: 1px solid #E2E8F0; transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .vdf-team-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 4px; background: linear-gradient(90deg, #47a996, #496bad);
+    }
+    .vdf-team-card:hover { transform: translateY(-5px); box-shadow: 0 20px 48px rgba(0,0,0,0.12); }
+    .vdf-team-avatar {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: linear-gradient(135deg, #0A1628, #1a3560);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.2rem; color: #47a996; margin: 0 auto 1.5rem;
+      box-shadow: 0 8px 24px rgba(10,22,40,0.2);
+    }
+    .vdf-team-name {
+      font-family: 'Montserrat', sans-serif; font-size: 1.15rem;
+      font-weight: 800; color: #1A202C; margin-bottom: 6px;
+    }
+    .vdf-team-role {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: #47a996; margin-bottom: 1.2rem;
+    }
+    .vdf-team-rule { width: 40px; height: 2px; background: #E2E8F0; margin: 0 auto 1.2rem; }
+    .vdf-team-bio { font-size: 0.88rem; color: #64748B; line-height: 1.7; }
+    .vdf-team-highlight {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 1rem; padding: 6px 14px;
+      background: #F0F4FA; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; color: #496bad;
+    }
+    .vdf-team-highlight i { color: #47a996; }
+
+    /* ---------- ELIGIBILITY & ONBOARDING (NEW) ---------- */
+    .vdf-onboard {
+      background: #fff; padding: 100px 0;
+    }
+    .vdf-onboard-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; margin-top: 3.5rem; align-items: start;
+    }
+    .vdf-who-list { display: flex; flex-direction: column; gap: 14px; }
+    .vdf-who-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 18px 20px; background: #F8FAFC;
+      border: 1px solid #E2E8F0; border-radius: 10px; transition: all 0.3s;
+    }
+    .vdf-who-item:hover { border-color: #47a996; background: #F0FBF8; }
+    .vdf-who-item i { color: #47a996; margin-top: 3px; flex-shrink: 0; }
+    .vdf-who-item-text { font-size: 0.9rem; color: #334155; line-height: 1.6; }
+    .vdf-who-item-text strong { display: block; color: #1A202C; margin-bottom: 2px; }
+    .vdf-onboard-steps { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .vdf-onboard-steps::before {
+      content: ''; position: absolute; left: 22px; top: 44px; bottom: 44px;
+      width: 2px; background: linear-gradient(180deg, #47a996, #496bad); z-index: 0;
+    }
+    .vdf-ob-step {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding: 18px 0; position: relative;
+    }
+    .vdf-ob-num {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #47a996, #496bad);
+      color: #fff; font-family: 'Montserrat', sans-serif;
+      font-size: 1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1;
+      box-shadow: 0 4px 14px rgba(71,169,150,0.35);
+    }
+    .vdf-ob-content { padding-top: 4px; }
+    .vdf-ob-title {
+      font-family: 'Montserrat', sans-serif; font-size: 0.95rem;
+      font-weight: 700; color: #1A202C; margin-bottom: 4px;
+    }
+    .vdf-ob-desc { font-size: 0.87rem; color: #64748B; line-height: 1.65; }
+
+    /* ---------- CTA ---------- */
+    .vdf-cta {
+      background: linear-gradient(135deg, #0A1628 0%, #112240 40%, #1a3560 100%);
+      padding: 100px 0; text-align: center; position: relative; overflow: hidden;
+    }
+    .vdf-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(71,169,150,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(71,169,150,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .vdf-cta::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(73,107,173,0.25) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .vdf-cta-inner { position: relative; z-index: 2; }
+    .vdf-cta-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: #47a996; margin-bottom: 1.2rem; display: block;
+    }
+    .vdf-cta h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.9rem, 3.5vw, 3rem);
+      font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 1rem;
+    }
+    .vdf-cta h2 span { color: #47a996; }
+    .vdf-cta p {
+      color: #94A3B8; font-size: 1rem; max-width: 540px;
+      margin: 0 auto 2.5rem; line-height: 1.75;
+    }
+    .vdf-cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ---------- REGULATORY NOTICE BAND ---------- */
+    .vdf-reg-band {
+      background: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 20px 0;
+    }
+    .vdf-reg-inner {
+      display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center;
+    }
+    .vdf-reg-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; color: #64748B;
+    }
+    .vdf-reg-item i { color: #47a996; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1200px) {
+      .vdf-hero { padding-top: 120px; }
+    }
+    @media (max-width: 1024px) {
+      .vdf-hero { padding-top: 110px; }
+      .vdf-hero-grid { grid-template-columns: 1fr; }
+      .vdf-hero-panel { display: grid; grid-template-columns: repeat(2, 1fr); }
+      .vdf-panel-stat { border-bottom: none; border-right: 1px solid rgba(255,255,255,0.07); }
+      .vdf-panel-stat:nth-child(even) { border-right: none; }
+      .vdf-vision-grid { grid-template-columns: 1fr; }
+      .vdf-opp-grid { grid-template-columns: 1fr 1fr; }
+      .vdf-structure-grid { grid-template-columns: 1fr; }
+      .vdf-suji-grid { grid-template-columns: 1fr 1fr; }
+      .vdf-suji-center { display: none; }
+      .vdf-portfolio-grid { grid-template-columns: 1fr; }
+      .vdf-moonshot-track { grid-template-columns: 1fr 1fr 1fr; row-gap: 2rem; }
+      .vdf-moonshot-track::before { display: none; }
+      .vdf-dealflow-grid { grid-template-columns: 1fr; }
+      .vdf-risk-grid { grid-template-columns: 1fr 1fr; }
+      .vdf-team-grid { grid-template-columns: 1fr 1fr; }
+      .vdf-team-grid > *:last-child { grid-column: span 2; max-width: 420px; margin: 0 auto; width: 100%; }
+      .vdf-onboard-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .vdf-case-inner { grid-template-columns: 140px 1fr; }
+      .vdf-case-tags-col { display: none; }
+      .vdf-track-summary { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .vdf-hero { padding-top: 90px; }
+      .vdf-hero-panel { grid-template-columns: 1fr; }
+      .vdf-panel-stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+      .vdf-opp-grid { grid-template-columns: 1fr; }
+      .vdf-suji-grid { grid-template-columns: 1fr; }
+      .vdf-risk-grid { grid-template-columns: 1fr; }
+      .vdf-team-grid { grid-template-columns: 1fr; }
+      .vdf-team-grid > *:last-child { grid-column: span 1; max-width: 100%; }
+      .vdf-case-inner { grid-template-columns: 1fr; }
+      .vdf-case-multiple-col { padding: 24px; }
+      .vdf-moonshot-track { grid-template-columns: 1fr 1fr; }
+      .vdf-track-summary { grid-template-columns: 1fr 1fr; }
+      .vdf-distribution-strip { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Sticky Nav -->
+  <!-- Nav -->
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-      
       <ul class="nav-menu">
         <li class="nav-item">
           <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
@@ -46,371 +838,860 @@
         <li class="nav-item"><a href="insights.html">Insights</a></li>
         <li class="nav-item"><a href="resources.html">Resources</a></li>
       </ul>
-
       <div class="nav-actions">
         <a href="#" class="login-link">Investor Login</a>
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
-
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
-      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
   </header>
 
   <main>
-    <!-- Hero Banner -->
+
+    <!-- ====== SECTION 1: HERO ====== -->
     <section class="vdf-hero">
-      <div class="pattern-overlay"></div>
-      <div class="container" style="position: relative; z-index: 2;">
-        <span class="about-hero-label" style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 20px;">CATEGORY II AIF &middot; SEBI Reg No: IN/AIF2/22-23/1248</span>
-        <h1 style="color: white; font-size: 56px; font-weight: 700; line-height: 1.1; margin-bottom: 10px; margin-top: 0;">SPVH Value Discovery Fund</h1>
-        <div style="color: #47a996; font-size: 22px; font-style: italic; margin-bottom: 30px;">SME Focused Pre-IPO Cat II AIF</div>
-        
-        <div class="vdf-hero-pill-row">
-          <span class="vdf-hero-pill">Target Corpus: &#8377;250 Cr</span>
-          <span class="vdf-hero-pill">Min. Investment: &#8377;1 Cr</span>
-          <span class="vdf-hero-pill">Target IRR: 45%+ CAGR</span>
+      <div class="container">
+        <div class="vdf-hero-grid">
+
+          <!-- Left -->
+          <div>
+            <div class="vdf-hero-eyebrow">SPVH Value Discovery Fund</div>
+            <div class="vdf-hero-fund-badge">
+              <i class="fas fa-shield-alt"></i> Category II AIF &nbsp;&middot;&nbsp; SEBI Reg. No: IN/AIF2/22-23/1248
+            </div>
+            <h1>Discover India's<br><span>Next 10X</span> Growth Story.</h1>
+            <div class="vdf-hero-sub">SME Focused Pre-IPO Alternative Investment Fund</div>
+            <p class="vdf-hero-body">A disciplined, research-led Category II AIF that identifies high-potential SMEs at their pre-IPO stage — entering at deep discounts and exiting post-listing to deliver superior, risk-adjusted returns for sophisticated investors.</p>
+            <div class="vdf-hero-pills">
+              <span class="vdf-hero-pill"><i class="fas fa-rupee-sign"></i> Target Corpus: ₹250 Cr</span>
+              <span class="vdf-hero-pill"><i class="fas fa-coins"></i> Min. Investment: ₹1 Cr</span>
+              <span class="vdf-hero-pill"><i class="fas fa-chart-line"></i> Target IRR: 45%+ CAGR</span>
+              <span class="vdf-hero-pill"><i class="fas fa-clock"></i> Holding: 12–48 Months</span>
+            </div>
+            <div class="vdf-hero-actions">
+              <a href="contact.html" class="vdf-btn-primary"><i class="fas fa-calendar-alt"></i> Schedule a Call with Fund Manager</a>
+              <a href="#vdf-structure" class="vdf-btn-ghost"><i class="fas fa-file-alt"></i> Fund Terms</a>
+            </div>
+          </div>
+
+          <!-- Right panel -->
+          <div class="vdf-hero-panel reveal">
+            <div class="vdf-hero-panel-head">Fund at a Glance</div>
+            <div class="vdf-panel-stat">
+              <div class="vdf-ps-val">₹<span>250 Cr</span></div>
+              <div class="vdf-ps-lbl">Target Corpus</div>
+              <div class="vdf-ps-note">Green-shoe option up to ₹50 Cr</div>
+            </div>
+            <div class="vdf-panel-stat">
+              <div class="vdf-ps-val"><span>45%+</span></div>
+              <div class="vdf-ps-lbl">Target IRR (CAGR)</div>
+              <div class="vdf-ps-note">Absolute return mandate</div>
+            </div>
+            <div class="vdf-panel-stat">
+              <div class="vdf-ps-val"><span>10X</span></div>
+              <div class="vdf-ps-lbl">Target Return Multiple</div>
+              <div class="vdf-ps-note">36–48 month investment horizon</div>
+            </div>
+            <div class="vdf-panel-stat">
+              <div class="vdf-ps-val"><span>8</span></div>
+              <div class="vdf-ps-lbl">Successful Exits (Track Record)</div>
+              <div class="vdf-ps-note">Avg. multiple: 7.7X across exits</div>
+            </div>
+          </div>
+
         </div>
-        
-        <a href="contact.html" class="btn btn-primary" style="background-color: #496bad; border-color: #496bad; font-size: 16px; padding: 15px 30px;">Schedule a Call with the Fund Manager &rarr;</a>
       </div>
     </section>
 
-    <!-- Section 1 — Fund Vision -->
-    <section class="philosophy-overview" style="background-color: white; padding: 80px 0;">
+    <!-- ====== SECTION 2: FUND VISION ====== -->
+    <section class="vdf-vision">
       <div class="container">
-        <div class="philosophy-grid-section-1" style="align-items: center;">
-          <div class="philosophy-grid-section-1-left reveal">
-            <h2 style="color: #496bad; font-size: 46px; font-weight: 700; margin-bottom: 1.5rem; margin-top:0;">Capitalising the 10X Dream.</h2>
-            <div style="width: 80px; height: 4px; background-color: #47a996; margin-bottom: 2.5rem;"></div>
-            <p style="color: #4b5563; font-size: 18px; line-height: 1.7;">To capitalize on India's vibrant SME ecosystem by identifying and nurturing tomorrow's market leaders at their pre-IPO stage, leveraging strategic partnerships and deep market insights to generate superior alpha of 10X returns while democratizing access to India's most promising growth stories.</p>
-            
-            <div class="vdf-tenet-pills" style="margin-top: 35px; gap: 15px;">
-              <span class="vdf-tenet-pill" style="font-size: 15px; padding: 10px 20px;">Value + Discovery</span>
-              <span class="vdf-tenet-pill" style="font-size: 15px; padding: 10px 20px;">12&ndash;48 Month Holding Framework</span>
-              <span class="vdf-tenet-pill" style="font-size: 15px; padding: 10px 20px;">Disciplined Exit Strategy</span>
+        <div class="vdf-vision-grid">
+
+          <!-- Left -->
+          <div class="reveal">
+            <span class="vdf-sec-label">Fund Vision</span>
+            <h2 class="vdf-sec-heading">Capitalising the <span>10X Dream.</span></h2>
+            <div class="vdf-sec-rule"></div>
+            <p class="vdf-vision-body">To capitalise on India's vibrant SME ecosystem by identifying and nurturing tomorrow's market leaders at their pre-IPO stage — leveraging strategic partnerships, deep promoter relationships, and institutional-grade research to generate superior alpha while democratising access to India's most promising growth stories.</p>
+            <p class="vdf-vision-body">The SPVH Value Discovery Fund is not a passive allocator. We are active partners in the pre-IPO journey — supporting governance, disclosure readiness, and investor positioning to unlock value systematically at every stage of the IPO lifecycle.</p>
+            <div class="vdf-tenet-row">
+              <span class="vdf-tenet-pill"><i class="fas fa-search-dollar"></i> Value + Discovery</span>
+              <span class="vdf-tenet-pill"><i class="fas fa-clock"></i> 12–48 Month Holding Framework</span>
+              <span class="vdf-tenet-pill"><i class="fas fa-sign-out-alt"></i> Disciplined Exit Strategy</span>
+              <span class="vdf-tenet-pill"><i class="fas fa-recycle"></i> Gain Recycling Model</span>
             </div>
           </div>
-          <div class="philosophy-grid-section-1-right reveal-right" style="justify-content: center; align-items: center; align-self: stretch; display: flex;">
-            <div class="vdf-10x-box" style="width: 100%; border: 1px solid rgba(71,169,150,0.3); background: linear-gradient(135deg, #0A1628, #112240); box-shadow: 0 20px 50px rgba(0,0,0,0.15), inset 0 0 30px rgba(71,169,150,0.05); padding: 50px;">
-              <div class="vdf-10x-text" style="animation: breatheGlow 4s infinite alternate ease-in-out; font-size: 110px; line-height: 1; background: linear-gradient(180deg, #FFFFFF, rgba(255,255,255,0.7)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">10X</div>
-              <div style="color: #9CA3AF; font-size: 18px; margin-top: 20px; line-height: 1.5; font-weight: 500;">Target Return on Pre-IPO investments over 36&ndash;48 months.</div>
-              
-              <div class="vdf-gauge-row" style="gap: 25px; margin-top: 45px; justify-content: center;">
-                <div class="vdf-gauge-item">
-                  <div class="vdf-gauge-visual" style="width: 90px; height: 45px; border-width: 6px;"></div>
-                  <div style="color: white; font-size: 18px; font-weight: 700;">45%</div>
-                  <div style="color: #9CA3AF; font-size: 14px; margin-top: 5px;">Pre-IPO</div>
+
+          <!-- Right: 10X showcase -->
+          <div class="reveal-right">
+            <div class="vdf-tenx-box">
+              <span class="vdf-tenx-number">10X</span>
+              <p class="vdf-tenx-caption">Target return on pre-IPO investments over a 36–48 month horizon through a disciplined entry, hold, and exit framework.</p>
+              <div class="vdf-alloc-row">
+                <div class="vdf-alloc-item">
+                  <div class="vdf-alloc-pct">60%</div>
+                  <div class="vdf-alloc-lbl">Pre-IPO</div>
                 </div>
-                <div class="vdf-gauge-item">
-                  <div class="vdf-gauge-visual" style="width: 90px; height: 45px; border-width: 6px;"></div>
-                  <div style="color: white; font-size: 18px; font-weight: 700;">36%</div>
-                  <div style="color: #9CA3AF; font-size: 14px; margin-top: 5px;">Anchor</div>
+                <div class="vdf-alloc-item">
+                  <div class="vdf-alloc-pct">25%</div>
+                  <div class="vdf-alloc-lbl">Anchor Book</div>
                 </div>
-                <div class="vdf-gauge-item">
-                  <div class="vdf-gauge-visual" style="width: 90px; height: 45px; border-width: 6px;"></div>
-                  <div style="color: white; font-size: 18px; font-weight: 700;">16%</div>
-                  <div style="color: #9CA3AF; font-size: 14px; margin-top: 5px;">Listed</div>
+                <div class="vdf-alloc-item">
+                  <div class="vdf-alloc-pct">15%</div>
+                  <div class="vdf-alloc-lbl">Public Equities</div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- Section 2 — The Opportunity -->
-    <section style="background-color: #F0F4FA; padding: 80px 0;">
+    <!-- ====== SECTION 3: THE OPPORTUNITY ====== -->
+    <section class="vdf-opportunity">
       <div class="container">
-        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
-          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">THE OPPORTUNITY</span>
-          <h2 style="color: #1A1A1A; font-size: 36px; font-weight: 700; margin-top:0; margin-bottom: 0;">The Goldmine in <span style="color: #496bad;">India's SME Ecosystem.</span></h2>
+        <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto;">
+          <span class="vdf-sec-label">The Opportunity</span>
+          <h2 class="vdf-sec-heading">The Goldmine in <span>India's SME Ecosystem.</span></h2>
+          <p class="vdf-sec-sub" style="margin: 0.75rem auto 0;">India's SME IPO market is in its golden era — generating wealth that traditional listed equities simply cannot replicate at this stage of the economic cycle.</p>
         </div>
 
-        <div class="vdf-stats-grid reveal">
-          <div class="vdf-stat-card">
-            <div class="vdf-stat-num">241</div>
-            <div class="vdf-stat-label">SME IPOs launched in 2024</div>
+        <div class="vdf-opp-grid reveal">
+          <div class="vdf-opp-card">
+            <div class="vdf-opp-num">241</div>
+            <div class="vdf-opp-lbl">SME IPOs launched on NSE Emerge &amp; BSE SME in 2024</div>
           </div>
-          <div class="vdf-stat-card">
-            <div class="vdf-stat-num">72%</div>
-            <div class="vdf-stat-label">Average listing day gain (2024)</div>
+          <div class="vdf-opp-card">
+            <div class="vdf-opp-num">72%</div>
+            <div class="vdf-opp-lbl">Average listing day gain across SME IPOs in 2024</div>
           </div>
-          <div class="vdf-stat-card">
-            <div class="vdf-stat-num">22</div>
-            <div class="vdf-stat-label">SME IPOs gave 10X returns in 2024</div>
+          <div class="vdf-opp-card">
+            <div class="vdf-opp-num">22</div>
+            <div class="vdf-opp-lbl">SME IPOs that delivered 10X+ returns in 2024 alone</div>
           </div>
-          <div class="vdf-stat-card">
-            <div class="vdf-stat-num">&#8377;1.8 Lakh Cr+</div>
-            <div class="vdf-stat-label">raised on NSE Emerge alone</div>
+          <div class="vdf-opp-card">
+            <div class="vdf-opp-num">₹1.8L Cr+</div>
+            <div class="vdf-opp-lbl">Cumulative market cap raised on NSE Emerge since inception</div>
           </div>
-          <div class="vdf-stat-card">
-            <div class="vdf-stat-num">45%</div>
-            <div class="vdf-stat-label">CAGR projected SME listing growth</div>
+          <div class="vdf-opp-card">
+            <div class="vdf-opp-num">45%</div>
+            <div class="vdf-opp-lbl">Projected CAGR in SME listings through 2028</div>
           </div>
-          <div class="vdf-stat-card">
-            <div class="vdf-stat-num">&#8377;225,000 Cr</div>
-            <div class="vdf-stat-label">targeted SME market cap by 2030</div>
+          <div class="vdf-opp-card">
+            <div class="vdf-opp-num">₹2.25L Cr</div>
+            <div class="vdf-opp-lbl">Targeted SME aggregate market cap by 2030</div>
           </div>
         </div>
-        
-        <div class="vdf-highlight-strip reveal">
-          <p>India's SME IPO market is entering its next explosive growth cycle &mdash; 250&ndash;300 IPOs per year, average listing gains of 200&ndash;300%, cumulative wealth creation potential of 600&ndash;1200% over 5&ndash;6 years.</p>
+
+        <div class="vdf-highlight-banner reveal">
+          India's SME IPO market is entering its next explosive growth cycle — <strong>250–300 IPOs per year</strong>, average listing gains of <strong>200–300%</strong>, and cumulative wealth creation potential of <strong>600–1,200%</strong> for pre-IPO investors over 5–6 years. The opportunity is structural, not cyclical.
         </div>
       </div>
     </section>
 
-    <!-- Section 3 — Fund Thesis & Strategy -->
-    <section style="background-color: white; padding: 80px 0;">
+    <!-- ====== SECTION 4: FUND STRUCTURE & TERMS ====== -->
+    <section class="vdf-structure" id="vdf-structure">
       <div class="container">
-        <div style="display: flex; flex-direction: column; gap: 80px; align-items: center;">
-          <div class="reveal" style="width: 100%; max-width: 1000px; text-align: center;">
-            <h2 style="color: #496bad; font-size: 46px; font-weight: 700; margin-bottom: 2rem; margin-top:0;">Fund Thesis.</h2>
-            <p style="color: #4b5563; font-size: 18px; line-height: 1.7; margin-bottom: 3rem;">The SPVH Value Discovery Fund pursues a disciplined, high-alpha strategy by identifying high-potential SMEs at their pre-IPO stage, entering at discounted P/E multiples, participating in anchor book allocations, and executing structured exits within 12&ndash;24 months post-listing. Gains are recycled into the next pipeline, maintaining a rolling portfolio of 6&ndash;10 active investments targeting a consistent 10X value-unlocking strategy.</p>
-            
-            <div style="background-color: white; border-radius: 12px; padding: 50px; border: 1px solid #E5E7EB; box-shadow: 0 15px 40px rgba(0,0,0,0.06); margin: 0 auto; max-width: 800px;">
-              <h3 style="color: #1A1A1A; font-size: 22px; font-weight: 700; margin-top: 0; margin-bottom: 40px; text-align: center;">Portfolio Construction</h3>
-              <div class="vdf-donut-container">
-                <div class="vdf-donut-wrapper" style="position: relative; width: 300px; height: 300px; margin: 0 auto 50px auto;">
-                  <canvas id="vdfPortfolioChart"></canvas>
-                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                    <div style="font-size: 14px; font-weight: 600; color: #9CA3AF; text-transform: uppercase;">Holding</div>
-                    <div style="font-size: 32px; font-weight: 800; color: #1A1A1A; line-height: 1;">36M</div>
+        <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+          <span class="vdf-sec-label">Fund Structure &amp; Terms</span>
+          <h2 class="vdf-sec-heading">Structured for <span>Institutional Rigor.</span></h2>
+          <p class="vdf-sec-sub" style="margin: 0.75rem auto 0;">A transparent, SEBI-compliant Category II AIF structure with clearly defined terms, independent oversight, and investor-first governance.</p>
+        </div>
+
+        <div class="vdf-structure-grid">
+
+          <!-- Left: Terms table -->
+          <div class="reveal">
+            <table class="vdf-terms-table">
+              <tbody>
+                <tr><td>Fund Name</td><td>SPVH Value Discovery Fund</td></tr>
+                <tr><td>Fund Category</td><td>Category II AIF (SEBI Registered)</td></tr>
+                <tr><td>SEBI Registration</td><td><span class="highlight">IN/AIF2/22-23/1248</span></td></tr>
+                <tr><td>Fund Manager</td><td>SPVH Asset Management Company</td></tr>
+                <tr><td>Target Corpus</td><td><span class="highlight">₹250 Crore</span> (Green-shoe: ₹50 Cr)</td></tr>
+                <tr><td>Minimum Investment</td><td><span class="highlight">₹1 Crore</span> per investor</td></tr>
+                <tr><td>Fund Tenure</td><td>4 Years (extendable by 1+1 years)</td></tr>
+                <tr><td>Investment Period</td><td>First 2 years post first close</td></tr>
+                <tr><td>Target IRR</td><td><span class="highlight">45%+ CAGR</span> (absolute return)</td></tr>
+                <tr><td>Hurdle Rate</td><td>8% p.a. (preferred return)</td></tr>
+                <tr><td>Carry</td><td>20% above hurdle (high-water mark)</td></tr>
+                <tr><td>Management Fee</td><td>2% p.a. on committed capital</td></tr>
+                <tr><td>Distribution Waterfall</td><td>Return of Capital → Preferred Return → Carry</td></tr>
+                <tr><td>Custodian</td><td>SEBI-Registered Independent Custodian</td></tr>
+                <tr><td>Auditor</td><td>Big-4 Empanelled Statutory Auditor</td></tr>
+                <tr><td>Registrar</td><td>SEBI-Registered RTA</td></tr>
+              </tbody>
+            </table>
+
+            <div class="vdf-distribution-strip">
+              <div class="vdf-dist-cell">
+                <div class="vdf-dist-val">Quarterly</div>
+                <div class="vdf-dist-lbl">NAV Reporting</div>
+              </div>
+              <div class="vdf-dist-cell">
+                <div class="vdf-dist-val">Semi-Annual</div>
+                <div class="vdf-dist-lbl">Distributions</div>
+              </div>
+              <div class="vdf-dist-cell">
+                <div class="vdf-dist-val">Annual</div>
+                <div class="vdf-dist-lbl">Audited Accounts</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Eligibility -->
+          <div class="reveal-right">
+            <div class="vdf-eligibility-card">
+              <div class="vdf-elig-title"><i class="fas fa-user-check" style="color:#47a996; margin-right:8px;"></i> Investor Eligibility</div>
+              <div class="vdf-elig-item">
+                <div class="vdf-elig-icon"><i class="fas fa-landmark"></i></div>
+                <div class="vdf-elig-text">
+                  <strong>Resident Individuals (HNIs &amp; UHNIs)</strong>
+                  Indian residents with ₹1 Cr+ investable capacity meeting SEBI's accredited investor criteria
+                </div>
+              </div>
+              <div class="vdf-elig-item">
+                <div class="vdf-elig-icon"><i class="fas fa-building"></i></div>
+                <div class="vdf-elig-text">
+                  <strong>Family Offices &amp; Trusts</strong>
+                  Registered family offices, private trusts, and HUFs with appropriate investment mandates
+                </div>
+              </div>
+              <div class="vdf-elig-item">
+                <div class="vdf-elig-icon"><i class="fas fa-globe-asia"></i></div>
+                <div class="vdf-elig-text">
+                  <strong>NRIs &amp; OCIs</strong>
+                  Non-Resident Indians and Overseas Citizens of India under RBI/FEMA Schedule IV compliant structures
+                </div>
+              </div>
+              <div class="vdf-elig-item">
+                <div class="vdf-elig-icon"><i class="fas fa-briefcase"></i></div>
+                <div class="vdf-elig-text">
+                  <strong>Corporates &amp; Institutions</strong>
+                  Corporate bodies, LLPs, and institutional investors with board-approved investment policies
+                </div>
+              </div>
+              <div class="vdf-elig-item">
+                <div class="vdf-elig-icon"><i class="fas fa-file-contract"></i></div>
+                <div class="vdf-elig-text">
+                  <strong>KYC &amp; Compliance</strong>
+                  CKYC-compliant investors with PAN, Aadhaar, and source-of-funds documentation as per PMLA
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SECTION 5: FUND THESIS & SUJI FRAMEWORK ====== -->
+    <section class="vdf-thesis">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto;">
+          <span class="vdf-sec-label">Investment Framework</span>
+          <h2 class="vdf-sec-heading">The SUJI <span>Framework.</span></h2>
+        </div>
+        <p class="vdf-thesis-body reveal">The SPVH Value Discovery Fund pursues a disciplined, high-alpha strategy by identifying high-potential SMEs at their pre-IPO stage, entering at discounted P/E multiples, participating in anchor book allocations, and executing structured exits within 12–24 months post-listing. Gains are recycled into the next pipeline, maintaining a rolling portfolio of <strong>6–10 active investments</strong> targeting a consistent 10X value-unlocking strategy. Every investment must pass all four pillars of the SUJI framework before capital is deployed.</p>
+
+        <div class="vdf-suji-grid reveal">
+          <!-- Center bubble -->
+          <div class="vdf-suji-center">
+            <div class="vdf-suji-word">SUJI</div>
+            <div class="vdf-suji-badge">Framework</div>
+          </div>
+          <!-- S -->
+          <div class="vdf-suji-card">
+            <div class="vdf-suji-letter">S</div>
+            <div class="vdf-suji-card-title">Scalability &amp; Sector Tailwinds</div>
+            <div class="vdf-suji-card-desc">We target high-growth sectors with strong macroeconomic support — manufacturing, energy, infra, fintech, and export-led industries — with inherently scalable business models capable of 3–5x revenue growth over 4 years.</div>
+          </div>
+          <!-- U -->
+          <div class="vdf-suji-card">
+            <div class="vdf-suji-letter">U</div>
+            <div class="vdf-suji-card-title">Underlying Financial Strength</div>
+            <div class="vdf-suji-card-desc">High ROE/ROCE (typically >20%), strong and consistent cash-flow generation, low debt-to-equity (<0.5x), historically expanding margins, and clean books. No turnaround bets — only proven performers entering their next growth phase.</div>
+          </div>
+          <!-- J -->
+          <div class="vdf-suji-card">
+            <div class="vdf-suji-letter">J</div>
+            <div class="vdf-suji-card-title">Judicious Valuation</div>
+            <div class="vdf-suji-card-desc">Entry at deep discounts to listed peers — typically at 30–60% discount to sector P/E multiples — ensuring significant valuation arbitrage upon listing. We run full DCF models with conservative assumptions to validate every entry price.</div>
+          </div>
+          <!-- I -->
+          <div class="vdf-suji-card">
+            <div class="vdf-suji-letter">I</div>
+            <div class="vdf-suji-card-title">IPO Readiness &amp; Exit Visibility</div>
+            <div class="vdf-suji-card-desc">Robust corporate governance, clean promoter background with no legal encumbrances, DRHP-ready financials, designated banking and legal conduits in place, and a confirmed SEBI filing timeline before any capital is committed.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SECTION 6: PORTFOLIO CONSTRUCTION ====== -->
+    <section class="vdf-portfolio">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+          <span class="vdf-sec-label">Portfolio Construction</span>
+          <h2 class="vdf-sec-heading light">Three Buckets. <span>One Strategy.</span></h2>
+          <p class="vdf-sec-sub light" style="margin: 0.75rem auto 0;">Capital is deployed across three complementary buckets with different risk-return and liquidity profiles — maximising alpha while managing liquidity at the fund level.</p>
+        </div>
+
+        <div class="vdf-portfolio-grid">
+          <!-- Left: Donut chart -->
+          <div class="vdf-donut-wrap reveal">
+            <div class="vdf-chart-container">
+              <canvas id="vdfPortfolioChart"></canvas>
+              <div class="vdf-chart-center">
+                <div class="vdf-chart-center-val">36M</div>
+                <div class="vdf-chart-center-lbl">Avg Hold</div>
+              </div>
+            </div>
+            <div class="vdf-alloc-legend">
+              <div class="vdf-legend-item">
+                <div class="vdf-legend-dot" style="background:#47a996;"></div>
+                <div class="vdf-legend-label">Pre-IPO Placement</div>
+                <div class="vdf-legend-pct">60%</div>
+              </div>
+              <div class="vdf-legend-item">
+                <div class="vdf-legend-dot" style="background:#496bad;"></div>
+                <div class="vdf-legend-label">Anchor Book Allocation</div>
+                <div class="vdf-legend-pct">25%</div>
+              </div>
+              <div class="vdf-legend-item">
+                <div class="vdf-legend-dot" style="background:#C9A84C;"></div>
+                <div class="vdf-legend-label">Listed SME Equities</div>
+                <div class="vdf-legend-pct">15%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Allocation detail -->
+          <div class="vdf-alloc-detail reveal-right">
+            <div class="vdf-alloc-block">
+              <div class="vdf-alloc-block-head">
+                <div class="vdf-alloc-block-name">Pre-IPO Placement</div>
+                <div class="vdf-alloc-block-pct">60%</div>
+              </div>
+              <div class="vdf-alloc-bar-track"><div class="vdf-alloc-bar-fill" style="width:60%;"></div></div>
+              <div class="vdf-alloc-block-desc">Core alpha driver. Private placements in SMEs 12–24 months before their IPO filing. Entered at 30–60% discount to IPO price. Lock-in period of 6 months post-listing under SEBI regulations. Primary source of 10X return generation.</div>
+            </div>
+            <div class="vdf-alloc-block">
+              <div class="vdf-alloc-block-head">
+                <div class="vdf-alloc-block-name">Anchor Book Allocation</div>
+                <div class="vdf-alloc-block-pct">25%</div>
+              </div>
+              <div class="vdf-alloc-bar-track"><div class="vdf-alloc-bar-fill" style="width:25%;"></div></div>
+              <div class="vdf-alloc-block-desc">Strategic allocation in the Anchor investor portion of SME IPOs — entered at IPO price with 30-day lock-in. Lower discount vs Pre-IPO but higher certainty and faster liquidity. Target: 2–4X returns over 12–24 months.</div>
+            </div>
+            <div class="vdf-alloc-block">
+              <div class="vdf-alloc-block-head">
+                <div class="vdf-alloc-block-name">Listed SME Equities</div>
+                <div class="vdf-alloc-block-pct">15%</div>
+              </div>
+              <div class="vdf-alloc-bar-track"><div class="vdf-alloc-bar-fill" style="width:15%;"></div></div>
+              <div class="vdf-alloc-block-desc">Tactical allocation in recently-listed SMEs with strong post-listing momentum and undervalued vs. growth potential. Provides near-term liquidity, active portfolio management, and alpha generation between pre-IPO deal deployments.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SECTION 7: THE MOONSHOT ====== -->
+    <section class="vdf-moonshot">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto;">
+          <span class="vdf-sec-label">Value Unlocking Journey</span>
+          <h2 class="vdf-sec-heading">The Moonshot — <span>Pre-IPO to Exit.</span></h2>
+          <p class="vdf-sec-sub" style="margin: 0.75rem auto 0;">Our structured investment journey is mapped to five key value inflection points — each stage designed to capture a distinct layer of returns from the same underlying investment.</p>
+        </div>
+
+        <div class="vdf-moonshot-track reveal">
+          <div class="vdf-ms-step">
+            <div class="vdf-ms-node">
+              <div class="vdf-ms-multiple">1X</div>
+              <div class="vdf-ms-node-lbl">Entry</div>
+            </div>
+            <div class="vdf-ms-timeline"><i class="fas fa-clock"></i> Month 0</div>
+            <div class="vdf-ms-stage">Pre-IPO Entry</div>
+            <div class="vdf-ms-desc">Private placement at a 30–60% discount to IPO price. SUJI screening complete. DRHP filing imminent.</div>
+          </div>
+          <div class="vdf-ms-step">
+            <div class="vdf-ms-node">
+              <div class="vdf-ms-multiple">2–2.5X</div>
+              <div class="vdf-ms-node-lbl">Listing Pop</div>
+            </div>
+            <div class="vdf-ms-timeline"><i class="fas fa-clock"></i> 12–15 Months</div>
+            <div class="vdf-ms-stage">IPO Listing Day</div>
+            <div class="vdf-ms-desc">Typical 70–150% listing gains on IPO price translate to 2–2.5X on our pre-IPO entry. Lock-in commences.</div>
+          </div>
+          <div class="vdf-ms-step">
+            <div class="vdf-ms-node">
+              <div class="vdf-ms-multiple">3–4X</div>
+              <div class="vdf-ms-node-lbl">Lock-In Free</div>
+            </div>
+            <div class="vdf-ms-timeline"><i class="fas fa-clock"></i> 12–24 Months</div>
+            <div class="vdf-ms-stage">Anchor/QIB Unlocked</div>
+            <div class="vdf-ms-desc">Post lock-in expiry, tactical partial exits initiated. Momentum continues as institutional coverage builds.</div>
+          </div>
+          <div class="vdf-ms-step">
+            <div class="vdf-ms-node">
+              <div class="vdf-ms-multiple">5–7X</div>
+              <div class="vdf-ms-node-lbl">Re-Rating</div>
+            </div>
+            <div class="vdf-ms-timeline"><i class="fas fa-clock"></i> 24–36 Months</div>
+            <div class="vdf-ms-stage">Valuation Trigger</div>
+            <div class="vdf-ms-desc">Sector re-rating, earnings upgrades, and broader market recognition drive compounding value. Majority held.</div>
+          </div>
+          <div class="vdf-ms-step">
+            <div class="vdf-ms-node">
+              <div class="vdf-ms-multiple">7–12X</div>
+              <div class="vdf-ms-node-lbl">Full Exit</div>
+            </div>
+            <div class="vdf-ms-timeline"><i class="fas fa-clock"></i> 36–48 Months</div>
+            <div class="vdf-ms-stage">Exit Trigger</div>
+            <div class="vdf-ms-desc">Structured full exit upon reaching target valuation or time trigger. Gains recycled into next vintage.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SECTION 8: DEAL FLOW & SOURCING EDGE ====== -->
+    <section class="vdf-dealflow">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto;">
+          <span class="vdf-sec-label">Our Edge</span>
+          <h2 class="vdf-sec-heading">Proprietary Deal Flow. <span>Institutional Discipline.</span></h2>
+          <p class="vdf-sec-sub" style="margin: 0.75rem auto 0;">The pre-IPO opportunity is access-driven. Our deal flow engine is built on relationships cultivated over two decades — giving SPVH first-mover access to opportunities before they reach the broader market.</p>
+        </div>
+
+        <div class="vdf-dealflow-grid reveal">
+          <div class="vdf-df-card">
+            <div class="vdf-df-icon"><i class="fas fa-handshake"></i></div>
+            <div>
+              <div class="vdf-df-title">Promoter &amp; Founder Network</div>
+              <div class="vdf-df-desc">Direct relationships with 200+ SME promoters across manufacturing, energy, logistics, and services built over 20 years. First-call access to pre-IPO rounds before merchant bankers are engaged.</div>
+              <div class="vdf-df-tag"><i class="fas fa-circle" style="font-size:6px;"></i> Proprietary Access</div>
+            </div>
+          </div>
+          <div class="vdf-df-card">
+            <div class="vdf-df-icon"><i class="fas fa-university"></i></div>
+            <div>
+              <div class="vdf-df-title">Investment Banker Tie-Ups</div>
+              <div class="vdf-df-desc">Formal co-investment agreements with 15+ SEBI-registered merchant bankers specialising in SME IPOs. Priority allocation in anchor books and preferred access to pre-IPO placement rounds.</div>
+              <div class="vdf-df-tag"><i class="fas fa-circle" style="font-size:6px;"></i> 15+ IB Partners</div>
+            </div>
+          </div>
+          <div class="vdf-df-card">
+            <div class="vdf-df-icon"><i class="fas fa-chart-bar"></i></div>
+            <div>
+              <div class="vdf-df-title">Proprietary Screening Engine</div>
+              <div class="vdf-df-desc">A quantitative pre-screening model covering 1,200+ SMEs — tracking financials, promoter actions, IPO filings, and sector momentum. Filters the universe to 40–50 investment-grade opportunities per quarter.</div>
+              <div class="vdf-df-tag"><i class="fas fa-circle" style="font-size:6px;"></i> 1,200+ SMEs Tracked</div>
+            </div>
+          </div>
+          <div class="vdf-df-card">
+            <div class="vdf-df-icon"><i class="fas fa-network-wired"></i></div>
+            <div>
+              <div class="vdf-df-title">Sector Expert &amp; Advisory Network</div>
+              <div class="vdf-df-desc">25+ domain experts across energy, pharma, manufacturing, and logistics who provide on-ground intelligence, channel checks, and order-book validation before every investment decision is finalised.</div>
+              <div class="vdf-df-tag"><i class="fas fa-circle" style="font-size:6px;"></i> 25+ Domain Experts</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Funnel strip -->
+        <div class="vdf-funnel-strip reveal">
+          <div class="vdf-funnel-stage">
+            <div class="vdf-funnel-num">1,200+</div>
+            <div class="vdf-funnel-lbl">SMEs Tracked</div>
+          </div>
+          <div class="vdf-funnel-arrow"><i class="fas fa-chevron-right"></i></div>
+          <div class="vdf-funnel-stage">
+            <div class="vdf-funnel-num">~150</div>
+            <div class="vdf-funnel-lbl">Qualified Annually</div>
+          </div>
+          <div class="vdf-funnel-arrow"><i class="fas fa-chevron-right"></i></div>
+          <div class="vdf-funnel-stage">
+            <div class="vdf-funnel-num">~40</div>
+            <div class="vdf-funnel-lbl">Deep Due Diligence</div>
+          </div>
+          <div class="vdf-funnel-arrow"><i class="fas fa-chevron-right"></i></div>
+          <div class="vdf-funnel-stage">
+            <div class="vdf-funnel-num">~12</div>
+            <div class="vdf-funnel-lbl">IC Approval</div>
+          </div>
+          <div class="vdf-funnel-arrow"><i class="fas fa-chevron-right"></i></div>
+          <div class="vdf-funnel-stage">
+            <div class="vdf-funnel-num">6–10</div>
+            <div class="vdf-funnel-lbl">Active Portfolio</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SECTION 9: CASE STUDIES (TRACK RECORD) ====== -->
+    <section class="vdf-cases">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto;">
+          <span class="vdf-sec-label">Proven Track Record</span>
+          <h2 class="vdf-sec-heading">Real Deals. <span>Real Returns.</span></h2>
+          <p class="vdf-sec-sub" style="margin: 0.75rem auto 0;">Select transactions from our pre-fund track record demonstrating the consistent application of the SUJI framework across market cycles.</p>
+        </div>
+
+        <div class="vdf-case-grid reveal">
+
+          <!-- Danish Power -->
+          <div class="vdf-case-card">
+            <div class="vdf-case-inner">
+              <div class="vdf-case-multiple-col">
+                <div class="vdf-case-mult-val">7.33X</div>
+                <div class="vdf-case-mult-lbl">Return Multiple</div>
+                <div class="vdf-case-holding"><i class="fas fa-clock"></i> 20 Months</div>
+              </div>
+              <div class="vdf-case-body">
+                <div>
+                  <div class="vdf-case-name">Danish Power Limited</div>
+                  <div class="vdf-case-sector">Electrical Equipment &amp; Power Infrastructure</div>
+                </div>
+                <div class="vdf-case-prices">
+                  <div class="vdf-price-item">
+                    <div class="vdf-price-val">₹150</div>
+                    <div class="vdf-price-lbl">Pre-IPO Entry</div>
+                  </div>
+                  <div class="vdf-price-item">
+                    <div class="vdf-price-val">₹380</div>
+                    <div class="vdf-price-lbl">IPO Issue Price</div>
+                  </div>
+                  <div class="vdf-price-item">
+                    <div class="vdf-price-val exit">₹1,050</div>
+                    <div class="vdf-price-lbl">Exit Price</div>
                   </div>
                 </div>
-                
-                <div style="text-align: left; width: 100%; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; border-top: 1px solid #E5E7EB; padding-top: 30px;">
-                  <div class="vdf-bucket-desc vdf-bucket-preipo">Pre-IPO Placement <span style="font-weight: 800; opacity: 0.8; margin-left:8px;">60%</span></div>
-                  <div class="vdf-bucket-desc vdf-bucket-anchor">Anchor Book <span style="font-weight: 800; opacity: 0.8; margin-left:8px;">25%</span></div>
-                  <div class="vdf-bucket-desc vdf-bucket-public">Public Equities <span style="font-weight: 800; opacity: 0.8; margin-left:8px;">15%</span></div>
-                </div>
+              </div>
+              <div class="vdf-case-tags-col">
+                <div class="vdf-case-tag"><i class="fas fa-wind"></i> Sectoral Tailwinds</div>
+                <div class="vdf-case-tag"><i class="fas fa-chart-line"></i> Strong Financials</div>
+                <div class="vdf-case-tag"><i class="fas fa-tag"></i> Valuation Comfort</div>
               </div>
             </div>
           </div>
-          
-          <div class="reveal-up" style="width: 100%; max-width: 1100px; display: flex; justify-content: center; align-items: center; margin-top: 40px;">
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; position: relative; width: 100%;">
-              <!-- Central SUJI Bubble -->
-              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; width: 180px; height: 180px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 20px 45px rgba(0,0,0,0.12); z-index: 10; border: 10px solid #F0F4FA;">
-                <span style="font-size: 38px; font-weight: 800; color: #496bad; line-height: 1.1;">SUJI</span>
-                <span style="font-size: 12px; font-weight: 700; color: #47a996; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px;">Framework</span>
-                
-                <div style="position: absolute; top: -12px; left: -12px; color: #496bad; font-size: 26px; transform: rotate(-45deg); opacity: 0.8;"><i class="fas fa-arrow-up"></i></div>
-                <div style="position: absolute; top: -12px; right: -12px; color: #496bad; font-size: 26px; transform: rotate(45deg); opacity: 0.8;"><i class="fas fa-arrow-up"></i></div>
-                <div style="position: absolute; bottom: -12px; left: -12px; color: #496bad; font-size: 26px; transform: rotate(-135deg); opacity: 0.8;"><i class="fas fa-arrow-up"></i></div>
-                <div style="position: absolute; bottom: -12px; right: -12px; color: #496bad; font-size: 26px; transform: rotate(135deg); opacity: 0.8;"><i class="fas fa-arrow-up"></i></div>
-              </div>
 
-              <!-- 4 Blocks -->
-              <div style="display: flex; flex-direction: column; align-items: center; text-align: center; background-color: white; padding: 50px 40px; border-radius: 12px; border-top: 5px solid #496bad; box-shadow: 0 15px 40px rgba(0,0,0,0.06); height: 100%;">
-                <div style="width: 60px; height: 60px; background-color: #496bad; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 800; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(73,107,173,0.3);">S</div>
+          <!-- Kaycee Energy -->
+          <div class="vdf-case-card">
+            <div class="vdf-case-inner">
+              <div class="vdf-case-multiple-col">
+                <div class="vdf-case-mult-val">10.3X</div>
+                <div class="vdf-case-mult-lbl">Return Multiple</div>
+                <div class="vdf-case-holding"><i class="fas fa-clock"></i> 17 Months</div>
+              </div>
+              <div class="vdf-case-body">
                 <div>
-                  <div style="color: #47a996; font-weight: 700; font-size: 18px; margin-bottom: 12px;">Scalability &amp; Sector Tailwinds</div>
-                  <div style="color: #4b5563; font-size: 15px; line-height: 1.6;">High-growth sectors with macroeconomic support and inherently scalable business models.</div>
+                  <div class="vdf-case-name">Kaycee Energy &amp; Infra</div>
+                  <div class="vdf-case-sector">Energy Infrastructure &amp; EPC</div>
+                </div>
+                <div class="vdf-case-prices">
+                  <div class="vdf-price-item">
+                    <div class="vdf-price-val">₹35</div>
+                    <div class="vdf-price-lbl">Pre-IPO Entry</div>
+                  </div>
+                  <div class="vdf-price-item">
+                    <div class="vdf-price-val">₹54</div>
+                    <div class="vdf-price-lbl">IPO Issue Price</div>
+                  </div>
+                  <div class="vdf-price-item">
+                    <div class="vdf-price-val exit">₹365</div>
+                    <div class="vdf-price-lbl">Exit Price</div>
+                  </div>
                 </div>
               </div>
-              <div style="display: flex; flex-direction: column; align-items: center; text-align: center; background-color: white; padding: 50px 40px; border-radius: 12px; border-top: 5px solid #496bad; box-shadow: 0 15px 40px rgba(0,0,0,0.06); height: 100%;">
-                <div style="width: 60px; height: 60px; background-color: #496bad; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 800; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(73,107,173,0.3);">U</div>
+              <div class="vdf-case-tags-col">
+                <div class="vdf-case-tag"><i class="fas fa-anchor"></i> Anchor Backing</div>
+                <div class="vdf-case-tag"><i class="fas fa-shield-alt"></i> Low Debt Base</div>
+                <div class="vdf-case-tag"><i class="fas fa-briefcase"></i> Order Book Surge</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Owais Metal -->
+          <div class="vdf-case-card">
+            <div class="vdf-case-inner">
+              <div class="vdf-case-multiple-col">
+                <div class="vdf-case-mult-val">5.6X</div>
+                <div class="vdf-case-mult-lbl">Return Multiple</div>
+                <div class="vdf-case-holding"><i class="fas fa-clock"></i> 16 Months</div>
+              </div>
+              <div class="vdf-case-body">
                 <div>
-                  <div style="color: #47a996; font-weight: 700; font-size: 18px; margin-bottom: 12px;">Underlying Financial Strength</div>
-                  <div style="color: #4b5563; font-size: 15px; line-height: 1.6;">High ROE/ROCE, strong cash-flow generation, low debt, and historically consistent margins.</div>
+                  <div class="vdf-case-name">Owais Metal &amp; Minerals</div>
+                  <div class="vdf-case-sector">Metals, Mining &amp; Industrial Commodities</div>
+                </div>
+                <div class="vdf-case-prices">
+                  <div class="vdf-price-item">
+                    <div class="vdf-price-val">₹45</div>
+                    <div class="vdf-price-lbl">Pre-IPO Entry</div>
+                  </div>
+                  <div class="vdf-price-item">
+                    <div class="vdf-price-val">₹87</div>
+                    <div class="vdf-price-lbl">IPO Issue Price</div>
+                  </div>
+                  <div class="vdf-price-item">
+                    <div class="vdf-price-val exit">₹254</div>
+                    <div class="vdf-price-lbl">Exit Price</div>
+                  </div>
                 </div>
               </div>
-              <div style="display: flex; flex-direction: column; align-items: center; text-align: center; background-color: white; padding: 50px 40px; border-radius: 12px; border-top: 5px solid #496bad; box-shadow: 0 15px 40px rgba(0,0,0,0.06); height: 100%;">
-                <div style="width: 60px; height: 60px; background-color: #496bad; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 800; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(73,107,173,0.3);">J</div>
-                <div>
-                  <div style="color: #47a996; font-weight: 700; font-size: 18px; margin-bottom: 12px;">Judicious Valuation</div>
-                  <div style="color: #4b5563; font-size: 15px; line-height: 1.6;">Entry at deep discounts to listed peers, ensuring significant valuation arbitrage upon listing.</div>
+              <div class="vdf-case-tags-col">
+                <div class="vdf-case-tag"><i class="fas fa-circle-notch"></i> Commodity Cycle</div>
+                <div class="vdf-case-tag"><i class="fas fa-industry"></i> Capex Completion</div>
+                <div class="vdf-case-tag"><i class="fas fa-percentage"></i> Margin Expansion</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Track record summary -->
+        <div class="vdf-track-summary reveal">
+          <div class="vdf-track-cell">
+            <div class="vdf-track-val">7.7X</div>
+            <div class="vdf-track-lbl">Average Exit Multiple</div>
+            <div class="vdf-track-note">Across 3 disclosed transactions</div>
+          </div>
+          <div class="vdf-track-cell">
+            <div class="vdf-track-val">17.7M</div>
+            <div class="vdf-track-lbl">Average Holding Period</div>
+            <div class="vdf-track-note">Well within 36-month target</div>
+          </div>
+          <div class="vdf-track-cell">
+            <div class="vdf-track-val">8</div>
+            <div class="vdf-track-lbl">Successful Exits (All Exits)</div>
+            <div class="vdf-track-note">Zero capital loss on any position</div>
+          </div>
+          <div class="vdf-track-cell">
+            <div class="vdf-track-val">100%</div>
+            <div class="vdf-track-lbl">Exit Success Rate</div>
+            <div class="vdf-track-note">8 of 8 investments exited profitably</div>
+          </div>
+        </div>
+        <p style="text-align:center; color:#94A3B8; font-size:0.75rem; font-style:italic; margin-top:1.5rem;" class="reveal">Past performance does not guarantee future results. Returns are based on specific transactions and are indicative only. Detailed track record available on request.</p>
+      </div>
+    </section>
+
+    <!-- ====== SECTION 10: RISK MANAGEMENT ====== -->
+    <section class="vdf-risk">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto;">
+          <span class="vdf-sec-label">Risk Management</span>
+          <h2 class="vdf-sec-heading light">Protecting Capital. <span>At Every Stage.</span></h2>
+          <p class="vdf-sec-sub light" style="margin: 0.75rem auto 0;">Pre-IPO investing carries inherent risks. Our risk management framework is designed to identify, quantify, and mitigate these risks at both the deal and portfolio levels — before capital is ever deployed.</p>
+        </div>
+
+        <div class="vdf-risk-grid reveal">
+          <div class="vdf-risk-card">
+            <div class="vdf-risk-icon"><i class="fas fa-user-secret"></i></div>
+            <div class="vdf-risk-title">Promoter Background Verification</div>
+            <div class="vdf-risk-desc">Every promoter undergoes CIBIL, litigation, MCA registry, and media checks. A dedicated legal team conducts reference checks with banks, creditors, and customers before the IC meets.</div>
+          </div>
+          <div class="vdf-risk-card">
+            <div class="vdf-risk-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="vdf-risk-title">Independent Financial Audit</div>
+            <div class="vdf-risk-desc">We commission independent forensic-level financial reviews of target companies prior to investment — validating revenue, EBITDA, receivables, and contingent liabilities separately from statutory auditors.</div>
+          </div>
+          <div class="vdf-risk-card">
+            <div class="vdf-risk-icon"><i class="fas fa-lock"></i></div>
+            <div class="vdf-risk-title">Contractual Downside Protection</div>
+            <div class="vdf-risk-desc">All pre-IPO investments are backed by shareholder agreements including anti-dilution rights, drag-along provisions, put options (in select cases), and penalty triggers for IPO timeline breaches.</div>
+          </div>
+          <div class="vdf-risk-card">
+            <div class="vdf-risk-icon"><i class="fas fa-sliders-h"></i></div>
+            <div class="vdf-risk-title">Concentration &amp; Position Limits</div>
+            <div class="vdf-risk-desc">No single pre-IPO position exceeds 15% of fund corpus. Sector concentration capped at 30%. Minimum 6 active investments maintained. Listed SME bucket provides intra-fund liquidity buffer.</div>
+          </div>
+          <div class="vdf-risk-card">
+            <div class="vdf-risk-icon"><i class="fas fa-eye"></i></div>
+            <div class="vdf-risk-title">Board-Level Portfolio Monitoring</div>
+            <div class="vdf-risk-desc">SPVH nominates a board observer in every investee company. Monthly operational updates, quarterly financial reviews, and real-time monitoring of IPO timeline milestones by the investment team.</div>
+          </div>
+          <div class="vdf-risk-card">
+            <div class="vdf-risk-icon"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="vdf-risk-title">Structured Exit Planning</div>
+            <div class="vdf-risk-desc">Every investment has a pre-defined exit waterfall — primary exit (IPO), secondary exit (strategic sale or block deal), and contingency exit (put option or secondary market) — ensuring capital return in all scenarios.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SECTION 11: FUND TEAM ====== -->
+    <section class="vdf-team">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto;">
+          <span class="vdf-sec-label">Fund Management Team</span>
+          <h2 class="vdf-sec-heading">The People <span>Behind the Fund.</span></h2>
+          <p class="vdf-sec-sub" style="margin: 0.75rem auto 0;">A team of experienced investors, operators, and capital market professionals united by a single mission — generating exceptional pre-IPO returns for our investors.</p>
+        </div>
+
+        <div class="vdf-team-grid reveal">
+
+          <div class="vdf-team-card">
+            <div class="vdf-team-avatar"><i class="fas fa-user-tie"></i></div>
+            <div class="vdf-team-name">Sujay Prakash</div>
+            <div class="vdf-team-role">Founder &amp; General Partner</div>
+            <div class="vdf-team-rule"></div>
+            <div class="vdf-team-bio">Veteran investor with 20+ years navigating Indian public and private markets. Renowned for identifying systemic mispricing early in the economic cycle. Architected the SUJI Framework and leads the Investment Committee as Chairman.</div>
+            <div class="vdf-team-highlight"><i class="fas fa-award"></i> 20+ Years · 3 Fund Cycles</div>
+          </div>
+
+          <div class="vdf-team-card">
+            <div class="vdf-team-avatar"><i class="fas fa-chart-line"></i></div>
+            <div class="vdf-team-name">Jimit Majithia</div>
+            <div class="vdf-team-role">Partner &amp; Fund Manager</div>
+            <div class="vdf-team-rule"></div>
+            <div class="vdf-team-bio">Specialist in SME pre-IPO structuring, anchor book allocations, and post-listing value acceleration. Holds a stellar track record of 8 consecutive successful exits over 4 years with zero capital loss. Leads deal origination and due diligence.</div>
+            <div class="vdf-team-highlight"><i class="fas fa-award"></i> 8/8 Profitable Exits</div>
+          </div>
+
+          <div class="vdf-team-card">
+            <div class="vdf-team-avatar"><i class="fas fa-briefcase"></i></div>
+            <div class="vdf-team-name">Karan Nagda</div>
+            <div class="vdf-team-role">Director &ndash; AMC Business</div>
+            <div class="vdf-team-rule"></div>
+            <div class="vdf-team-bio">Manages institutional distribution, investor relations, and operational compliance frameworks for SPVH AMC. Brings global family office management expertise and deep relationships with UHNI and family office allocators across India and the GCC.</div>
+            <div class="vdf-team-highlight"><i class="fas fa-award"></i> Global Family Office Network</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SECTION 12: ELIGIBILITY & ONBOARDING ====== -->
+    <section class="vdf-onboard">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto;">
+          <span class="vdf-sec-label">How to Invest</span>
+          <h2 class="vdf-sec-heading">Seamless Onboarding. <span>Secure Investment.</span></h2>
+          <p class="vdf-sec-sub" style="margin: 0.75rem auto 0;">From first conversation to active fund participant — our onboarding is designed to be efficient, fully compliant, and typically completed within 10–15 working days.</p>
+        </div>
+
+        <div class="vdf-onboard-grid">
+
+          <!-- Who should invest -->
+          <div class="reveal">
+            <h3 style="font-family:'Montserrat',sans-serif; font-size:1.15rem; font-weight:800; color:#1A202C; margin-bottom:1.5rem;">Who is this Fund for?</h3>
+            <div class="vdf-who-list">
+              <div class="vdf-who-item">
+                <i class="fas fa-check-circle fa-lg"></i>
+                <div class="vdf-who-item-text">
+                  <strong>HNIs &amp; UHNIs seeking alpha beyond listed markets</strong>
+                  Investors with ₹1 Cr+ seeking exposure to pre-IPO returns not available through mutual funds or PMS
                 </div>
               </div>
-              <div style="display: flex; flex-direction: column; align-items: center; text-align: center; background-color: white; padding: 50px 40px; border-radius: 12px; border-top: 5px solid #496bad; box-shadow: 0 15px 40px rgba(0,0,0,0.06); height: 100%;">
-                <div style="width: 60px; height: 60px; background-color: #496bad; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 800; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(73,107,173,0.3);">I</div>
-                <div>
-                  <div style="color: #47a996; font-weight: 700; font-size: 18px; margin-bottom: 12px;">IPO Readiness &amp; Exit Visibility</div>
-                  <div style="color: #4b5563; font-size: 15px; line-height: 1.6;">Robust corporate governance, clean promoter background, and designated banking conduits in place.</div>
+              <div class="vdf-who-item">
+                <i class="fas fa-check-circle fa-lg"></i>
+                <div class="vdf-who-item-text">
+                  <strong>Family Offices with alternative allocation mandates</strong>
+                  Family offices looking to add an unlisted/pre-IPO bucket (typically 10–20% of total AUM) to their portfolio
+                </div>
+              </div>
+              <div class="vdf-who-item">
+                <i class="fas fa-check-circle fa-lg"></i>
+                <div class="vdf-who-item-text">
+                  <strong>NRIs &amp; OCIs investing in India growth story</strong>
+                  Non-residents seeking structured, regulated exposure to India's SME boom with full repatriation rights
+                </div>
+              </div>
+              <div class="vdf-who-item">
+                <i class="fas fa-check-circle fa-lg"></i>
+                <div class="vdf-who-item-text">
+                  <strong>Investors with 4-year+ investment horizon</strong>
+                  Capital that can be locked in for 3–4 years to maximise pre-IPO return extraction across the full value cycle
+                </div>
+              </div>
+              <div class="vdf-who-item">
+                <i class="fas fa-check-circle fa-lg"></i>
+                <div class="vdf-who-item-text">
+                  <strong>Sophisticated investors comfortable with illiquidity risk</strong>
+                  Investors who understand that pre-IPO investments carry liquidity risk and are suitable only for accredited investors
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Section 4 — The Moonshot -->
-    <section style="background-color: #0A1628; padding: 80px 0;">
-      <div class="container">
-        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
-          <h2 style="color: white; font-size: 46px; font-weight: 700; margin-top:0; margin-bottom: 0;">The Moonshot &mdash; <span style="color: #47a996;">From Pre-IPO to Exit.</span></h2>
-        </div>
-
-        <div class="vdf-moonshot-timeline reveal">
-          <div class="vdf-moonshot-line"></div>
-          
-          <div class="vdf-moonshot-step">
-            <div class="vdf-moonshot-stage">Pre-IPO Entry</div>
-            <div class="vdf-moonshot-node">1X</div>
-            <div class="vdf-moonshot-label">0M</div>
-          </div>
-          <div class="vdf-moonshot-step">
-            <div class="vdf-moonshot-stage">IPO Listing</div>
-            <div class="vdf-moonshot-node">2&ndash;2.5X</div>
-            <div class="vdf-moonshot-label">12&ndash;15M</div>
-          </div>
-          <div class="vdf-moonshot-step">
-            <div class="vdf-moonshot-stage">Anchor/QIB Unlocked</div>
-            <div class="vdf-moonshot-node">3&ndash;4X</div>
-            <div class="vdf-moonshot-label">12&ndash;24M</div>
-          </div>
-          <div class="vdf-moonshot-step">
-            <div class="vdf-moonshot-stage">Valuation Trigger</div>
-            <div class="vdf-moonshot-node">5&ndash;7X</div>
-            <div class="vdf-moonshot-label">24&ndash;36M</div>
-          </div>
-          <div class="vdf-moonshot-step">
-            <div class="vdf-moonshot-stage">Exit Trigger</div>
-            <div class="vdf-moonshot-node">7&ndash;12X</div>
-            <div class="vdf-moonshot-label">36&ndash;48M</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 5 — Case Studies -->
-    <section style="background-color: white; padding: 80px 0;">
-      <div class="container">
-        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
-          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">PROVEN TRACK RECORD</span>
-          <h2 style="color: #1A1A1A; font-size: 32px; font-weight: 700; margin-top:0; margin-bottom: 0;">Real Deals. <span style="color: #496bad;">Real Returns.</span></h2>
-        </div>
-
-        <div class="vdf-case-row reveal" style="flex-direction: column; gap: 35px;">
-          
-          <div class="vdf-case-card" style="box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 15px; padding: 40px; display: flex; flex-direction: row; align-items: stretch; transition: all 0.4s ease;">
-            <div class="vdf-case-split" style="flex: 1; margin-bottom: 0;">
-              <div class="vdf-case-left">
-                <div class="vdf-multiple" style="font-size: 56px;">7.33X</div>
-                <div class="vdf-case-name" style="font-size: 24px;">Danish Power Limited</div>
-                <div class="vdf-case-data-grid" style="display: flex; gap: 25px; margin-top: 15px;">
-                  <div class="vdf-case-data" style="font-size: 15px;">Pre-IPO Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;150</span></div>
-                  <div class="vdf-case-data" style="font-size: 15px;">Issue Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;380</span></div>
-                  <div class="vdf-case-data" style="font-size: 15px;">Exit Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;1,050</span></div>
+          <!-- Onboarding steps -->
+          <div class="reveal-right">
+            <h3 style="font-family:'Montserrat',sans-serif; font-size:1.15rem; font-weight:800; color:#1A202C; margin-bottom:1.5rem;">Onboarding Process</h3>
+            <div class="vdf-onboard-steps">
+              <div class="vdf-ob-step">
+                <div class="vdf-ob-num">1</div>
+                <div class="vdf-ob-content">
+                  <div class="vdf-ob-title">Introductory Call with Fund Manager</div>
+                  <div class="vdf-ob-desc">30-minute call with Jimit Majithia or Sujay Prakash to understand the fund strategy, track record, and alignment with your investment objectives.</div>
                 </div>
               </div>
-              <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
-              <div class="vdf-case-right" style="gap: 12px; justify-content: center;">
-                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Sectoral Tailwinds</span>
-                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Strong Financials</span>
-                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Valuation Comfort</span>
-              </div>
-            </div>
-            <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
-            <div class="vdf-holding-period" style="border: none; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; min-width: 150px; text-align: center;">Holding Period:<br>20 Months</div>
-          </div>
-
-          <div class="vdf-case-card" style="box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 15px; padding: 40px; display: flex; flex-direction: row; align-items: stretch; transition: all 0.4s ease;">
-            <div class="vdf-case-split" style="flex: 1; margin-bottom: 0;">
-              <div class="vdf-case-left">
-                <div class="vdf-multiple" style="font-size: 56px;">10.3X</div>
-                <div class="vdf-case-name" style="font-size: 24px;">Kaycee Energy &amp; Infra</div>
-                <div class="vdf-case-data-grid" style="display: flex; gap: 25px; margin-top: 15px;">
-                  <div class="vdf-case-data" style="font-size: 15px;">Pre-IPO Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;35</span></div>
-                  <div class="vdf-case-data" style="font-size: 15px;">Issue Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;54</span></div>
-                  <div class="vdf-case-data" style="font-size: 15px;">Exit Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;365</span></div>
+              <div class="vdf-ob-step">
+                <div class="vdf-ob-num">2</div>
+                <div class="vdf-ob-content">
+                  <div class="vdf-ob-title">Private Placement Memorandum (PPM)</div>
+                  <div class="vdf-ob-desc">Receive and review the SEBI-mandated Private Placement Memorandum detailing fund strategy, risk factors, fees, and legal terms.</div>
                 </div>
               </div>
-              <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
-              <div class="vdf-case-right" style="gap: 12px; justify-content: center;">
-                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Anchor Backing</span>
-                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Low Debt Base</span>
-                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Order Book Surge</span>
-              </div>
-            </div>
-            <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
-            <div class="vdf-holding-period" style="border: none; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; min-width: 150px; text-align: center;">Holding Period:<br>17 Months</div>
-          </div>
-
-          <div class="vdf-case-card" style="box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 15px; padding: 40px; display: flex; flex-direction: row; align-items: stretch; transition: all 0.4s ease;">
-            <div class="vdf-case-split" style="flex: 1; margin-bottom: 0;">
-              <div class="vdf-case-left">
-                <div class="vdf-multiple" style="font-size: 56px;">5.6X</div>
-                <div class="vdf-case-name" style="font-size: 24px;">Owais Metal &amp; Minerals</div>
-                <div class="vdf-case-data-grid" style="display: flex; gap: 25px; margin-top: 15px;">
-                  <div class="vdf-case-data" style="font-size: 15px;">Pre-IPO Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;45</span></div>
-                  <div class="vdf-case-data" style="font-size: 15px;">Issue Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;87</span></div>
-                  <div class="vdf-case-data" style="font-size: 15px;">Exit Price: <br><span style="color:#1A1A1A; font-weight:700; font-size: 18px;">&#8377;254</span></div>
+              <div class="vdf-ob-step">
+                <div class="vdf-ob-num">3</div>
+                <div class="vdf-ob-content">
+                  <div class="vdf-ob-title">KYC &amp; Documentation</div>
+                  <div class="vdf-ob-desc">Complete CKYC, source-of-funds verification, and FATCA declarations. NRIs submit additional FEMA/RBI compliance documents.</div>
                 </div>
               </div>
-              <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
-              <div class="vdf-case-right" style="gap: 12px; justify-content: center;">
-                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Commodity Cycle</span>
-                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Capex Completion</span>
-                <span class="vdf-case-tag" style="font-size: 14px; padding: 8px 16px;">Margin Expansion</span>
+              <div class="vdf-ob-step">
+                <div class="vdf-ob-num">4</div>
+                <div class="vdf-ob-content">
+                  <div class="vdf-ob-title">Subscription Agreement</div>
+                  <div class="vdf-ob-desc">Sign the Contribution Agreement and Unit Subscription Agreement. Capital commitment confirmed. Drawdown notice issued upon fund close.</div>
+                </div>
+              </div>
+              <div class="vdf-ob-step">
+                <div class="vdf-ob-num">5</div>
+                <div class="vdf-ob-content">
+                  <div class="vdf-ob-title">Fund Active — Investor Portal Access</div>
+                  <div class="vdf-ob-desc">Receive login credentials to the investor portal for real-time portfolio updates, quarterly reports, NAV statements, and capital call notices.</div>
+                </div>
               </div>
             </div>
-            <div class="vdf-vertical-line" style="margin: 0 40px;"></div>
-            <div class="vdf-holding-period" style="border: none; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; min-width: 150px; text-align: center;">Holding Period:<br>16 Months</div>
           </div>
 
         </div>
-        
-        <p style="text-align: center; color: #9CA3AF; font-size: 12px; font-style: italic; margin-top: 2rem; margin-bottom: 0;" class="reveal">Past performance does not guarantee future results. Returns are indicative and based on specific transactions.</p>
       </div>
     </section>
 
-
-    <!-- Section 7 — Fund Team -->
-    <section style="background-color: #0A1628; padding: 80px 0;">
+    <!-- ====== SECTION 13: CTA ====== -->
+    <section class="vdf-cta">
       <div class="container">
-        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
-          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">FUND MANAGEMENT TEAM</span>
-          <h2 style="color: white; font-size: 32px; font-weight: 700; margin-top:0; margin-bottom: 0;">The People <span style="color: #47a996;">Behind the Fund.</span></h2>
-        </div>
-
-        <div class="vdf-team-row reveal" style="gap: 40px;">
-          <div class="vdf-team-card" style="padding: 50px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
-            <div class="vdf-team-photo" style="width: 120px; height: 120px; font-size: 44px; margin-bottom: 25px;"><i class="fas fa-user-tie"></i></div>
-            <div class="vdf-team-name" style="font-size: 22px; margin-bottom: 8px;">Sujay Prakash</div>
-            <div class="vdf-team-role" style="font-size: 14px; margin-bottom: 20px;">Founder &amp; General Partner</div>
-            <div style="width: 50px; height: 2px; background-color: rgba(255,255,255,0.2); margin: 0 auto 20px auto;"></div>
-            <div style="color: #9CA3AF; font-size: 15px; line-height: 1.7;">Veteran investor with 20+ years navigating Indian public and private markets. Renowned for identifying systemic mispricing early in the cycle.</div>
-          </div>
-          
-          <div class="vdf-team-card" style="padding: 50px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
-            <div class="vdf-team-photo" style="width: 120px; height: 120px; font-size: 44px; margin-bottom: 25px;"><i class="fas fa-chart-line"></i></div>
-            <div class="vdf-team-name" style="font-size: 22px; margin-bottom: 8px;">Jimit Majithia</div>
-            <div class="vdf-team-role" style="font-size: 14px; margin-bottom: 20px;">Partner &amp; Fund Manager</div>
-            <div style="width: 50px; height: 2px; background-color: rgba(255,255,255,0.2); margin: 0 auto 20px auto;"></div>
-            <div style="color: #9CA3AF; font-size: 15px; line-height: 1.7;">Specialist in SME Pre-IPO structuring and anchor book allocations. Holds a stellar track record of 8 consecutive successful exits over 4 years.</div>
-          </div>
-          
-          <div class="vdf-team-card" style="padding: 50px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
-            <div class="vdf-team-photo" style="width: 120px; height: 120px; font-size: 44px; margin-bottom: 25px;"><i class="fas fa-briefcase"></i></div>
-            <div class="vdf-team-name" style="font-size: 22px; margin-bottom: 8px;">Karan Nagda</div>
-            <div class="vdf-team-role" style="font-size: 14px; margin-bottom: 20px;">Director &ndash; AMC Business</div>
-            <div style="width: 50px; height: 2px; background-color: rgba(255,255,255,0.2); margin: 0 auto 20px auto;"></div>
-            <div style="color: #9CA3AF; font-size: 15px; line-height: 1.7;">Manages institutional distribution and operational compliance frameworks for SPVH AMC, bringing global family office management expertise.</div>
+        <div class="vdf-cta-inner reveal-pop">
+          <span class="vdf-cta-label">Ready to Invest in India's Pre-IPO Opportunity?</span>
+          <h2>Your Gateway to <span>India's Next<br>Market Leaders.</span></h2>
+          <p>Minimum ₹1 Crore · Category II AIF · SEBI Registered. Speak with our fund manager today and reserve your allocation before the fund closes.</p>
+          <div class="vdf-cta-actions">
+            <a href="contact.html" class="vdf-btn-primary" style="padding:16px 36px; font-size:0.95rem;"><i class="fas fa-calendar-alt"></i> Schedule Consultation</a>
+            <a href="#" class="vdf-btn-ghost" style="padding:16px 36px; font-size:0.95rem;"><i class="fas fa-download"></i> Download Fund Deck</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Section 8 — Download CTA -->
-    <section style="background-color: white; padding: 80px 0;">
+    <!-- Regulatory notice band -->
+    <div class="vdf-reg-band">
       <div class="container">
-        <div style="text-align: center; margin-bottom: 3rem;" class="reveal">
-          <h2 style="color: #1A1A1A; font-size: 36px; font-weight: 700; margin-top:0; margin-bottom: 0;">Ready to Invest in <span style="color: #496bad;">India's Pre-IPO Opportunity?</span></h2>
-        </div>
-
-        <div class="vdf-contact-card reveal" style="padding: 45px; max-width: 900px;">
-          <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
-            <a href="contact.html" class="btn btn-primary" style="background-color: #496bad; border-color: #496bad; font-size: 18px; padding: 16px 36px;">Schedule a Consultation</a>
-            <a href="#" class="btn btn-outline-light" style="color: #496bad; border-color: #496bad; font-size: 18px; padding: 16px 36px;">Download Fund Deck</a>
-          </div>
+        <div class="vdf-reg-inner">
+          <div class="vdf-reg-item"><i class="fas fa-shield-alt"></i> SEBI Registered Cat II AIF — IN/AIF2/22-23/1248</div>
+          <div class="vdf-reg-item"><i class="fas fa-university"></i> Independent SEBI-Registered Custodian</div>
+          <div class="vdf-reg-item"><i class="fas fa-file-alt"></i> SEBI (AIF) Regulations 2012 — Compliant</div>
+          <div class="vdf-reg-item"><i class="fas fa-exclamation-triangle" style="color:#C9A84C;"></i> Investments in AIFs carry risk. Past performance is not indicative of future results.</div>
         </div>
       </div>
-    </section>
+    </div>
+
   </main>
 
   <!-- Footer -->
@@ -469,7 +1750,39 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    /* ---- Portfolio Construction Donut Chart ---- */
+    document.addEventListener('DOMContentLoaded', () => {
+      const ctx = document.getElementById('vdfPortfolioChart');
+      if (ctx) {
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Pre-IPO Placement', 'Anchor Book', 'Listed SME Equities'],
+            datasets: [{
+              data: [60, 25, 15],
+              backgroundColor: ['#47a996', '#496bad', '#C9A84C'],
+              borderColor: ['#0A1628', '#0A1628', '#0A1628'],
+              borderWidth: 4,
+              hoverOffset: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '68%',
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+                }
+              }
+            }
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
-
-
