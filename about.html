@@ -3,19 +3,650 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPVH AMC | Institutional Wealth Management</title>
+  <title>SPVH AMC | About Us — Our Story, Philosophy &amp; Leadership</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ============================================================
+       ABOUT US PAGE — FULL REBUILD  (prefix: .ab-*)
+    ============================================================ */
+
+    /* ---------- HERO ---------- */
+    .ab-hero {
+      background: linear-gradient(135deg, #070f1e 0%, #0A1628 55%, #0d1b36 100%);
+      padding: 170px 0 0;
+      position: relative; overflow: hidden;
+    }
+    .ab-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(71,169,150,0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(71,169,150,0.055) 1px, transparent 1px);
+      background-size: 72px 72px;
+      pointer-events: none;
+    }
+    .ab-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 80% 30%, rgba(73,107,173,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 5%  75%, rgba(71,169,150,0.12) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .ab-hero-inner {
+      position: relative; z-index: 2;
+      padding-bottom: 80px;
+    }
+    .ab-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: #47a996; font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .ab-hero-eyebrow::before {
+      content: ''; width: 30px; height: 2px; background: #47a996; flex-shrink: 0;
+    }
+    .ab-hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+      font-weight: 900; color: #fff; line-height: 1.1;
+      margin-bottom: 1.5rem; max-width: 760px;
+    }
+    .ab-hero h1 span { color: #47a996; }
+    .ab-hero-sub {
+      color: #94A3B8; font-size: 1.05rem; line-height: 1.8;
+      max-width: 580px; margin-bottom: 2.5rem;
+    }
+    .ab-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
+    .ab-btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #47a996; color: #fff; padding: 14px 28px;
+      border-radius: 4px; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.88rem; text-decoration: none; transition: all 0.3s;
+    }
+    .ab-btn-primary:hover { background: #3d9688; color: #fff; transform: translateY(-2px); }
+    .ab-btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: #fff; padding: 14px 28px;
+      border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.25);
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      font-size: 0.88rem; text-decoration: none; transition: all 0.3s;
+    }
+    .ab-btn-ghost:hover { border-color: #47a996; color: #47a996; }
+    /* Quick-nav tabs at bottom of hero */
+    .ab-hero-tabs {
+      display: flex; border-top: 1px solid rgba(255,255,255,0.08);
+      position: relative; z-index: 2;
+    }
+    .ab-hero-tab {
+      flex: 1; padding: 22px 20px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      text-decoration: none; transition: background 0.3s;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .ab-hero-tab:last-child { border-right: none; }
+    .ab-hero-tab:hover { background: rgba(255,255,255,0.04); }
+    .ab-hero-tab i { color: #47a996; font-size: 1.1rem; }
+    .ab-hero-tab-label {
+      font-family: 'Montserrat', sans-serif; font-size: 0.8rem;
+      font-weight: 700; color: #fff; letter-spacing: 0.5px;
+    }
+    .ab-hero-tab-sub { font-size: 0.72rem; color: #64748B; }
+
+    /* ---------- SHARED SECTION HELPERS ---------- */
+    .ab-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: #47a996; display: block; margin-bottom: 0.6rem;
+    }
+    .ab-heading {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800; color: #0A1628; line-height: 1.2; margin-bottom: 0;
+    }
+    .ab-heading span { color: #496bad; }
+    .ab-heading.light { color: #fff; }
+    .ab-heading.light span { color: #47a996; }
+    .ab-rule { width: 52px; height: 3px; background: #47a996; margin: 1rem 0 1.5rem; }
+    .ab-body { color: #475569; font-size: 0.97rem; line-height: 1.8; }
+    .ab-body + .ab-body { margin-top: 1rem; }
+
+    /* ---------- NUMBERS STRIP ---------- */
+    .ab-numbers {
+      background: #496bad; padding: 0;
+    }
+    .ab-numbers-grid {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 0;
+    }
+    .ab-num-cell {
+      padding: 32px 20px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.15);
+      transition: background 0.3s;
+    }
+    .ab-num-cell:last-child { border-right: none; }
+    .ab-num-cell:hover { background: rgba(255,255,255,0.08); }
+    .ab-num-val {
+      font-family: 'Montserrat', sans-serif; font-size: 1.75rem;
+      font-weight: 900; color: #fff; line-height: 1; margin-bottom: 6px;
+    }
+    .ab-num-lbl { font-size: 0.72rem; color: rgba(255,255,255,0.65); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ---------- OUR STORY / FIRM OVERVIEW ---------- */
+    .ab-story { background: #fff; padding: 100px 0; }
+    .ab-story-grid {
+      display: grid; grid-template-columns: 1fr 420px; gap: 5rem; align-items: center;
+    }
+    .ab-check-list { display: flex; flex-direction: column; gap: 12px; margin-top: 1.5rem; }
+    .ab-check-item { display: flex; align-items: flex-start; gap: 10px; }
+    .ab-check-item i { color: #47a996; margin-top: 3px; flex-shrink: 0; }
+    .ab-check-item span { font-size: 0.95rem; color: #334155; line-height: 1.6; }
+    /* Story visual card */
+    .ab-story-card {
+      background: linear-gradient(135deg, #0A1628, #112240);
+      border: 1px solid rgba(71,169,150,0.2);
+      border-radius: 16px; padding: 40px 36px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+    }
+    .ab-story-card-head {
+      font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; color: #47a996;
+      margin-bottom: 1.5rem; padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .ab-story-stat {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .ab-story-stat:last-child { border-bottom: none; padding-bottom: 0; }
+    .ab-story-stat-icon {
+      width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(71,169,150,0.1); border: 1px solid rgba(71,169,150,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: #47a996; font-size: 0.95rem;
+    }
+    .ab-story-stat-val {
+      font-family: 'Montserrat', sans-serif; font-size: 1.3rem;
+      font-weight: 900; color: #fff; line-height: 1;
+    }
+    .ab-story-stat-lbl { font-size: 0.75rem; color: #64748B; font-weight: 600; margin-top: 2px; }
+
+    /* ---------- SPVH GROUP ---------- */
+    .ab-group { background: #F0F4FA; padding: 100px 0; }
+    .ab-group-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    }
+    .ab-group-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 2rem;
+    }
+    .ab-group-stat {
+      background: #fff; border-radius: 10px; padding: 24px 20px;
+      border: 1px solid #E2E8F0; border-left: 3px solid #47a996;
+      transition: all 0.3s;
+    }
+    .ab-group-stat:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.07); }
+    .ab-group-stat-val {
+      font-family: 'Montserrat', sans-serif; font-size: 1.35rem;
+      font-weight: 800; color: #0A1628; margin-bottom: 4px;
+    }
+    .ab-group-stat-lbl { font-size: 0.8rem; color: #64748B; font-weight: 600; }
+    /* Group visual */
+    .ab-group-visual {
+      display: flex; flex-direction: column; gap: 1.25rem;
+    }
+    .ab-group-arm {
+      background: #fff; border-radius: 12px; padding: 24px 26px;
+      border: 1px solid #E2E8F0; display: flex; align-items: center; gap: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05); transition: all 0.3s;
+    }
+    .ab-group-arm:hover { border-color: #496bad; transform: translateX(4px); }
+    .ab-group-arm-icon {
+      width: 48px; height: 48px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .ab-group-arm:nth-child(1) .ab-group-arm-icon { background: rgba(71,169,150,0.1); color: #47a996; }
+    .ab-group-arm:nth-child(2) .ab-group-arm-icon { background: rgba(73,107,173,0.1); color: #496bad; }
+    .ab-group-arm:nth-child(3) .ab-group-arm-icon { background: rgba(201,168,76,0.12); color: #C9A84C; }
+    .ab-group-arm:nth-child(4) .ab-group-arm-icon { background: rgba(139,92,246,0.1); color: #8B5CF6; }
+    .ab-group-arm-name {
+      font-family: 'Montserrat', sans-serif; font-size: 0.92rem;
+      font-weight: 700; color: #1A202C; margin-bottom: 3px;
+    }
+    .ab-group-arm-desc { font-size: 0.8rem; color: #64748B; }
+
+    /* ---------- OUR VALUES ---------- */
+    .ab-values { background: #0A1628; padding: 100px 0; }
+    .ab-values-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .ab-value-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; padding: 36px 28px; text-align: center; transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .ab-value-card::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; border-radius: 0 0 12px 12px;
+      transition: opacity 0.3s; opacity: 0;
+    }
+    .ab-value-card:nth-child(1)::before { background: #47a996; }
+    .ab-value-card:nth-child(2)::before { background: #496bad; }
+    .ab-value-card:nth-child(3)::before { background: #C9A84C; }
+    .ab-value-card:nth-child(4)::before { background: #8B5CF6; }
+    .ab-value-card:hover { background: rgba(255,255,255,0.07); transform: translateY(-4px); }
+    .ab-value-card:hover::before { opacity: 1; }
+    .ab-value-icon-wrap {
+      width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1.4rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+    }
+    .ab-value-card:nth-child(1) .ab-value-icon-wrap { background: rgba(71,169,150,0.12); color: #47a996; }
+    .ab-value-card:nth-child(2) .ab-value-icon-wrap { background: rgba(73,107,173,0.12); color: #496bad; }
+    .ab-value-card:nth-child(3) .ab-value-icon-wrap { background: rgba(201,168,76,0.12); color: #C9A84C; }
+    .ab-value-card:nth-child(4) .ab-value-icon-wrap { background: rgba(139,92,246,0.12); color: #8B5CF6; }
+    .ab-value-title {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 700;
+      color: #fff; margin-bottom: 10px;
+    }
+    .ab-value-desc { font-size: 0.87rem; color: #64748B; line-height: 1.7; }
+
+    /* ---------- WHY SPVH AMC ---------- */
+    .ab-why { background: #fff; padding: 100px 0; }
+    .ab-why-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; margin-top: 3.5rem;
+    }
+    .ab-why-card {
+      border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 32px 28px;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .ab-why-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; background: linear-gradient(90deg, #47a996, #496bad);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .ab-why-card:hover { border-color: #496bad; transform: translateY(-4px); box-shadow: 0 14px 40px rgba(73,107,173,0.10); }
+    .ab-why-card:hover::after { opacity: 1; }
+    .ab-why-icon {
+      width: 50px; height: 50px; border-radius: 10px; margin-bottom: 1.2rem;
+      background: #F0F4FA; display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: #496bad; transition: all 0.3s;
+    }
+    .ab-why-card:hover .ab-why-icon { background: rgba(73,107,173,0.1); }
+    .ab-why-title {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 700;
+      color: #1A202C; margin-bottom: 8px;
+    }
+    .ab-why-desc { font-size: 0.88rem; color: #475569; line-height: 1.7; }
+
+    /* ---------- PHILOSOPHY HERO DIVIDER ---------- */
+    .ab-phil-divider {
+      background: linear-gradient(135deg, #0A1628, #112240);
+      padding: 90px 0; position: relative; overflow: hidden;
+    }
+    .ab-phil-divider::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 60% 50%, rgba(73,107,173,0.2) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .ab-phil-divider-inner { position: relative; z-index: 2; }
+    .ab-phil-divider h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 1rem;
+    }
+    .ab-phil-divider h2 span { color: #47a996; }
+    .ab-phil-divider p { color: #94A3B8; font-size: 1rem; line-height: 1.75; max-width: 520px; }
+
+    /* ---------- PHILOSOPHY OVERVIEW ---------- */
+    .ab-philosophy { background: #fff; padding: 100px 0; }
+    .ab-phil-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start;
+    }
+    .ab-quote-box {
+      background: linear-gradient(135deg, #0A1628, #112240);
+      border: 1px solid rgba(71,169,150,0.2);
+      border-radius: 14px; padding: 44px 40px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+    }
+    .ab-quote-mark {
+      font-family: Georgia, serif; font-size: 72px; line-height: 0.7;
+      color: #47a996; margin-bottom: 1rem; display: block;
+    }
+    .ab-quote-text {
+      color: #fff; font-style: italic; font-size: 1.1rem;
+      line-height: 1.65; margin-bottom: 1rem;
+    }
+    .ab-quote-author { color: #64748B; font-size: 0.85rem; margin-bottom: 2rem; }
+    .ab-quote-rule { height: 1px; background: rgba(255,255,255,0.08); margin-bottom: 1.5rem; }
+    .ab-phil-tenets { display: flex; flex-direction: column; gap: 12px; }
+    .ab-phil-tenet {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px; padding: 12px 16px;
+    }
+    .ab-phil-tenet i { color: #47a996; width: 16px; flex-shrink: 0; }
+    .ab-phil-tenet span { font-size: 0.88rem; color: #94A3B8; }
+
+    /* ---------- FOUR PILLARS ---------- */
+    .ab-pillars { background: #F0F4FA; padding: 100px 0; }
+    .ab-pillars-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .ab-pillar {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      padding: 36px 28px; border-top: 4px solid transparent;
+      transition: all 0.3s; position: relative;
+    }
+    .ab-pillar:nth-child(1) { border-top-color: #47a996; }
+    .ab-pillar:nth-child(2) { border-top-color: #496bad; }
+    .ab-pillar:nth-child(3) { border-top-color: #C9A84C; }
+    .ab-pillar:nth-child(4) { border-top-color: #8B5CF6; }
+    .ab-pillar:hover { transform: translateY(-5px); box-shadow: 0 16px 44px rgba(0,0,0,0.10); }
+    .ab-pillar-num {
+      font-family: 'Montserrat', sans-serif; font-size: 2.4rem; font-weight: 900;
+      line-height: 1; margin-bottom: 1rem; opacity: 0.12; color: #1A202C;
+    }
+    .ab-pillar-icon {
+      font-size: 1.3rem; margin-bottom: 1rem;
+    }
+    .ab-pillar:nth-child(1) .ab-pillar-icon { color: #47a996; }
+    .ab-pillar:nth-child(2) .ab-pillar-icon { color: #496bad; }
+    .ab-pillar:nth-child(3) .ab-pillar-icon { color: #C9A84C; }
+    .ab-pillar:nth-child(4) .ab-pillar-icon { color: #8B5CF6; }
+    .ab-pillar-title {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 700;
+      color: #1A202C; margin-bottom: 10px;
+    }
+    .ab-pillar-rule { width: 32px; height: 2px; margin-bottom: 14px; }
+    .ab-pillar:nth-child(1) .ab-pillar-rule { background: #47a996; }
+    .ab-pillar:nth-child(2) .ab-pillar-rule { background: #496bad; }
+    .ab-pillar:nth-child(3) .ab-pillar-rule { background: #C9A84C; }
+    .ab-pillar:nth-child(4) .ab-pillar-rule { background: #8B5CF6; }
+    .ab-pillar-desc { font-size: 0.87rem; color: #475569; line-height: 1.7; margin-bottom: 1rem; }
+    .ab-pillar-bullets { padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .ab-pillar-bullets li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.82rem; color: #64748B;
+    }
+    .ab-pillar-bullets li::before {
+      content: '→'; font-weight: 700; flex-shrink: 0;
+    }
+    .ab-pillar:nth-child(1) .ab-pillar-bullets li::before { color: #47a996; }
+    .ab-pillar:nth-child(2) .ab-pillar-bullets li::before { color: #496bad; }
+    .ab-pillar:nth-child(3) .ab-pillar-bullets li::before { color: #C9A84C; }
+    .ab-pillar:nth-child(4) .ab-pillar-bullets li::before { color: #8B5CF6; }
+
+    /* ---------- INVESTMENT PROCESS ---------- */
+    .ab-process { background: #fff; padding: 100px 0; }
+    .ab-process-track {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+      margin-top: 3.5rem; position: relative;
+    }
+    .ab-process-track::before {
+      content: ''; position: absolute; top: 27px;
+      left: calc(10% + 27px); right: calc(10% + 27px);
+      height: 2px; background: linear-gradient(90deg, #47a996, #496bad);
+      z-index: 0;
+    }
+    .ab-proc-step {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 0 10px; position: relative;
+    }
+    .ab-proc-num {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: linear-gradient(135deg, #47a996, #496bad);
+      color: #fff; font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1; margin-bottom: 1.2rem; flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(71,169,150,0.35);
+    }
+    .ab-proc-title {
+      font-family: 'Montserrat', sans-serif; font-size: 0.88rem;
+      font-weight: 700; color: #1A202C; margin-bottom: 8px;
+    }
+    .ab-proc-desc { font-size: 0.8rem; color: #64748B; line-height: 1.65; }
+
+    /* ---------- ESG ---------- */
+    .ab-esg { background: #0A1628; padding: 100px 0; }
+    .ab-esg-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-top: 3.5rem;
+    }
+    .ab-esg-body { color: #94A3B8; font-size: 0.97rem; line-height: 1.8; margin-bottom: 1.5rem; }
+    .ab-esg-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: #47a996; font-weight: 600; font-size: 0.9rem; text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .ab-esg-link:hover { gap: 12px; }
+    .ab-esg-cards { display: flex; flex-direction: column; gap: 1.25rem; }
+    .ab-esg-card {
+      display: flex; gap: 18px; align-items: flex-start;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 24px 22px; transition: all 0.3s;
+    }
+    .ab-esg-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(71,169,150,0.25); }
+    .ab-esg-icon {
+      width: 46px; height: 46px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
+    }
+    .ab-esg-card:nth-child(1) .ab-esg-icon { background: rgba(71,169,150,0.12); color: #47a996; }
+    .ab-esg-card:nth-child(2) .ab-esg-icon { background: rgba(73,107,173,0.12); color: #7BA3E8; }
+    .ab-esg-card:nth-child(3) .ab-esg-icon { background: rgba(201,168,76,0.12); color: #C9A84C; }
+    .ab-esg-title {
+      font-family: 'Montserrat', sans-serif; font-size: 0.95rem;
+      font-weight: 700; color: #fff; margin-bottom: 5px;
+    }
+    .ab-esg-desc { font-size: 0.86rem; color: #64748B; line-height: 1.65; }
+
+    /* ---------- TEAM DIVIDER ---------- */
+    .ab-team-divider {
+      background: linear-gradient(135deg, #496bad 0%, #3f5f9f 50%, #47a996 100%);
+      padding: 72px 0; position: relative; overflow: hidden;
+    }
+    .ab-team-divider::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.08) 0%, transparent 65%);
+    }
+    .ab-team-divider-inner {
+      position: relative; z-index: 2; text-align: center;
+    }
+    .ab-team-divider h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 900; color: #fff; margin-bottom: 0.75rem;
+    }
+    .ab-team-divider p { color: rgba(255,255,255,0.75); font-size: 1rem; max-width: 520px; margin: 0 auto; }
+
+    /* ---------- LEADERSHIP TEAM ---------- */
+    .ab-leadership { background: #fff; padding: 100px 0; }
+    .ab-leader-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3.5rem;
+    }
+    .ab-leader-card {
+      background: #fff; border-radius: 14px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      overflow: hidden; transition: all 0.35s;
+    }
+    .ab-leader-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
+    .ab-leader-photo {
+      height: 200px; background: linear-gradient(135deg, #0A1628, #1a3560);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .ab-leader-photo::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 40%; background: linear-gradient(to top, rgba(10,22,40,0.5), transparent);
+    }
+    .ab-leader-photo i { font-size: 3.5rem; color: rgba(71,169,150,0.5); position: relative; z-index: 1; }
+    .ab-leader-body { padding: 28px 26px; }
+    .ab-leader-name {
+      font-family: 'Montserrat', sans-serif; font-size: 1.1rem;
+      font-weight: 800; color: #1A202C; margin-bottom: 4px;
+    }
+    .ab-leader-role {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: #47a996; margin-bottom: 1rem;
+    }
+    .ab-leader-rule { height: 1px; background: #E8EEF4; margin-bottom: 1rem; }
+    .ab-leader-bio { font-size: 0.87rem; color: #475569; line-height: 1.7; margin-bottom: 1rem; }
+    .ab-leader-edu { font-size: 0.8rem; color: #94A3B8; margin-bottom: 1rem; }
+    .ab-leader-social {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #F0F4FA; color: #496bad; font-size: 0.85rem;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .ab-leader-social:hover { background: #496bad; color: #fff; }
+
+    /* ---------- ADVISORY BOARD ---------- */
+    .ab-advisory { background: #F0F4FA; padding: 100px 0; }
+    .ab-advisory-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3.5rem;
+    }
+    .ab-advisory-card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      padding: 36px 30px; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      border: 1px solid #E2E8F0; transition: all 0.3s;
+    }
+    .ab-advisory-card:hover { transform: translateY(-4px); box-shadow: 0 16px 44px rgba(0,0,0,0.10); border-color: #496bad; }
+    .ab-advisory-avatar {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: linear-gradient(135deg, #0A1628, #1a3560);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: #47a996; margin-bottom: 1.2rem;
+      box-shadow: 0 8px 24px rgba(10,22,40,0.18);
+    }
+    .ab-advisory-name {
+      font-family: 'Montserrat', sans-serif; font-size: 1rem;
+      font-weight: 800; color: #1A202C; margin-bottom: 4px;
+    }
+    .ab-advisory-role { font-size: 0.72rem; font-weight: 700; color: #47a996; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem; }
+    .ab-advisory-rule { width: 32px; height: 2px; background: #E2E8F0; margin: 0 auto 1rem; }
+    .ab-advisory-bio { font-size: 0.87rem; color: #64748B; line-height: 1.7; margin-bottom: 1.2rem; }
+    .ab-advisory-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+    .ab-advisory-tag {
+      font-size: 0.7rem; font-weight: 700; padding: 4px 12px;
+      border-radius: 20px; background: #F0F4FA; color: #496bad;
+      border: 1px solid #E2E8F0;
+    }
+
+    /* ---------- TEAM CULTURE ---------- */
+    .ab-culture { background: #0A1628; padding: 100px 0; }
+    .ab-culture-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    }
+    .ab-culture-body { color: #94A3B8; font-size: 0.97rem; line-height: 1.8; margin-bottom: 2rem; }
+    .ab-culture-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(71,169,150,0.1); border: 1px solid rgba(71,169,150,0.25);
+      color: #47a996; padding: 13px 24px; border-radius: 4px;
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.87rem;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .ab-culture-link:hover { background: rgba(71,169,150,0.2); }
+    .ab-culture-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;
+    }
+    .ab-culture-stat {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; padding: 28px 24px; transition: all 0.3s;
+    }
+    .ab-culture-stat:hover { background: rgba(255,255,255,0.07); }
+    .ab-culture-stat-val {
+      font-family: 'Montserrat', sans-serif; font-size: 2.2rem;
+      font-weight: 900; color: #47a996; line-height: 1; margin-bottom: 6px;
+    }
+    .ab-culture-stat-lbl { font-size: 0.8rem; color: #64748B; font-weight: 600; }
+
+    /* ---------- REGULATORY STRIP ---------- */
+    .ab-reg { background: #F0F4FA; padding: 40px 0; border-top: 1px solid #E2E8F0; }
+    .ab-reg-inner {
+      display: flex; align-items: center; gap: 1.5rem;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .ab-reg-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 12px 20px; background: #fff;
+      border: 1px solid #E2E8F0; border-radius: 8px;
+    }
+    .ab-reg-item i { color: #47a996; }
+    .ab-reg-text { font-size: 0.8rem; color: #475569; font-weight: 600; }
+
+    /* ---------- CTA ---------- */
+    .ab-cta {
+      background: linear-gradient(135deg, #0A1628 0%, #112240 50%, #1a3560 100%);
+      padding: 100px 0; text-align: center; position: relative; overflow: hidden;
+    }
+    .ab-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 60%, rgba(73,107,173,0.3) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .ab-cta-inner { position: relative; z-index: 2; }
+    .ab-cta h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.9rem, 3.5vw, 3rem);
+      font-weight: 900; color: #fff; margin-bottom: 1rem; line-height: 1.2;
+    }
+    .ab-cta h2 span { color: #47a996; }
+    .ab-cta p { color: #94A3B8; font-size: 1.05rem; max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.75; }
+    .ab-cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1200px) {
+      .ab-hero { padding-top: 120px; }
+      .ab-numbers-grid { grid-template-columns: repeat(3, 1fr); }
+      .ab-num-cell:nth-child(3) { border-right: none; }
+      .ab-values-grid { grid-template-columns: 1fr 1fr; }
+      .ab-why-grid { grid-template-columns: 1fr 1fr; }
+      .ab-pillars-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 1024px) {
+      .ab-hero { padding-top: 110px; }
+      .ab-story-grid { grid-template-columns: 1fr; }
+      .ab-group-grid { grid-template-columns: 1fr; }
+      .ab-phil-grid { grid-template-columns: 1fr; }
+      .ab-esg-grid { grid-template-columns: 1fr; }
+      .ab-culture-grid { grid-template-columns: 1fr; }
+      .ab-leader-grid { grid-template-columns: 1fr 1fr; }
+      .ab-advisory-grid { grid-template-columns: 1fr 1fr; }
+      .ab-advisory-grid > *:last-child { grid-column: span 2; max-width: 400px; margin: 0 auto; width: 100%; }
+      .ab-process-track { grid-template-columns: 1fr 1fr 1fr; row-gap: 2.5rem; }
+      .ab-process-track::before { display: none; }
+      .ab-hero-tabs { flex-wrap: wrap; }
+      .ab-hero-tab { flex: 0 0 33.333%; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    }
+    @media (max-width: 768px) {
+      .ab-hero { padding-top: 90px; }
+      .ab-numbers-grid { grid-template-columns: 1fr 1fr; }
+      .ab-num-cell:nth-child(3) { border-right: 1px solid rgba(255,255,255,0.15); }
+      .ab-num-cell:nth-child(2n) { border-right: none; }
+      .ab-values-grid { grid-template-columns: 1fr; }
+      .ab-why-grid { grid-template-columns: 1fr; }
+      .ab-pillars-grid { grid-template-columns: 1fr; }
+      .ab-leader-grid { grid-template-columns: 1fr; }
+      .ab-advisory-grid { grid-template-columns: 1fr; }
+      .ab-advisory-grid > *:last-child { grid-column: span 1; max-width: 100%; }
+      .ab-culture-stats { grid-template-columns: 1fr 1fr; }
+      .ab-process-track { grid-template-columns: 1fr 1fr; }
+      .ab-group-stats { grid-template-columns: 1fr; }
+      .ab-hero-tab { flex: 0 0 50%; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Sticky Nav -->
+  <!-- Nav -->
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-      
       <ul class="nav-menu">
         <li class="nav-item">
           <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
@@ -38,287 +669,479 @@
         <li class="nav-item"><a href="insights.html">Insights</a></li>
         <li class="nav-item"><a href="resources.html">Resources</a></li>
       </ul>
-
       <div class="nav-actions">
         <a href="#" class="login-link">Investor Login</a>
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
-
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
-      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
   </header>
 
   <main>
-    <!-- About Hero Banner -->
-    <section class="about-hero-new">
-      <div class="cta-abstract-overlay pattern-2"></div>
-      <div class="container hero-container" style="position: relative; z-index: 2;">
-        <div class="about-hero-content reveal">
-          <span class="about-hero-label">OUR STORY</span>
-          <h1 class="about-hero-title">More Than an Asset Manager.<br><span style="color: #47a996;">A Legacy in the Making.</span></h1>
-          <div class="about-hero-accent"></div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Section 1: The SPVH Story -->
-    <section id="firm-overview" class="story-section">
+    <!-- ====== HERO ====== -->
+    <section class="ab-hero">
       <div class="container">
-        <div class="story-grid">
-          <div class="story-content reveal">
-            <h2 class="story-title">From a Vision to a Trusted Institution.</h2>
-            <div class="story-accent"></div>
-            <p>SPVH Group was founded with a singular vision &mdash; to build enduring value across generations. What began as a diversified holding company has evolved into one of India's emerging institutional investment platforms.</p>
-            <p>SPVH Asset Management Company was established as the dedicated investment arm of the Group, bringing the same long-term, conviction-driven philosophy that has defined the SPVH Group's own wealth creation journey.</p>
-            <p>Today we serve family offices, HNIs, and institutional investors across India &mdash; combining research depth, risk discipline, and client-first thinking.</p>
-          </div>
-          <div class="story-visual reveal-right">
-            <div class="story-image"></div>
+        <div class="ab-hero-inner">
+          <div class="ab-hero-eyebrow">Our Story</div>
+          <h1>More Than an Asset Manager.<br><span>A Legacy in the Making.</span></h1>
+          <p class="ab-hero-sub">SPVH Asset Management Company was built on a singular belief — that India's most discerning investors deserve a fund manager who thinks like an owner, acts with conviction, and builds wealth across generations.</p>
+          <div class="ab-hero-actions">
+            <a href="#firm-overview" class="ab-btn-primary"><i class="fas fa-arrow-down"></i> Our Story</a>
+            <a href="contact.html" class="ab-btn-ghost"><i class="fas fa-calendar-alt"></i> Schedule Consultation</a>
           </div>
         </div>
       </div>
-    </section>
-
-    <!-- Section 2: Our Values -->
-    <section class="values-section" style="background-color: #0A1628;">
-      <div class="container">
-        <div class="values-header text-center reveal">
-          <h2 class="values-title">The Principles That <span>Define Us.</span></h2>
-        </div>
-        <div class="values-grid reveal" style="animation-delay: 0.2s;">
-          <div class="value-card">
-            <i class="fas fa-shield-alt value-icon"></i>
-            <h3>Integrity First</h3>
-            <p>We never compromise on transparency or fiduciary responsibility.</p>
-          </div>
-          <div class="value-card">
-            <i class="fas fa-chart-line value-icon"></i>
-            <h3>Research Driven</h3>
-            <p>Every decision is backed by rigorous analysis, not market noise.</p>
-          </div>
-          <div class="value-card">
-            <i class="fas fa-users value-icon"></i>
-            <h3>Client Obsessed</h3>
-            <p>Your goals are our mandate. Nothing else comes first.</p>
-          </div>
-          <div class="value-card">
-            <i class="fas fa-seedling value-icon"></i>
-            <h3>Long Term Thinking</h3>
-            <p>We invest like it's our own capital &mdash; patiently and with conviction.</p>
-          </div>
-        </div>
+      <!-- Quick-nav tabs anchored to the three sub-menu sections -->
+      <div class="ab-hero-tabs">
+        <a href="#firm-overview" class="ab-hero-tab">
+          <i class="fas fa-landmark"></i>
+          <div class="ab-hero-tab-label">Firm Overview</div>
+          <div class="ab-hero-tab-sub">Our story &amp; values</div>
+        </a>
+        <a href="#philosophy" class="ab-hero-tab">
+          <i class="fas fa-lightbulb"></i>
+          <div class="ab-hero-tab-label">Investment Philosophy</div>
+          <div class="ab-hero-tab-sub">How we think &amp; invest</div>
+        </a>
+        <a href="#leadership" class="ab-hero-tab">
+          <i class="fas fa-users"></i>
+          <div class="ab-hero-tab-label">Leadership Team</div>
+          <div class="ab-hero-tab-sub">The minds behind the strategy</div>
+        </a>
       </div>
     </section>
 
-    <!-- Section 3: SPVH Group Overview -->
-    <section class="group-overview-section">
+    <!-- ====== NUMBERS STRIP ====== -->
+    <div class="ab-numbers">
+      <div class="ab-numbers-grid">
+        <div class="ab-num-cell reveal">
+          <div class="ab-num-val">₹5,000 Cr+</div>
+          <div class="ab-num-lbl">Assets Under Management</div>
+        </div>
+        <div class="ab-num-cell reveal" style="animation-delay:0.08s;">
+          <div class="ab-num-val">25+</div>
+          <div class="ab-num-lbl">Years of Group Legacy</div>
+        </div>
+        <div class="ab-num-cell reveal" style="animation-delay:0.16s;">
+          <div class="ab-num-val">24</div>
+          <div class="ab-num-lbl">Investment Professionals</div>
+        </div>
+        <div class="ab-num-cell reveal" style="animation-delay:0.24s;">
+          <div class="ab-num-val">500+</div>
+          <div class="ab-num-lbl">Investor Families Served</div>
+        </div>
+        <div class="ab-num-cell reveal" style="animation-delay:0.32s;">
+          <div class="ab-num-val">4</div>
+          <div class="ab-num-lbl">SEBI-Regulated Strategies</div>
+        </div>
+        <div class="ab-num-cell reveal" style="animation-delay:0.40s;">
+          <div class="ab-num-val">12</div>
+          <div class="ab-num-lbl">Group Companies</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== FIRM OVERVIEW / OUR STORY ====== -->
+    <section class="ab-story" id="firm-overview">
       <div class="container">
-        <div class="group-grid">
-          <div class="group-visual reveal-left">
-            <div class="group-image"></div>
+        <div class="ab-story-grid">
+
+          <!-- Left: story -->
+          <div class="reveal">
+            <span class="ab-label">Firm Overview</span>
+            <h2 class="ab-heading">From a Vision to a <span>Trusted Institution.</span></h2>
+            <div class="ab-rule"></div>
+            <p class="ab-body">SPVH Group was founded with a singular vision — to build enduring value across generations. What began as a diversified holding company has evolved into one of India's emerging institutional investment platforms, operating across industrials, real estate, and financial services.</p>
+            <p class="ab-body">SPVH Asset Management Company was established as the dedicated investment arm of the Group — bringing the same long-term, conviction-driven philosophy that has defined the SPVH Group's own wealth creation journey to India's most discerning investors.</p>
+            <p class="ab-body">Today, we serve family offices, ultra-high-net-worth individuals, NRIs, and institutional investors across India and the GCC — combining research depth, risk discipline, and a fiduciary-first mindset that puts client outcomes above everything else.</p>
+            <div class="ab-check-list" style="margin-top:2rem;">
+              <div class="ab-check-item"><i class="fas fa-check-circle"></i><span>SEBI-registered fund manager across PMS, AIF Category I, II &amp; III</span></div>
+              <div class="ab-check-item"><i class="fas fa-check-circle"></i><span>100% proprietary research — no broker calls, no consensus ideas</span></div>
+              <div class="ab-check-item"><i class="fas fa-check-circle"></i><span>Fiduciary-first culture — we invest alongside our clients</span></div>
+              <div class="ab-check-item"><i class="fas fa-check-circle"></i><span>Backed by 25+ years of SPVH Group's multi-sector operating experience</span></div>
+            </div>
           </div>
-          <div class="group-content reveal">
-            <h2 class="group-title">The SPVH Group &mdash; A Legacy of Value Creation.</h2>
-            <p>SPVH Asset Management Company is part of the broader SPVH Group &mdash; a multi-generational holding company with interests spanning industrials, real estate, and financial services. The Group's investment philosophy and long-term orientation forms the bedrock of everything we do at SPVHAMC.</p>
-            
-            <div class="group-stats-grid">
-              <div class="group-stat-box">
-                <div class="stat-accent"></div>
-                <div class="stat-number">Group Est. 1998</div>
+
+          <!-- Right: firm card -->
+          <div class="ab-story-card reveal-right">
+            <div class="ab-story-card-head">SPVH AMC — At a Glance</div>
+            <div class="ab-story-stat">
+              <div class="ab-story-stat-icon"><i class="fas fa-calendar-alt"></i></div>
+              <div>
+                <div class="ab-story-stat-val">Est. 2022</div>
+                <div class="ab-story-stat-lbl">AMC Incorporated · CIN: U67110MH2022PTC381574</div>
               </div>
-              <div class="group-stat-box">
-                <div class="stat-accent"></div>
-                <div class="stat-number">25+ Years of Operations</div>
+            </div>
+            <div class="ab-story-stat">
+              <div class="ab-story-stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+              <div>
+                <div class="ab-story-stat-val">Mumbai, India</div>
+                <div class="ab-story-stat-lbl">Headquarters — Financial Capital of India</div>
               </div>
-              <div class="group-stat-box">
-                <div class="stat-accent"></div>
-                <div class="stat-number">12 Group Companies</div>
+            </div>
+            <div class="ab-story-stat">
+              <div class="ab-story-stat-icon"><i class="fas fa-shield-alt"></i></div>
+              <div>
+                <div class="ab-story-stat-val">SEBI Registered</div>
+                <div class="ab-story-stat-lbl">PMS · Cat I AIF · Cat II AIF · Advisory</div>
               </div>
-              <div class="group-stat-box">
-                <div class="stat-accent"></div>
-                <div class="stat-number">&#8377;8,500 Cr Group AUM</div>
+            </div>
+            <div class="ab-story-stat">
+              <div class="ab-story-stat-icon"><i class="fas fa-users"></i></div>
+              <div>
+                <div class="ab-story-stat-val">Family Offices · HNIs · NRIs</div>
+                <div class="ab-story-stat-lbl">Investor base across India &amp; GCC</div>
+              </div>
+            </div>
+            <div class="ab-story-stat">
+              <div class="ab-story-stat-icon"><i class="fas fa-globe-asia"></i></div>
+              <div>
+                <div class="ab-story-stat-val">India · UAE · Singapore</div>
+                <div class="ab-story-stat-lbl">Investment mandates &amp; offshore structures</div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- Philosophy Hero Banner -->
-    <section id="philosophy" class="philosophy-page-hero">
-      <div class="pattern-overlay"></div>
-      <div class="container" style="position: relative; z-index: 2;">
-        <span class="about-hero-label" style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 20px;">HOW WE THINK</span>
-        <h1 style="color: white; font-size: 52px; font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem; margin-top:0;">Conviction Over Consensus.<br><span style="color: #47a996;">Patience Over Noise.</span></h1>
-        <div style="width: 60px; height: 3px; background-color: #47a996;"></div>
-      </div>
-    </section>
-
-    <!-- Section 1 — Philosophy Overview -->
-    <section class="philosophy-overview" style="background-color: white; padding: 100px 0;">
+    <!-- ====== SPVH GROUP ====== -->
+    <section class="ab-group">
       <div class="container">
-        <div class="philosophy-grid-section-1">
-          <div class="philosophy-grid-section-1-left reveal">
-            <h2 style="color: #496bad; font-size: 40px; font-weight: 700; margin-bottom: 1.5rem; margin-top:0;">We Invest Like It's Our Own Capital.</h2>
-            <div style="width: 60px; height: 3px; background-color: #47a996; margin-bottom: 2rem;"></div>
-            <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 1rem;">At SPVH AMC, our investment philosophy is not a marketing document &mdash; it is a living framework that governs every rupee we manage. It has been shaped by decades of market experience, multiple economic cycles, and an unwavering commitment to our investors' long-term interests.</p>
-            <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 1rem;">We believe that sustainable wealth creation requires three things above all else &mdash; intellectual honesty, research depth, and the courage to be different when the data supports it.</p>
-            <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 0;">Our philosophy is not trend-chasing. It is not benchmark-hugging. It is a disciplined, repeatable process designed to compound capital across market cycles.</p>
-          </div>
-          <div class="philosophy-grid-section-1-right reveal-right">
-            <div class="pull-quote-box">
-              <div style="color: #47a996; font-size: 80px; font-family: Georgia, serif; line-height: 1; margin-bottom: 10px;">&ldquo;</div>
-              <p style="color: white; font-style: italic; font-size: 22px; line-height: 1.5; margin-top: 0; margin-bottom: 1rem;">The stock market is a device for transferring money from the impatient to the patient.</p>
-              <div style="color: #9CA3AF; font-size: 14px; margin-bottom: 2rem;">&mdash; Warren Buffett</div>
-              <p style="color: #47a996; font-size: 14px; margin-bottom: 0; font-weight: 500;">Our philosophy in three words: Research. Conviction. Patience.</p>
+        <div class="ab-group-grid">
+
+          <!-- Left: Group description -->
+          <div class="reveal">
+            <span class="ab-label">The SPVH Group</span>
+            <h2 class="ab-heading">A Legacy of <span>Value Creation.</span></h2>
+            <div class="ab-rule"></div>
+            <p class="ab-body">SPVH Asset Management Company is part of the broader SPVH Group — a multi-generational holding company with interests spanning industrials, real estate, and financial services. The Group's investment philosophy and long-term orientation forms the bedrock of everything we do at SPVH AMC.</p>
+            <p class="ab-body">The depth of the Group's operating experience across economic cycles gives our investment team an edge that pure-play fund managers cannot replicate — real-world business understanding, promoter-level access, and the patience that only comes from managing multi-decade capital.</p>
+            <div class="ab-group-stats">
+              <div class="ab-group-stat">
+                <div class="ab-group-stat-val">Est. 1998</div>
+                <div class="ab-group-stat-lbl">Group Founded</div>
+              </div>
+              <div class="ab-group-stat">
+                <div class="ab-group-stat-val">25+ Years</div>
+                <div class="ab-group-stat-lbl">Track Record</div>
+              </div>
+              <div class="ab-group-stat">
+                <div class="ab-group-stat-val">12</div>
+                <div class="ab-group-stat-lbl">Group Companies</div>
+              </div>
+              <div class="ab-group-stat">
+                <div class="ab-group-stat-val">₹8,500 Cr</div>
+                <div class="ab-group-stat-lbl">Group AUM</div>
+              </div>
             </div>
           </div>
+
+          <!-- Right: Group arms -->
+          <div class="ab-group-visual reveal-right">
+            <div class="ab-group-arm">
+              <div class="ab-group-arm-icon"><i class="fas fa-chart-line"></i></div>
+              <div>
+                <div class="ab-group-arm-name">SPVH Asset Management</div>
+                <div class="ab-group-arm-desc">PMS · AIF · Offshore · Advisory — SEBI regulated investment management</div>
+              </div>
+            </div>
+            <div class="ab-group-arm">
+              <div class="ab-group-arm-icon"><i class="fas fa-industry"></i></div>
+              <div>
+                <div class="ab-group-arm-name">SPVH Industrials</div>
+                <div class="ab-group-arm-desc">Manufacturing, engineering &amp; supply-chain businesses across India</div>
+              </div>
+            </div>
+            <div class="ab-group-arm">
+              <div class="ab-group-arm-icon"><i class="fas fa-building"></i></div>
+              <div>
+                <div class="ab-group-arm-name">SPVH Real Estate</div>
+                <div class="ab-group-arm-desc">Commercial, residential &amp; warehousing assets across Tier I cities</div>
+              </div>
+            </div>
+            <div class="ab-group-arm">
+              <div class="ab-group-arm-icon"><i class="fas fa-handshake"></i></div>
+              <div>
+                <div class="ab-group-arm-name">SPVH Ventures</div>
+                <div class="ab-group-arm-desc">Early-stage technology &amp; fintech investments across South Asia</div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
 
-    <!-- Section 2 — The Four Pillars -->
-    <section id="pillars" class="four-pillars" style="background-color: #F0F4FA; padding: 100px 0;">
+    <!-- ====== OUR VALUES ====== -->
+    <section class="ab-values">
       <div class="container">
-        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
-          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">OUR PILLARS</span>
-          <h2 style="color: #1A1A1A; font-size: 40px; font-weight: 700; margin-top:0; margin-bottom: 0;">Four Pillars of <span style="color: #496bad;">Our Investment Framework.</span></h2>
+        <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+          <span class="ab-label">Our Core Values</span>
+          <h2 class="ab-heading light">The Principles That <span>Define Us.</span></h2>
+          <p style="color:#94A3B8; font-size:0.95rem; line-height:1.75; margin-top:0.75rem;">Four values that are not aspirational posters — they are the operating code that governs every decision we make on behalf of our investors.</p>
         </div>
+        <div class="ab-values-grid reveal">
+          <div class="ab-value-card">
+            <div class="ab-value-icon-wrap"><i class="fas fa-shield-alt"></i></div>
+            <div class="ab-value-title">Integrity First</div>
+            <div class="ab-value-desc">We never compromise on transparency, fiduciary responsibility, or the interests of our investors. When in doubt, we choose the harder right over the easier wrong.</div>
+          </div>
+          <div class="ab-value-card">
+            <div class="ab-value-icon-wrap"><i class="fas fa-microscope"></i></div>
+            <div class="ab-value-title">Research Driven</div>
+            <div class="ab-value-desc">Every investment decision is backed by rigorous, proprietary analysis — not market noise, broker calls, or consensus thinking. We do the work others won't.</div>
+          </div>
+          <div class="ab-value-card">
+            <div class="ab-value-icon-wrap"><i class="fas fa-users"></i></div>
+            <div class="ab-value-title">Client Obsessed</div>
+            <div class="ab-value-desc">Your goals are our mandate. Nothing else comes first. We align our incentives with yours and communicate with the honesty you deserve — in all market conditions.</div>
+          </div>
+          <div class="ab-value-card">
+            <div class="ab-value-icon-wrap"><i class="fas fa-seedling"></i></div>
+            <div class="ab-value-title">Long-Term Thinking</div>
+            <div class="ab-value-desc">We invest like it's our own capital — with patience, conviction, and the discipline to hold through short-term noise when the long-term thesis remains intact.</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <div class="pillars-grid reveal">
-          <!-- Pillar 1 -->
-          <div class="pillar-card">
-            <div class="pillar-card-header">
-              <span class="pillar-number">01</span>
-              <i class="fas fa-search pillar-icon"></i>
+    <!-- ====== WHY SPVH AMC ====== -->
+    <section class="ab-why">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+          <span class="ab-label">Why SPVH AMC</span>
+          <h2 class="ab-heading">What Makes Us <span>Different.</span></h2>
+          <p style="color:#64748B; font-size:0.95rem; line-height:1.75; margin-top:0.75rem;">In a market full of asset managers, here is what separates SPVH from the rest.</p>
+        </div>
+        <div class="ab-why-grid reveal">
+          <div class="ab-why-card">
+            <div class="ab-why-icon"><i class="fas fa-search-dollar"></i></div>
+            <div class="ab-why-title">100% Proprietary Research</div>
+            <div class="ab-why-desc">We build our own models, visit companies, talk to managements, competitors, and suppliers. Every idea in our portfolio was born from our own analysis — never from external tips.</div>
+          </div>
+          <div class="ab-why-card">
+            <div class="ab-why-icon"><i class="fas fa-bullseye"></i></div>
+            <div class="ab-why-title">Concentration Over Diversification</div>
+            <div class="ab-why-desc">We run concentrated 15–25 stock portfolios, not 80-stock index clones. When we invest, we invest with conviction. Every position is sized to matter to performance.</div>
+          </div>
+          <div class="ab-why-card">
+            <div class="ab-why-icon"><i class="fas fa-handshake"></i></div>
+            <div class="ab-why-title">Skin in the Game</div>
+            <div class="ab-why-desc">The principals of SPVH AMC invest in every strategy we manage. Our interests are permanently aligned with yours. We eat our own cooking — always.</div>
+          </div>
+          <div class="ab-why-card">
+            <div class="ab-why-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="ab-why-title">Radical Transparency</div>
+            <div class="ab-why-desc">Institutional-grade monthly attribution reports, real-time investor portal access, and complete honesty about what worked and what did not in every reporting cycle.</div>
+          </div>
+          <div class="ab-why-card">
+            <div class="ab-why-icon"><i class="fas fa-layer-group"></i></div>
+            <div class="ab-why-title">Full-Spectrum Platform</div>
+            <div class="ab-why-desc">PMS, Cat II AIF, offshore funds, and advisory research — all under one roof with the same research engine powering every strategy across every mandate.</div>
+          </div>
+          <div class="ab-why-card">
+            <div class="ab-why-icon"><i class="fas fa-landmark"></i></div>
+            <div class="ab-why-title">Group Operating Advantage</div>
+            <div class="ab-why-desc">Backed by the SPVH Group's 25+ years of multi-sector operating experience, our investment team brings real-world business understanding that pure-play fund managers simply cannot match.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== PHILOSOPHY DIVIDER ====== -->
+    <div class="ab-phil-divider" id="philosophy">
+      <div class="container">
+        <div class="ab-phil-divider-inner">
+          <span class="ab-label">How We Think</span>
+          <h2>Conviction Over Consensus.<br><span>Patience Over Noise.</span></h2>
+          <p>Our investment philosophy is not a marketing document. It is a living framework — shaped by decades of market experience and an unwavering commitment to our investors' long-term interests.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PHILOSOPHY OVERVIEW ====== -->
+    <section class="ab-philosophy">
+      <div class="container">
+        <div class="ab-phil-grid">
+
+          <!-- Left: philosophy text -->
+          <div class="reveal">
+            <span class="ab-label">Investment Philosophy</span>
+            <h2 class="ab-heading">We Invest Like It's <span>Our Own Capital.</span></h2>
+            <div class="ab-rule"></div>
+            <p class="ab-body">At SPVH AMC, our investment philosophy is not a marketing document — it is a living framework that governs every rupee we manage. It has been shaped by decades of market experience, multiple economic cycles, and an unwavering commitment to our investors' long-term interests.</p>
+            <p class="ab-body">We believe that sustainable wealth creation requires three things above all else — intellectual honesty, research depth, and the courage to be different when the data supports it. Our philosophy is not trend-chasing. It is not benchmark-hugging. It is a disciplined, repeatable process designed to compound capital across market cycles.</p>
+            <p class="ab-body">We define risk as the permanent loss of capital — not short-term mark-to-market volatility. This distinction shapes everything from how we size positions to how we communicate with investors during turbulent markets.</p>
+          </div>
+
+          <!-- Right: quote box -->
+          <div class="ab-quote-box reveal-right">
+            <span class="ab-quote-mark">&ldquo;</span>
+            <p class="ab-quote-text">The stock market is a device for transferring money from the impatient to the patient.</p>
+            <div class="ab-quote-author">— Warren Buffett</div>
+            <div class="ab-quote-rule"></div>
+            <div class="ab-phil-tenets">
+              <div class="ab-phil-tenet">
+                <i class="fas fa-microscope"></i>
+                <span><strong style="color:#fff;">Research</strong> — Bottom-up, proprietary, scuttlebutt-driven</span>
+              </div>
+              <div class="ab-phil-tenet">
+                <i class="fas fa-bullseye"></i>
+                <span><strong style="color:#fff;">Conviction</strong> — Concentrated bets in our highest-quality ideas</span>
+              </div>
+              <div class="ab-phil-tenet">
+                <i class="fas fa-hourglass-half"></i>
+                <span><strong style="color:#fff;">Patience</strong> — Hold through cycles, exit on thesis change</span>
+              </div>
+              <div class="ab-phil-tenet">
+                <i class="fas fa-shield-alt"></i>
+                <span><strong style="color:#fff;">Capital Preservation</strong> — Never lose permanently. Volatility is not risk.</span>
+              </div>
             </div>
-            <h3 class="pillar-title">Fundamental Research</h3>
-            <div class="pillar-accent"></div>
-            <p class="pillar-desc">We build our own models. We visit companies. We talk to managements, competitors, and suppliers. Our research is proprietary and deep.</p>
-            <ul class="pillar-bullets">
-              <li>Bottom-up stock analysis</li>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== FOUR PILLARS ====== -->
+    <section class="ab-pillars">
+      <div class="container">
+        <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+          <span class="ab-label">Our Framework</span>
+          <h2 class="ab-heading">Four Pillars of Our <span>Investment Framework.</span></h2>
+        </div>
+        <div class="ab-pillars-grid reveal">
+
+          <div class="ab-pillar">
+            <div class="ab-pillar-num">01</div>
+            <div class="ab-pillar-icon"><i class="fas fa-search"></i></div>
+            <div class="ab-pillar-title">Fundamental Research</div>
+            <div class="ab-pillar-rule"></div>
+            <p class="ab-pillar-desc">We build our own models. We visit companies. We talk to managements, competitors, and suppliers. Our research is 100% proprietary, deeply sourced, and independent of Wall Street consensus.</p>
+            <ul class="ab-pillar-bullets">
+              <li>Bottom-up stock analysis from first principles</li>
               <li>Scuttlebutt research methodology</li>
+              <li>Management meeting &amp; channel checks</li>
             </ul>
           </div>
-          <!-- Pillar 2 -->
-          <div class="pillar-card">
-            <div class="pillar-card-header">
-              <span class="pillar-number">02</span>
-              <i class="fas fa-cubes pillar-icon"></i>
-            </div>
-            <h3 class="pillar-title">Portfolio Construction</h3>
-            <div class="pillar-accent"></div>
-            <p class="pillar-desc">We build concentrated, high-conviction portfolios. Typically 15&ndash;25 positions in equity strategies. Each position sized by conviction and risk-adjusted return potential.</p>
-            <ul class="pillar-bullets">
-              <li>Risk-adjusted position sizing</li>
-              <li>Sector &amp; macro overlay</li>
+
+          <div class="ab-pillar">
+            <div class="ab-pillar-num">02</div>
+            <div class="ab-pillar-icon"><i class="fas fa-cubes"></i></div>
+            <div class="ab-pillar-title">Portfolio Construction</div>
+            <div class="ab-pillar-rule"></div>
+            <p class="ab-pillar-desc">We build concentrated, high-conviction portfolios — typically 15–25 positions in equity strategies. Each position is sized by conviction level and risk-adjusted return potential, not index weight.</p>
+            <ul class="ab-pillar-bullets">
+              <li>Conviction-weighted position sizing (2–12%)</li>
+              <li>Sector &amp; macro overlay for diversification</li>
+              <li>Liquidity screening at every position</li>
             </ul>
           </div>
-          <!-- Pillar 3 -->
-          <div class="pillar-card">
-            <div class="pillar-card-header">
-              <span class="pillar-number">03</span>
-              <i class="fas fa-shield-alt pillar-icon"></i>
-            </div>
-            <h3 class="pillar-title">Risk Management</h3>
-            <div class="pillar-accent"></div>
-            <p class="pillar-desc">Capital preservation is paramount. We define risk as permanent loss of capital &mdash; not short-term volatility. Every portfolio has hard risk limits built in.</p>
-            <ul class="pillar-bullets">
-              <li>Drawdown limits per strategy</li>
+
+          <div class="ab-pillar">
+            <div class="ab-pillar-num">03</div>
+            <div class="ab-pillar-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="ab-pillar-title">Risk Management</div>
+            <div class="ab-pillar-rule"></div>
+            <p class="ab-pillar-desc">Capital preservation is paramount. We define risk as permanent loss of capital — not short-term volatility. Every portfolio has hard risk limits, concentration caps, and drawdown triggers built in.</p>
+            <ul class="ab-pillar-bullets">
+              <li>Strategy-level drawdown limits</li>
               <li>Continuous portfolio stress testing</li>
+              <li>Daily risk monitoring by dedicated risk officer</li>
             </ul>
           </div>
-          <!-- Pillar 4 -->
-          <div class="pillar-card">
-            <div class="pillar-card-header">
-              <span class="pillar-number">04</span>
-              <i class="fas fa-sign-out-alt pillar-icon"></i>
-            </div>
-            <h3 class="pillar-title">Exit Discipline</h3>
-            <div class="pillar-accent"></div>
-            <p class="pillar-desc">Knowing when to sell is as important as knowing what to buy. We exit when the thesis breaks, valuation becomes unreasonable, or better opportunities emerge.</p>
-            <ul class="pillar-bullets">
-              <li>Thesis-driven exit triggers</li>
-              <li>Valuation discipline at entry and exit</li>
+
+          <div class="ab-pillar">
+            <div class="ab-pillar-num">04</div>
+            <div class="ab-pillar-icon"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="ab-pillar-title">Exit Discipline</div>
+            <div class="ab-pillar-rule"></div>
+            <p class="ab-pillar-desc">Knowing when to sell is as important as knowing what to buy. We exit when the investment thesis breaks, valuation becomes unreasonable, or a materially better opportunity presents itself.</p>
+            <ul class="ab-pillar-bullets">
+              <li>Pre-defined thesis-driven exit triggers</li>
+              <li>Valuation discipline at both entry and exit</li>
+              <li>Disciplined gain recycling framework</li>
             </ul>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- Section 3 — Investment Process Timeline -->
-    <section class="investment-process" style="background-color: white; padding: 100px 0;">
+    <!-- ====== INVESTMENT PROCESS ====== -->
+    <section class="ab-process">
       <div class="container">
-        <div style="text-align: center; margin-bottom: 5rem;" class="reveal">
-          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">OUR PROCESS</span>
-          <h2 style="color: #1A1A1A; font-size: 40px; font-weight: 700; margin-top:0; margin-bottom: 0;">From Idea to <span style="color: #496bad;">Portfolio Position.</span></h2>
+        <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+          <span class="ab-label">Our Process</span>
+          <h2 class="ab-heading">From Idea to <span>Portfolio Position.</span></h2>
+          <p style="color:#64748B; font-size:0.95rem; line-height:1.75; margin-top:0.75rem;">A disciplined, repeatable process that has remained consistent across every strategy and every market cycle since inception.</p>
         </div>
-
-        <div class="timeline-wrapper reveal">
-          <div class="timeline-line"></div>
-          
-          <div class="timeline-nodes">
-            <div class="timeline-step">
-              <div class="timeline-node">1</div>
-              <h4 class="timeline-title">Idea Generation</h4>
-              <p class="timeline-desc">Universe screening, thematic research, management interactions, peer referrals.</p>
-            </div>
-            <div class="timeline-step">
-              <div class="timeline-node">2</div>
-              <h4 class="timeline-title">Deep Dive Research</h4>
-              <p class="timeline-desc">Financial modelling, site visits, scuttlebutt, risk identification.</p>
-            </div>
-            <div class="timeline-step">
-              <div class="timeline-node">3</div>
-              <h4 class="timeline-title">Investment Committee</h4>
-              <p class="timeline-desc">Rigorous debate, devil's advocate review, final conviction scoring.</p>
-            </div>
-            <div class="timeline-step">
-              <div class="timeline-node">4</div>
-              <h4 class="timeline-title">Portfolio Entry</h4>
-              <p class="timeline-desc">Position sizing, entry price discipline, phased buying strategy.</p>
-            </div>
-            <div class="timeline-step">
-              <div class="timeline-node">5</div>
-              <h4 class="timeline-title">Active Monitoring</h4>
-              <p class="timeline-desc">Quarterly thesis review, management tracking, exit trigger monitoring.</p>
-            </div>
+        <div class="ab-process-track reveal">
+          <div class="ab-proc-step">
+            <div class="ab-proc-num">1</div>
+            <div class="ab-proc-title">Idea Generation</div>
+            <div class="ab-proc-desc">Universe screening, thematic research, management interactions, peer referrals, and proprietary screens.</div>
+          </div>
+          <div class="ab-proc-step">
+            <div class="ab-proc-num">2</div>
+            <div class="ab-proc-title">Deep Dive Research</div>
+            <div class="ab-proc-desc">Financial modelling, site visits, scuttlebutt interviews, risk identification, and cross-cycle valuation.</div>
+          </div>
+          <div class="ab-proc-step">
+            <div class="ab-proc-num">3</div>
+            <div class="ab-proc-title">Investment Committee</div>
+            <div class="ab-proc-desc">Rigorous debate, devil's advocate review, portfolio fit assessment, and final conviction scoring.</div>
+          </div>
+          <div class="ab-proc-step">
+            <div class="ab-proc-num">4</div>
+            <div class="ab-proc-title">Portfolio Entry</div>
+            <div class="ab-proc-desc">Conviction-weighted sizing, entry price discipline, phased buying, and risk limit verification.</div>
+          </div>
+          <div class="ab-proc-step">
+            <div class="ab-proc-num">5</div>
+            <div class="ab-proc-title">Active Monitoring</div>
+            <div class="ab-proc-desc">Quarterly thesis review, management tracking, earnings monitoring, and exit trigger surveillance.</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Section 4 — ESG & Responsible Investing -->
-    <section class="esg-section" style="background-color: #0A1628; padding: 80px 0;">
+    <!-- ====== ESG ====== -->
+    <section class="ab-esg">
       <div class="container">
-        <div class="esg-grid">
-          <div class="esg-left reveal-left">
-            <h2 class="esg-title">We Invest <span style="color: #47a996;">Responsibly.</span></h2>
-            <p class="esg-desc">We integrate Environmental, Social, and Governance factors into our investment analysis &mdash; not as a checkbox, but as a genuine risk and opportunity lens. Companies with strong ESG practices tend to be better managed, more resilient, and more sustainable long-term compounders.</p>
-            <a href="#" class="esg-link">Learn More About Our ESG Approach &rarr;</a>
+        <div class="ab-esg-grid">
+          <div class="reveal">
+            <span class="ab-label">Responsible Investing</span>
+            <h2 class="ab-heading light">We Invest <span>Responsibly.</span></h2>
+            <div class="ab-rule"></div>
+            <p class="ab-esg-body">We integrate Environmental, Social, and Governance factors into our investment analysis — not as a checkbox exercise, but as a genuine risk and opportunity lens. Companies with strong ESG practices tend to be better managed, more resilient, and more sustainable long-term compounders.</p>
+            <p class="ab-esg-body">Our ESG integration is embedded in the due diligence process for every investment across every strategy — from listed equity PMS to pre-IPO AIF to offshore mandates. Governance quality, in particular, is a non-negotiable screen for every capital deployment decision.</p>
+            <a href="#" class="ab-esg-link">Learn More About Our ESG Approach <i class="fas fa-arrow-right"></i></a>
           </div>
-          <div class="esg-right reveal-right">
-            <div class="esg-card">
-              <i class="fas fa-leaf esg-icon"></i>
-              <div class="esg-card-content">
-                <h4 class="esg-card-title">Environmental</h4>
-                <p class="esg-card-desc">Resource efficiency, carbon footprint mitigation, and ecological impact.</p>
+          <div class="ab-esg-cards reveal-right">
+            <div class="ab-esg-card">
+              <div class="ab-esg-icon"><i class="fas fa-leaf"></i></div>
+              <div>
+                <div class="ab-esg-title">Environmental</div>
+                <div class="ab-esg-desc">Resource efficiency, carbon footprint, ecological impact, and climate transition risk assessed at the company and portfolio level.</div>
               </div>
             </div>
-            <div class="esg-card">
-              <i class="fas fa-users esg-icon"></i>
-              <div class="esg-card-content">
-                <h4 class="esg-card-title">Social</h4>
-                <p class="esg-card-desc">Labor practices, community relations, and supply chain ethics.</p>
+            <div class="ab-esg-card">
+              <div class="ab-esg-icon"><i class="fas fa-users"></i></div>
+              <div>
+                <div class="ab-esg-title">Social</div>
+                <div class="ab-esg-desc">Labour practices, community relations, supply chain ethics, and employee welfare as indicators of long-term cultural health.</div>
               </div>
             </div>
-            <div class="esg-card">
-              <i class="fas fa-landmark esg-icon"></i>
-              <div class="esg-card-content">
-                <h4 class="esg-card-title">Governance</h4>
-                <p class="esg-card-desc">Board independence, capital allocation discipline, and minority shareholder rights.</p>
+            <div class="ab-esg-card">
+              <div class="ab-esg-icon"><i class="fas fa-landmark"></i></div>
+              <div>
+                <div class="ab-esg-title">Governance</div>
+                <div class="ab-esg-desc">Board independence, capital allocation discipline, promoter integrity, related-party transaction scrutiny, and minority shareholder rights.</div>
               </div>
             </div>
           </div>
@@ -326,147 +1149,96 @@
       </div>
     </section>
 
-    <!-- Team Mid-Page Divider (Hero Style) -->
-    <section class="team-hero-divider about-hero-new" style="border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
-      <div class="cta-abstract-overlay pattern-1"></div>
-      <div class="container hero-container" style="position: relative; z-index: 2;">
-        <div class="about-hero-content reveal">
-          <span class="about-hero-label">THE TEAM</span>
-          <h2 class="about-hero-title">Experience You Can <br><span style="color: #47a996;">Trust With Your Wealth.</span></h2>
-          <div class="about-hero-accent"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 1: Leadership Grid -->
-    <section id="leadership" class="leadership-section" style="background-color: white; padding: 100px 0;">
+    <!-- ====== TEAM DIVIDER ====== -->
+    <div class="ab-team-divider" id="leadership">
       <div class="container">
-        <div class="text-center reveal">
-          <span class="cta-label" style="display: block; margin-bottom: 1rem;">SENIOR LEADERSHIP</span>
-          <h2 class="story-title" style="margin-bottom: 3rem; color: #1A1A1A;">The Minds <span style="color: #496bad;">Behind the Strategy.</span></h2>
-        </div>
-        
-        <div class="leadership-grid">
-          
-          <div class="leadership-card reveal">
-            <div class="leader-photo"></div>
-            <div class="leader-info">
-              <h3 class="leader-name">[Name]</h3>
-              <div class="leader-role">Chief Investment Officer</div>
-              <div class="leader-divider"></div>
-              <p class="leader-bio">[XX years of experience. Previously at [Firm], [Firm]. Expertise in portfolio construction and quantitative asset modeling.]</p>
-              <p class="leader-edu">[[University/Institute] | [Degree]]</p>
-              <a href="#" class="leader-social"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-          </div>
-          
-          <div class="leadership-card reveal" style="animation-delay: 0.1s;">
-            <div class="leader-photo"></div>
-            <div class="leader-info">
-              <h3 class="leader-name">[Name]</h3>
-              <div class="leader-role">Chief Executive Officer</div>
-              <div class="leader-divider"></div>
-              <p class="leader-bio">[XX years of experience. Previously at [Firm], [Firm]. Expertise in institutional scaling and family office strategy.]</p>
-              <p class="leader-edu">[[University/Institute] | [Degree]]</p>
-              <a href="#" class="leader-social"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-          </div>
-
-          <div class="leadership-card reveal" style="animation-delay: 0.2s;">
-            <div class="leader-photo"></div>
-            <div class="leader-info">
-              <h3 class="leader-name">[Name]</h3>
-              <div class="leader-role">Head of Research &amp; Strategy</div>
-              <div class="leader-divider"></div>
-              <p class="leader-bio">[XX years of experience. Previously at [Firm], [Firm]. Expertise in macroeconomic analysis and equity research.]</p>
-              <p class="leader-edu">[[University/Institute] | [Degree]]</p>
-              <a href="#" class="leader-social"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-          </div>
-          
-          <div class="leadership-card reveal">
-            <div class="leader-photo"></div>
-            <div class="leader-info">
-              <h3 class="leader-name">[Name]</h3>
-              <div class="leader-role">Head of Risk &amp; Compliance</div>
-              <div class="leader-divider"></div>
-              <p class="leader-bio">[XX years of experience. Previously at [Firm], [Firm]. Expertise in regulatory frameworks and corporate governance.]</p>
-              <p class="leader-edu">[[University/Institute] | [Degree]]</p>
-              <a href="#" class="leader-social"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-          </div>
-
-          <div class="leadership-card reveal" style="animation-delay: 0.1s;">
-            <div class="leader-photo"></div>
-            <div class="leader-info">
-              <h3 class="leader-name">[Name]</h3>
-              <div class="leader-role">Head of Investor Relations</div>
-              <div class="leader-divider"></div>
-              <p class="leader-bio">[XX years of experience. Previously at [Firm], [Firm]. Expertise in client mandates and UHNWI relations.]</p>
-              <p class="leader-edu">[[University/Institute] | [Degree]]</p>
-              <a href="#" class="leader-social"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-          </div>
-
-          <div class="leadership-card reveal" style="animation-delay: 0.2s;">
-            <div class="leader-photo"></div>
-            <div class="leader-info">
-              <h3 class="leader-name">[Name]</h3>
-              <div class="leader-role">Head of Operations &amp; Finance</div>
-              <div class="leader-divider"></div>
-              <p class="leader-bio">[XX years of experience. Previously at [Firm], [Firm]. Expertise in institutional reporting and fund administration.]</p>
-              <p class="leader-edu">[[University/Institute] | [Degree]]</p>
-              <a href="#" class="leader-social"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-          </div>
-
+        <div class="ab-team-divider-inner">
+          <span class="ab-label" style="color:rgba(255,255,255,0.6);">The Team</span>
+          <h2>Experience You Can<br>Trust With Your Wealth.</h2>
+          <p>A team of investors, researchers, and operators united by one obsession — compounding returns and knowledge for our investors across every market cycle.</p>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- Section 2: Advisory Board -->
-    <section class="advisory-section" style="background-color: #F0F4FA; padding: 100px 0;">
+    <!-- ====== LEADERSHIP TEAM ====== -->
+    <section class="ab-leadership">
       <div class="container">
-        <div class="text-center reveal">
-          <span class="cta-label" style="display: block; margin-bottom: 1rem;">ADVISORY BOARD</span>
-          <h2 class="story-title" style="margin-bottom: 3rem; color: #1A1A1A;">Guided by <span style="color: #496bad;">Industry Veterans.</span></h2>
+        <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+          <span class="ab-label">Senior Leadership</span>
+          <h2 class="ab-heading">The Minds <span>Behind the Strategy.</span></h2>
+          <p style="color:#64748B; font-size:0.95rem; line-height:1.75; margin-top:0.75rem;">Led by seasoned investment professionals with decades of combined experience across Indian public markets, private equity, and global asset management.</p>
         </div>
-        
-        <div class="advisory-grid reveal">
-          
-          <div class="advisory-card">
-            <div class="advisory-photo"></div>
-            <div class="advisory-info">
-              <h3 class="advisory-name">[Name]</h3>
-              <div class="advisory-role">Board Member</div>
-              <p class="advisory-bio">[Former CEO of Top Tier Firm. Specialized in scaling financial complexes.]</p>
-              <div class="advisory-tags">
-                <span class="tag-pill">Private Equity</span>
-              </div>
+        <div class="ab-leader-grid reveal">
+
+          <div class="ab-leader-card">
+            <div class="ab-leader-photo"><i class="fas fa-user-tie"></i></div>
+            <div class="ab-leader-body">
+              <div class="ab-leader-name">[Name]</div>
+              <div class="ab-leader-role">Chief Investment Officer</div>
+              <div class="ab-leader-rule"></div>
+              <p class="ab-leader-bio">[XX years of experience across Indian public and private markets. Previously at [Firm], [Firm]. Expertise in concentrated equity portfolio construction and quantitative asset modelling.]</p>
+              <p class="ab-leader-edu"><i class="fas fa-graduation-cap" style="color:#47a996; margin-right:6px;"></i> [University / Institute] · [Degree]</p>
+              <a href="#" class="ab-leader-social"><i class="fab fa-linkedin-in"></i></a>
             </div>
           </div>
 
-          <div class="advisory-card">
-            <div class="advisory-photo"></div>
-            <div class="advisory-info">
-              <h3 class="advisory-name">[Name]</h3>
-              <div class="advisory-role">Board Member</div>
-              <p class="advisory-bio">[Partner at Global Consulting. Expert in structural macroeconomic forces.]</p>
-              <div class="advisory-tags">
-                <span class="tag-pill">Macro Economics</span>
-              </div>
+          <div class="ab-leader-card">
+            <div class="ab-leader-photo"><i class="fas fa-user-tie"></i></div>
+            <div class="ab-leader-body">
+              <div class="ab-leader-name">[Name]</div>
+              <div class="ab-leader-role">Chief Executive Officer</div>
+              <div class="ab-leader-rule"></div>
+              <p class="ab-leader-bio">[XX years of experience in institutional wealth management and business building. Previously at [Firm], [Firm]. Expertise in scaling AMC platforms and family office strategy.]</p>
+              <p class="ab-leader-edu"><i class="fas fa-graduation-cap" style="color:#47a996; margin-right:6px;"></i> [University / Institute] · [Degree]</p>
+              <a href="#" class="ab-leader-social"><i class="fab fa-linkedin-in"></i></a>
             </div>
           </div>
 
-          <div class="advisory-card">
-            <div class="advisory-photo"></div>
-            <div class="advisory-info">
-              <h3 class="advisory-name">[Name]</h3>
-              <div class="advisory-role">Board Member</div>
-              <p class="advisory-bio">[Ex-Regulator. Directs transparency and fiduciary compliance structures.]</p>
-              <div class="advisory-tags">
-                <span class="tag-pill">Regulatory Affairs</span>
-              </div>
+          <div class="ab-leader-card">
+            <div class="ab-leader-photo"><i class="fas fa-chart-bar"></i></div>
+            <div class="ab-leader-body">
+              <div class="ab-leader-name">[Name]</div>
+              <div class="ab-leader-role">Head of Research &amp; Strategy</div>
+              <div class="ab-leader-rule"></div>
+              <p class="ab-leader-bio">[XX years of experience in sell-side and buy-side equity research. Previously at [Firm], [Firm]. Expertise in macroeconomic analysis, sector strategy, and earnings modelling.]</p>
+              <p class="ab-leader-edu"><i class="fas fa-graduation-cap" style="color:#47a996; margin-right:6px;"></i> [University / Institute] · [Degree]</p>
+              <a href="#" class="ab-leader-social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+
+          <div class="ab-leader-card">
+            <div class="ab-leader-photo"><i class="fas fa-shield-alt"></i></div>
+            <div class="ab-leader-body">
+              <div class="ab-leader-name">[Name]</div>
+              <div class="ab-leader-role">Head of Risk &amp; Compliance</div>
+              <div class="ab-leader-rule"></div>
+              <p class="ab-leader-bio">[XX years of experience in risk management and regulatory compliance. Previously at [Firm], [Firm]. Deep expertise in SEBI regulatory frameworks and corporate governance.]</p>
+              <p class="ab-leader-edu"><i class="fas fa-graduation-cap" style="color:#47a996; margin-right:6px;"></i> [University / Institute] · [Degree]</p>
+              <a href="#" class="ab-leader-social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+
+          <div class="ab-leader-card">
+            <div class="ab-leader-photo"><i class="fas fa-handshake"></i></div>
+            <div class="ab-leader-body">
+              <div class="ab-leader-name">[Name]</div>
+              <div class="ab-leader-role">Head of Investor Relations</div>
+              <div class="ab-leader-rule"></div>
+              <p class="ab-leader-bio">[XX years of experience managing UHNWI and institutional client relationships. Previously at [Firm], [Firm]. Expertise in client mandates, reporting, and NRI investor servicing.]</p>
+              <p class="ab-leader-edu"><i class="fas fa-graduation-cap" style="color:#47a996; margin-right:6px;"></i> [University / Institute] · [Degree]</p>
+              <a href="#" class="ab-leader-social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+
+          <div class="ab-leader-card">
+            <div class="ab-leader-photo"><i class="fas fa-cogs"></i></div>
+            <div class="ab-leader-body">
+              <div class="ab-leader-name">[Name]</div>
+              <div class="ab-leader-role">Head of Operations &amp; Finance</div>
+              <div class="ab-leader-rule"></div>
+              <p class="ab-leader-bio">[XX years of experience in fund administration and institutional operations. Previously at [Firm], [Firm]. Expertise in NAV reporting, custodian oversight, and fund accounting.]</p>
+              <p class="ab-leader-edu"><i class="fas fa-graduation-cap" style="color:#47a996; margin-right:6px;"></i> [University / Institute] · [Degree]</p>
+              <a href="#" class="ab-leader-social"><i class="fab fa-linkedin-in"></i></a>
             </div>
           </div>
 
@@ -474,41 +1246,49 @@
       </div>
     </section>
 
-    <!-- Section 3: Team Culture Strip -->
-    <section class="culture-strip" style="background-color: #0A1628; padding: 100px 0;">
+    <!-- ====== ADVISORY BOARD ====== -->
+    <section class="ab-advisory">
       <div class="container">
-        <div class="culture-flex-grid">
-          
-          <div class="culture-left reveal-left">
-            <h2 class="values-title" style="margin-bottom: 1.5rem;">We Are <br><span style="color: #47a996;">Always Looking for the Best.</span></h2>
-            <p style="color: #9CA3AF; font-family: 'Helvetica', sans-serif; font-size: 16px; line-height: 1.6; margin-bottom: 2.5rem; max-width: 450px;">We are a team of investors, researchers, and operators who are obsessed with compounding &mdash; both returns and knowledge. If you share our values, we'd love to hear from you.</p>
-            <a href="#" class="btn-cta-secondary" style="display: inline-block;">View Open Positions &rarr;</a>
+        <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+          <span class="ab-label">Advisory Board</span>
+          <h2 class="ab-heading">Guided by <span>Industry Veterans.</span></h2>
+          <p style="color:#64748B; font-size:0.95rem; line-height:1.75; margin-top:0.75rem;">Our advisory board brings decades of collective experience in capital markets, regulation, and global investment management — providing strategic guidance and institutional oversight.</p>
+        </div>
+        <div class="ab-advisory-grid reveal">
+
+          <div class="ab-advisory-card">
+            <div class="ab-advisory-avatar"><i class="fas fa-user-tie"></i></div>
+            <div class="ab-advisory-name">[Name]</div>
+            <div class="ab-advisory-role">Independent Advisor</div>
+            <div class="ab-advisory-rule"></div>
+            <p class="ab-advisory-bio">[Former CEO of a top-tier financial institution. Specialized in scaling institutional investment platforms and navigating complex regulatory environments across South Asia.]</p>
+            <div class="ab-advisory-tags">
+              <span class="ab-advisory-tag">Private Equity</span>
+              <span class="ab-advisory-tag">Capital Markets</span>
+            </div>
           </div>
 
-          <div class="culture-right reveal-right">
-            <div class="culture-stats-grid">
-              
-              <div class="culture-stat-box">
-                <div class="stat-accent"></div>
-                <div class="stat-number">24</div>
-                <div class="stat-label">Team Members</div>
-              </div>
-              <div class="culture-stat-box">
-                <div class="stat-accent"></div>
-                <div class="stat-number">18</div>
-                <div class="stat-label">Avg. Years Experience</div>
-              </div>
-              <div class="culture-stat-box">
-                <div class="stat-accent"></div>
-                <div class="stat-number">10</div>
-                <div class="stat-label">CFA Charterholders</div>
-              </div>
-              <div class="culture-stat-box">
-                <div class="stat-accent"></div>
-                <div class="stat-number">14</div>
-                <div class="stat-label">IIM/IIT Alumni</div>
-              </div>
+          <div class="ab-advisory-card">
+            <div class="ab-advisory-avatar"><i class="fas fa-globe"></i></div>
+            <div class="ab-advisory-name">[Name]</div>
+            <div class="ab-advisory-role">Independent Advisor</div>
+            <div class="ab-advisory-rule"></div>
+            <p class="ab-advisory-bio">[Partner at a global consulting firm. Expert in structural macroeconomic analysis, sovereign policy frameworks, and cross-border capital allocation strategy.]</p>
+            <div class="ab-advisory-tags">
+              <span class="ab-advisory-tag">Macro Economics</span>
+              <span class="ab-advisory-tag">Global Strategy</span>
+            </div>
+          </div>
 
+          <div class="ab-advisory-card">
+            <div class="ab-advisory-avatar"><i class="fas fa-balance-scale"></i></div>
+            <div class="ab-advisory-name">[Name]</div>
+            <div class="ab-advisory-role">Independent Advisor</div>
+            <div class="ab-advisory-rule"></div>
+            <p class="ab-advisory-bio">[Former Senior Official at SEBI. Directs our compliance culture, transparency standards, and fiduciary framework, ensuring the highest standards of regulatory adherence.]</p>
+            <div class="ab-advisory-tags">
+              <span class="ab-advisory-tag">Regulatory Affairs</span>
+              <span class="ab-advisory-tag">SEBI Policy</span>
             </div>
           </div>
 
@@ -516,13 +1296,79 @@
       </div>
     </section>
 
-    <!-- Bottom CTA -->
-    <section class="pre-footer-cta-new" style="background-color: #0A1628; padding: 100px 0; position: relative; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.05);">
-      <div class="cta-abstract-overlay pattern-1"></div>
-      <div class="container" style="position: relative; z-index: 2;">
-        <div class="cta-content-wrapper text-center">
-          <h2 class="cta-heading reveal">Ready to Invest with SPVH?</h2>
-          <a href="contact.html" class="btn-cta-primary reveal-pop" style="margin-top: 2rem;">Schedule a Consultation &rarr;</a>
+    <!-- ====== TEAM CULTURE ====== -->
+    <section class="ab-culture">
+      <div class="container">
+        <div class="ab-culture-grid">
+          <div class="reveal">
+            <span class="ab-label">Our Culture</span>
+            <h2 class="ab-heading light">Always Looking for <span>the Best.</span></h2>
+            <div class="ab-rule"></div>
+            <p class="ab-culture-body">We are a team of investors, researchers, and operators who are obsessed with compounding — both returns and knowledge. We thrive on intellectual curiosity, honest debate, and the humility to change our minds when the evidence demands it.</p>
+            <p class="ab-culture-body">If you share our values, think in decades rather than quarters, and believe that the best investment teams are built on trust and intellectual honesty — we'd love to hear from you.</p>
+            <a href="#" class="ab-culture-link"><i class="fas fa-briefcase"></i> View Open Positions</a>
+          </div>
+          <div class="ab-culture-stats reveal-right">
+            <div class="ab-culture-stat">
+              <div class="ab-culture-stat-val">24</div>
+              <div class="ab-culture-stat-lbl">Team Members</div>
+            </div>
+            <div class="ab-culture-stat">
+              <div class="ab-culture-stat-val">18</div>
+              <div class="ab-culture-stat-lbl">Avg. Years Experience</div>
+            </div>
+            <div class="ab-culture-stat">
+              <div class="ab-culture-stat-val">10</div>
+              <div class="ab-culture-stat-lbl">CFA Charterholders</div>
+            </div>
+            <div class="ab-culture-stat">
+              <div class="ab-culture-stat-val">14</div>
+              <div class="ab-culture-stat-lbl">IIM / IIT Alumni</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== REGULATORY STRIP ====== -->
+    <div class="ab-reg">
+      <div class="container">
+        <div class="ab-reg-inner reveal">
+          <div class="ab-reg-item">
+            <i class="fas fa-shield-alt"></i>
+            <div class="ab-reg-text">SEBI Registered Portfolio Manager<br><span style="font-weight:400; color:#94A3B8;">Reg. No. INP00000XXXX</span></div>
+          </div>
+          <div class="ab-reg-item">
+            <i class="fas fa-shield-alt"></i>
+            <div class="ab-reg-text">SEBI Registered AIF — Cat I &amp; II<br><span style="font-weight:400; color:#94A3B8;">Reg. No. IN/AIF2/22-23/1248</span></div>
+          </div>
+          <div class="ab-reg-item">
+            <i class="fas fa-university"></i>
+            <div class="ab-reg-text">AMFI Registered Distributor<br><span style="font-weight:400; color:#94A3B8;">ARN-XXXXXX</span></div>
+          </div>
+          <div class="ab-reg-item">
+            <i class="fas fa-file-contract"></i>
+            <div class="ab-reg-text">CIN: U67110MH2022PTC381574<br><span style="font-weight:400; color:#94A3B8;">SPVH Private Limited</span></div>
+          </div>
+          <div class="ab-reg-item">
+            <i class="fas fa-lock"></i>
+            <div class="ab-reg-text">SEBI Investment Adviser<br><span style="font-weight:400; color:#94A3B8;">Reg. No. INA000XXXXX</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== CTA ====== -->
+    <section class="ab-cta">
+      <div class="container">
+        <div class="ab-cta-inner reveal-pop">
+          <span class="ab-label">Ready to Invest with SPVH?</span>
+          <h2>Institutional Discipline.<br><span>Built for Your Wealth.</span></h2>
+          <p>Whether you're a family office, UHNI, NRI, or institutional investor — our team is ready to build a mandate aligned with your goals. Let's start the conversation.</p>
+          <div class="ab-cta-actions">
+            <a href="contact.html" class="ab-btn-primary" style="padding:16px 36px; font-size:0.95rem;"><i class="fas fa-calendar-alt"></i> Schedule a Consultation</a>
+            <a href="pms.html" class="ab-btn-ghost" style="padding:16px 36px; font-size:0.95rem;"><i class="fas fa-layer-group"></i> Explore Our Solutions</a>
+          </div>
         </div>
       </div>
     </section>
@@ -547,7 +1393,7 @@
         <div class="footer-col-links reveal" style="animation-delay:0.1s;">
           <h4 class="footer-heading">COMPANY</h4>
           <ul>
-            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html#firm-overview">About Us</a></li>
             <li><a href="about.html#leadership">Leadership Team</a></li>
             <li><a href="about.html#philosophy">Investment Philosophy</a></li>
             <li><a href="contact.html">Contact Us</a></li>
@@ -583,8 +1429,17 @@
       </div>
     </div>
   </footer>
+
   <script src="script.js"></script>
+  <script>
+    /* Smooth scroll for hero quick-nav tabs */
+    document.querySelectorAll('.ab-hero-tab').forEach(tab => {
+      tab.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(tab.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
 </body>
 </html>
-
-
