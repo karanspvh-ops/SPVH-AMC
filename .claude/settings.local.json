@@ -17,7 +17,10 @@
       "Skill(update-config)",
       "Skill(update-config:*)",
       "WebFetch(domain:abakkusinvest.com)",
-      "mcp__Claude_in_Chrome__tabs_context_mcp"
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(grep -n '<footer' 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC/.claude/worktrees/practical-zhukovsky-199ec9/__TRACKED_VAR__')",
+      "Bash(grep -A2 'footer-copyright\\\\|About Us\\\\|Leadership Team' 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC/.claude/worktrees/practical-zhukovsky-199ec9/__TRACKED_VAR__')",
+      "Bash(grep 'footer-copyright\\\\|footer-col-brand\\\\|footer-heading' 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC/.claude/worktrees/practical-zhukovsky-199ec9/__TRACKED_VAR__')"
     ]
   },
   "hooks": {
