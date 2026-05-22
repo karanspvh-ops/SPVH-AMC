@@ -7,14 +7,627 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ============================================================
+       INVESTMENT ADVISORY & RESEARCH — FULL PAGE STYLES
+    ============================================================ */
+
+    /* ---------- HERO ---------- */
+    .iar-hero {
+      background: linear-gradient(135deg, #0A1628 0%, #0f1f3d 55%, #071120 100%);
+      padding: 170px 0 90px;
+      position: relative;
+      overflow: hidden;
+    }
+    .iar-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 30%, rgba(71,169,150,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 80%, rgba(73,107,173,0.10) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    /* Subtle dot-grid watermark */
+    .iar-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+    .iar-hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 4.5rem;
+      align-items: center;
+      position: relative; z-index: 2;
+    }
+    .iar-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: #47a996; font-size: 12px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .iar-hero-eyebrow::before {
+      content: ''; width: 32px; height: 2px; background: #47a996;
+    }
+    .iar-hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+      font-weight: 800; color: #fff;
+      line-height: 1.1; margin-bottom: 1.5rem;
+    }
+    .iar-hero h1 span { color: #47a996; }
+    .iar-hero-body {
+      color: #94A3B8; font-size: 1.05rem; line-height: 1.8;
+      max-width: 560px; margin-bottom: 2.5rem;
+    }
+    .iar-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .iar-btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #47a996; color: #fff; padding: 14px 28px;
+      border-radius: 4px; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.88rem; letter-spacing: 0.5px;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .iar-btn-primary:hover { background: #3d9688; color: #fff; transform: translateY(-2px); }
+    .iar-btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: #fff; padding: 14px 28px;
+      border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.25);
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      font-size: 0.88rem; text-decoration: none; transition: all 0.3s;
+    }
+    .iar-btn-ghost:hover { border-color: #47a996; color: #47a996; }
+    .iar-hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(71,169,150,0.1); border: 1px solid rgba(71,169,150,0.2);
+      border-radius: 4px; padding: 8px 14px;
+      color: #47a996; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.5px; width: fit-content;
+    }
+    /* Stats card */
+    .iar-hero-stats {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 32px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    .iar-stat { display: flex; flex-direction: column; gap: 4px; }
+    .iar-stat-val {
+      font-family: 'Montserrat', sans-serif; font-size: 2rem;
+      font-weight: 800; color: #fff;
+    }
+    .iar-stat-val span { color: #47a996; }
+    .iar-stat-lbl {
+      font-size: 0.8rem; color: #64748B;
+      letter-spacing: 1px; text-transform: uppercase; font-weight: 600;
+    }
+    .iar-stat-div { height: 1px; background: rgba(255,255,255,0.06); }
+
+    /* ---------- OVERVIEW STRIP ---------- */
+    .iar-overview-strip {
+      background: #fff;
+      padding: 80px 0;
+    }
+    .iar-overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .iar-overview-content h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 700; color: #0A1628;
+      line-height: 1.25; margin-bottom: 1.5rem;
+    }
+    .iar-overview-content h2 span { color: #47a996; }
+    .iar-overview-content p {
+      color: #475569; font-size: 1rem; line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .iar-overview-pills {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.75rem;
+    }
+    .iar-pill {
+      background: #F0F4FA;
+      border: 1px solid #E2E8F0;
+      border-radius: 50px; padding: 8px 18px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem; font-weight: 600;
+      color: #496bad;
+    }
+    .iar-overview-visual {
+      background: linear-gradient(135deg, #0A1628, rgba(71,169,150,0.5)),
+                  url('assets/images/boardroom.png') center/cover;
+      border-radius: 14px;
+      min-height: 380px;
+      position: relative; overflow: hidden;
+    }
+    .iar-overview-visual::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(10,22,40,0.7) 100%);
+    }
+    .iar-visual-tag {
+      position: absolute; bottom: 24px; left: 24px; z-index: 2;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px; padding: 14px 20px;
+      color: #fff;
+    }
+    .iar-visual-tag-num {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.6rem; font-weight: 800; color: #47a996;
+    }
+    .iar-visual-tag-lbl {
+      font-size: 0.78rem; color: rgba(255,255,255,0.7);
+      text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+    }
+
+    /* ---------- SERVICES ---------- */
+    .iar-services {
+      background: #F0F4FA;
+      padding: 100px 0;
+    }
+    .iar-services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+    .iar-service-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px;
+      border: 1px solid #E2E8F0;
+      position: relative; overflow: hidden;
+      transition: all 0.35s ease;
+    }
+    .iar-service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #47a996, #496bad);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+    .iar-service-card:hover {
+      border-color: transparent;
+      box-shadow: 0 12px 40px rgba(73,107,173,0.13);
+      transform: translateY(-4px);
+    }
+    .iar-service-card:hover::before { transform: scaleX(1); }
+    .iar-service-icon {
+      width: 54px; height: 54px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem; font-size: 1.3rem;
+    }
+    .ic-teal   { background: rgba(71,169,150,0.12); color: #47a996; }
+    .ic-blue   { background: rgba(73,107,173,0.12); color: #496bad; }
+    .ic-amber  { background: rgba(201,168,76,0.12); color: #B45309; }
+    .ic-purple { background: rgba(124,58,237,0.12); color: #7C3AED; }
+    .ic-rose   { background: rgba(239,68,68,0.12);  color: #DC2626; }
+    .ic-green  { background: rgba(16,185,129,0.12); color: #059669; }
+    .iar-service-tag {
+      display: inline-block; margin-bottom: 0.9rem;
+      background: #F0F4FA; border-radius: 3px; padding: 3px 10px;
+      color: #496bad; font-size: 0.7rem;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .iar-service-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.08rem; font-weight: 700; color: #0A1628;
+      margin-bottom: 0.7rem;
+    }
+    .iar-service-body {
+      color: #475569; font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.25rem;
+    }
+    .iar-service-points { list-style: none; padding: 0; margin: 0; }
+    .iar-service-points li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.85rem; color: #64748B; padding: 5px 0;
+    }
+    .iar-service-points li i { color: #47a996; margin-top: 2px; flex-shrink: 0; font-size: 0.75rem; }
+
+    /* ---------- ENGAGEMENT MODELS ---------- */
+    .iar-engage {
+      background: #0A1628;
+      padding: 100px 0;
+      position: relative; overflow: hidden;
+    }
+    .iar-engage::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 10% 50%, rgba(73,107,173,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 20%, rgba(71,169,150,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .iar-engage-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+      position: relative; z-index: 2;
+    }
+    .iar-engage-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 36px 28px;
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+      transition: all 0.35s ease;
+    }
+    .iar-engage-card.featured {
+      background: linear-gradient(145deg, rgba(71,169,150,0.15), rgba(73,107,173,0.12));
+      border-color: rgba(71,169,150,0.3);
+    }
+    .iar-engage-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.07); }
+    .iar-engage-card.featured:hover { background: linear-gradient(145deg, rgba(71,169,150,0.2), rgba(73,107,173,0.17)); }
+    .iar-engage-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(71,169,150,0.15); border: 1px solid rgba(71,169,150,0.3);
+      border-radius: 50px; padding: 4px 14px;
+      color: #47a996; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 1.5rem; width: fit-content;
+    }
+    .iar-engage-badge.popular { background: #47a996; color: #fff; border-color: #47a996; }
+    .iar-engage-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.3rem; font-weight: 800; color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .iar-engage-subtitle {
+      color: #94A3B8; font-size: 0.88rem; margin-bottom: 2rem; line-height: 1.6;
+    }
+    .iar-engage-price {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem; color: #47a996; font-weight: 700;
+      margin-bottom: 2rem; padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .iar-engage-features { list-style: none; padding: 0; margin: 0 0 2rem; flex: 1; }
+    .iar-engage-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: #CBD5E1; font-size: 0.88rem;
+    }
+    .iar-engage-features li:last-child { border-bottom: none; }
+    .iar-engage-features li i { color: #47a996; margin-top: 2px; flex-shrink: 0; }
+    .iar-engage-cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: rgba(255,255,255,0.08); color: #fff;
+      padding: 13px; border-radius: 6px;
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 0.85rem; text-decoration: none; transition: all 0.3s;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .iar-engage-cta:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .iar-engage-card.featured .iar-engage-cta {
+      background: #47a996; border-color: #47a996;
+    }
+    .iar-engage-card.featured .iar-engage-cta:hover { background: #3d9688; }
+
+    /* ---------- RESEARCH PRODUCTS ---------- */
+    .iar-products {
+      background: #fff;
+      padding: 100px 0;
+    }
+    .iar-products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+    .iar-product-card {
+      border-radius: 12px;
+      padding: 28px;
+      border: 1px solid #E2E8F0;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .iar-product-card:hover {
+      border-color: #47a996;
+      box-shadow: 0 8px 28px rgba(71,169,150,0.1);
+      transform: translateY(-3px);
+    }
+    .iar-product-freq {
+      display: inline-block; margin-bottom: 1rem;
+      background: rgba(71,169,150,0.08);
+      border: 1px solid rgba(71,169,150,0.18);
+      border-radius: 3px; padding: 3px 10px;
+      color: #47a996; font-size: 0.7rem;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .iar-product-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.08rem; font-weight: 700;
+      color: #0A1628; margin-bottom: 0.6rem;
+    }
+    .iar-product-body {
+      color: #475569; font-size: 0.9rem; line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+    .iar-product-meta {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      padding-top: 1rem; border-top: 1px solid #F1F5F9;
+    }
+    .iar-product-tag {
+      background: #F0F4FA; border-radius: 3px;
+      padding: 4px 10px; color: #64748B;
+      font-size: 0.75rem; font-weight: 600;
+    }
+
+    /* ---------- COVERAGE UNIVERSE ---------- */
+    .iar-coverage {
+      background: #F0F4FA;
+      padding: 100px 0;
+    }
+    .iar-coverage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+      margin-top: 3.5rem;
+    }
+    .iar-sector-list { display: flex; flex-direction: column; gap: 0; }
+    .iar-sector-item {
+      display: flex; align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #E2E8F0;
+      gap: 14px;
+    }
+    .iar-sector-item:last-child { border-bottom: none; }
+    .iar-sector-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .iar-sector-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.92rem; font-weight: 600; color: #0A1628; flex: 1;
+    }
+    .iar-sector-count {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.82rem; font-weight: 700; color: #496bad;
+    }
+    .iar-sector-bar-wrap {
+      flex: 2; height: 6px;
+      background: #E2E8F0; border-radius: 3px; overflow: hidden;
+    }
+    .iar-sector-bar {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #47a996, #496bad);
+    }
+    .iar-coverage-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;
+    }
+    .iar-cov-stat {
+      background: #fff; border-radius: 12px;
+      padding: 28px 24px; border-left: 4px solid #47a996;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .iar-cov-stat-num {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem; font-weight: 800; color: #496bad; margin-bottom: 4px;
+    }
+    .iar-cov-stat-lbl {
+      font-size: 0.8rem; color: #64748B;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px;
+    }
+
+    /* ---------- WHO WE SERVE ---------- */
+    .iar-clients {
+      background: #fff;
+      padding: 100px 0;
+    }
+    .iar-clients-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.25rem;
+      margin-top: 3.5rem;
+    }
+    .iar-client-card {
+      text-align: center; padding: 32px 20px;
+      border-radius: 12px; border: 1px solid #E2E8F0;
+      transition: all 0.3s;
+    }
+    .iar-client-card:hover {
+      border-color: #47a996;
+      box-shadow: 0 8px 24px rgba(71,169,150,0.1);
+      transform: translateY(-4px);
+    }
+    .iar-client-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem; font-size: 1.4rem;
+    }
+    .iar-client-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem; font-weight: 700; color: #0A1628;
+      margin-bottom: 0.5rem;
+    }
+    .iar-client-desc {
+      font-size: 0.8rem; color: #64748B; line-height: 1.5;
+    }
+
+    /* ---------- PROCESS ---------- */
+    .iar-process {
+      background: #F0F4FA;
+      padding: 100px 0;
+    }
+    .iar-process-timeline {
+      display: flex; gap: 0;
+      margin-top: 3.5rem;
+      position: relative;
+    }
+    .iar-process-timeline::before {
+      content: '';
+      position: absolute; top: 28px; left: 5%;
+      width: 90%; height: 2px;
+      background: linear-gradient(90deg, #47a996, #496bad);
+      z-index: 0;
+    }
+    .iar-step {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      position: relative; z-index: 1; padding: 0 12px;
+    }
+    .iar-step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #0A1628; border: 3px solid #47a996;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.2rem; font-weight: 800; color: #47a996;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 0 8px #F0F4FA;
+    }
+    .iar-step-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.92rem; font-weight: 700; color: #0A1628; margin-bottom: 0.5rem;
+    }
+    .iar-step-body { font-size: 0.83rem; color: #64748B; line-height: 1.6; }
+
+    /* ---------- WHY SPVH ---------- */
+    .iar-why {
+      background: #0A1628;
+      padding: 100px 0;
+      position: relative; overflow: hidden;
+    }
+    .iar-why::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 80% 30%, rgba(71,169,150,0.09) 0%, transparent 55%);
+    }
+    .iar-why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+      position: relative; z-index: 2;
+    }
+    .iar-why-card {
+      padding: 28px; border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: all 0.3s;
+    }
+    .iar-why-card:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(71,169,150,0.25);
+    }
+    .iar-why-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: rgba(71,169,150,0.14);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+    .iar-why-icon i { color: #47a996; font-size: 1.2rem; }
+    .iar-why-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.98rem; font-weight: 700; color: #fff; margin-bottom: 0.55rem;
+    }
+    .iar-why-body { font-size: 0.88rem; color: #94A3B8; line-height: 1.7; }
+
+    /* ---------- COMPLIANCE STRIP ---------- */
+    .iar-compliance {
+      background: #F0F4FA;
+      padding: 56px 0;
+      border-top: 1px solid #E2E8F0;
+    }
+    .iar-compliance-inner {
+      display: flex; align-items: center; gap: 2rem;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .iar-comp-label {
+      color: #496bad; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .iar-comp-divider { width: 1px; height: 40px; background: #CBD5E1; }
+    .iar-comp-item { display: flex; align-items: center; gap: 10px; }
+    .iar-comp-item i { color: #47a996; font-size: 1rem; }
+    .iar-comp-text { font-size: 0.85rem; color: #475569; font-weight: 500; }
+    .iar-comp-text strong { color: #0A1628; display: block; font-size: 0.82rem; }
+
+    /* ---------- CTA ---------- */
+    .iar-cta {
+      background: linear-gradient(135deg, #496bad 0%, #47a996 100%);
+      padding: 90px 0; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .iar-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 120%, rgba(255,255,255,0.12) 0%, transparent 60%);
+    }
+    .iar-cta-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+    .iar-cta h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 800; color: #fff; margin-bottom: 1rem;
+    }
+    .iar-cta p { color: rgba(255,255,255,0.85); font-size: 1.05rem; margin-bottom: 2.5rem; }
+    .iar-cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .iar-cta-btn-white {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: #0A1628; padding: 15px 32px;
+      border-radius: 4px; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: all 0.3s;
+    }
+    .iar-cta-btn-white:hover { background: #F0F4FA; color: #0A1628; transform: translateY(-2px); }
+    .iar-cta-btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: #fff; padding: 15px 32px;
+      border-radius: 4px; border: 2px solid rgba(255,255,255,0.45);
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 0.9rem; text-decoration: none; transition: all 0.3s;
+    }
+    .iar-cta-btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1200px) {
+      .iar-hero          { padding-top: 120px; }
+      .iar-clients-grid  { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 1024px) {
+      .iar-hero          { padding-top: 110px; }
+      .iar-hero-grid     { grid-template-columns: 1fr; gap: 3rem; }
+      .iar-hero-stats    { flex-direction: row; flex-wrap: wrap; }
+      .iar-stat          { flex: 1; min-width: 140px; }
+      .iar-overview-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .iar-services-grid { grid-template-columns: repeat(2, 1fr); }
+      .iar-engage-grid   { grid-template-columns: 1fr; }
+      .iar-products-grid { grid-template-columns: repeat(2, 1fr); }
+      .iar-coverage-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .iar-why-grid      { grid-template-columns: repeat(2, 1fr); }
+      .iar-clients-grid  { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .iar-hero          { padding-top: 90px; }
+      .iar-services-grid { grid-template-columns: 1fr; }
+      .iar-products-grid { grid-template-columns: 1fr; }
+      .iar-process-timeline { flex-direction: column; gap: 2rem; }
+      .iar-process-timeline::before { display: none; }
+      .iar-why-grid      { grid-template-columns: 1fr; }
+      .iar-clients-grid  { grid-template-columns: repeat(2, 1fr); }
+      .iar-coverage-stats { grid-template-columns: 1fr; }
+      .iar-comp-divider  { display: none; }
+    }
+    @media (max-width: 480px) {
+      .iar-hero-actions  { flex-direction: column; }
+      .iar-cta-btns      { flex-direction: column; align-items: center; }
+      .iar-clients-grid  { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Sticky Nav -->
+  <!-- ===================== NAV ===================== -->
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-
       <ul class="nav-menu">
         <li class="nav-item">
           <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
@@ -29,7 +642,7 @@
           <ul class="dropdown-menu">
             <li><a href="pms.html">Portfolio Management Services</a></li>
             <li><a href="aif.html">Alternative Investment Funds</a></li>
-            <li><a href="offshore.html">Offshore Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
             <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
           </ul>
         </li>
@@ -37,86 +650,618 @@
         <li class="nav-item"><a href="insights.html">Insights</a></li>
         <li class="nav-item"><a href="resources.html">Resources</a></li>
       </ul>
-
       <div class="nav-actions">
         <a href="#" class="login-link">Investor Login</a>
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
-
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
-      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
   </header>
 
   <main>
-    <section class="philosophy-page-hero">
-      <div class="pattern-overlay"></div>
-      <div class="container" style="position: relative; z-index: 2;">
-        <span class="about-hero-label" style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 20px;">INVESTMENT ADVISORY &amp; RESEARCH</span>
-        <h1 style="color: white; font-size: 52px; font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem; margin-top:0;">Research Backed.<br><span style="color: #47a996;">Built for Conviction.</span></h1>
-        <div style="width: 60px; height: 3px; background-color: #47a996; margin-bottom: 1.5rem;"></div>
-        <p style="color: #9CA3AF; font-size: 16px; margin: 0;">Equity advisory and institutional-grade research for serious investors.</p>
-      </div>
-    </section>
 
-    <section class="philosophy-overview" style="background-color: white; padding: 100px 0;">
+    <!-- ===================== HERO ===================== -->
+    <section class="iar-hero">
       <div class="container">
-        <div class="philosophy-grid-section-1">
-          <div class="philosophy-grid-section-1-left reveal">
-            <h2 style="color: #496bad; font-size: 40px; font-weight: 700; margin-bottom: 1.5rem; margin-top:0;">Independent Thinking. Actionable Research.</h2>
-            <div style="width: 60px; height: 3px; background-color: #47a996; margin-bottom: 2rem;"></div>
-            <p style="color: #4b5563; font-size: 16px; line-height: 1.7; margin-bottom: 1rem;">SPVH AMC provides research backed equity advisory for family offices, HNI/UHNI investors, and institutions that require disciplined, data-led market views before allocating capital.</p>
-            <p style="color: #4b5563; font-size: 16px; line-height: 1.7; margin-bottom: 1.5rem;">Our advisory work includes portfolio reviews, equity research, sector insights, and bespoke investment recommendations shaped by fundamental analysis, risk discipline, and long-term conviction.</p>
-            <div>
-              <span class="pms-highlight-pill">Engagement: Retainer Fees</span>
-              <span class="pms-highlight-pill">Subscription Based</span>
+        <div class="iar-hero-grid">
+
+          <!-- Left -->
+          <div class="reveal">
+            <div class="iar-hero-eyebrow">Investment Advisory &amp; Research</div>
+            <h1>Research-Backed.<br>Conflict-Free.<br><span>Built for Conviction.</span></h1>
+            <p class="iar-hero-body">SPVH's Advisory &amp; Research platform delivers institutional-grade equity research, sector intelligence, and bespoke advisory services to family offices, UHNIs, promoter families, and institutions — with zero broking conflict and absolute analytical independence.</p>
+            <div class="iar-hero-actions">
+              <a href="#services" class="iar-btn-primary"><i class="fas fa-file-alt"></i> Explore Advisory Services</a>
+              <a href="contact.html" class="iar-btn-ghost"><i class="fas fa-calendar-alt"></i> Start a Conversation</a>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:1.75rem;">
+              <div class="iar-hero-badge"><i class="fas fa-shield-alt"></i>&nbsp; SEBI Registered Investment Adviser</div>
+              <div class="iar-hero-badge"><i class="fas fa-ban"></i>&nbsp; Zero Broking Conflict</div>
             </div>
           </div>
-          <div class="philosophy-grid-section-1-right reveal-right" style="justify-content: center; align-items: center;">
-            <div style="width: 100%; min-height: 340px; background-color: #0A1628; border-radius: 10px; background-image: linear-gradient(135deg, rgba(10,22,40,0.82), rgba(71,169,150,0.46)), url('assets/images/boardroom.png'); background-size: cover; background-position: center; box-shadow: var(--shadow-soft);"></div>
+
+          <!-- Right: Stats panel -->
+          <div class="iar-hero-stats reveal" style="animation-delay:0.15s;">
+            <div class="iar-stat">
+              <div class="iar-stat-val">200<span>+ Cos.</span></div>
+              <div class="iar-stat-lbl">Companies Under Active Coverage</div>
+            </div>
+            <div class="iar-stat-div"></div>
+            <div class="iar-stat">
+              <div class="iar-stat-val">&#8377;5,000<span> Cr+</span></div>
+              <div class="iar-stat-lbl">Client Wealth Under Advisory</div>
+            </div>
+            <div class="iar-stat-div"></div>
+            <div class="iar-stat">
+              <div class="iar-stat-val">12<span>+ Sectors</span></div>
+              <div class="iar-stat-lbl">Deep-Dive Sector Coverage</div>
+            </div>
+            <div class="iar-stat-div"></div>
+            <div class="iar-stat">
+              <div class="iar-stat-val">15<span>+ Yrs</span></div>
+              <div class="iar-stat-lbl">Combined Research Experience</div>
+            </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <section style="background-color: #F0F4FA; padding: 100px 0;">
+    <!-- ===================== OVERVIEW ===================== -->
+    <section class="iar-overview-strip">
       <div class="container">
-        <div style="text-align: center; margin-bottom: 4rem;" class="reveal">
-          <span style="color: #47a996; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 10px;">ADVISORY SCOPE</span>
-          <h2 style="color: #1A1A1A; font-size: 40px; font-weight: 700; margin-top:0; margin-bottom: 0;">Research Services for <span style="color: #496bad;">Decision Makers.</span></h2>
-        </div>
-
-        <div class="solutions-grid">
-          <div class="solution-card reveal">
-            <i class="fas fa-chart-line solution-icon"></i>
-            <h3 class="solution-heading">Equity Advisory</h3>
-            <span class="solution-tag">RESEARCH BACKED</span>
-            <p class="solution-desc">High-conviction equity ideas backed by fundamental research, valuation discipline, and clearly stated risk considerations.</p>
+        <div class="iar-overview-grid">
+          <div class="iar-overview-content reveal">
+            <h2>Independent Thinking.<br><span>Actionable Intelligence.</span></h2>
+            <p>SPVH's Investment Advisory &amp; Research division operates with complete independence from broking and distribution — meaning every research opinion, stock idea, and sector call is driven purely by fundamental conviction, not transaction incentives.</p>
+            <p>We serve investors who demand rigour over noise: those who want to understand why a business deserves capital — its moat, management quality, balance sheet health, and earnings trajectory — before allocating even a single rupee.</p>
+            <p>From weekly market compasses to bespoke portfolio audits, our research team provides the analytical firepower that institutional investors take for granted — but now made accessible to discerning family offices and UHNIs.</p>
+            <div class="iar-overview-pills">
+              <span class="iar-pill">Bottom-Up Fundamental</span>
+              <span class="iar-pill">Retainer &amp; Subscription</span>
+              <span class="iar-pill">Bespoke Research</span>
+              <span class="iar-pill">No Distribution Bias</span>
+              <span class="iar-pill">SEBI IA Registered</span>
+            </div>
           </div>
-          <div class="solution-card reveal" style="animation-delay: 0.15s;">
-            <i class="fas fa-file-alt solution-icon"></i>
-            <h3 class="solution-heading">Portfolio Reviews</h3>
-            <span class="solution-tag">BESPOKE ANALYSIS</span>
-            <p class="solution-desc">Independent reviews of existing portfolios across concentration, risk exposure, liquidity, and long-term allocation fit.</p>
-          </div>
-          <div class="solution-card reveal" style="animation-delay: 0.3s;">
-            <i class="fas fa-search-dollar solution-icon"></i>
-            <h3 class="solution-heading">Sector Research</h3>
-            <span class="solution-tag">DEEP-DIVE REPORTS</span>
-            <p class="solution-desc">Sector and company research designed to support informed decisions across public equities and related opportunities.</p>
-          </div>
-          <div class="solution-card reveal" style="animation-delay: 0.45s;">
-            <i class="fas fa-user-tie solution-icon"></i>
-            <h3 class="solution-heading">Family Office Support</h3>
-            <span class="solution-tag">ONGOING ADVISORY</span>
-            <p class="solution-desc">Retainer and subscription-based advisory support for families seeking disciplined capital allocation frameworks.</p>
+          <div class="reveal" style="animation-delay:0.1s;">
+            <div class="iar-overview-visual">
+              <div class="iar-visual-tag">
+                <div class="iar-visual-tag-num">82%</div>
+                <div class="iar-visual-tag-lbl">Conviction Call Accuracy<br>Over 5 Years</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- ===================== SERVICES ===================== -->
+    <section class="iar-services" id="services">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">ADVISORY SERVICES</span>
+          <h2 class="leadership-title">Six Ways We <span>Create an Edge.</span></h2>
+          <p style="color:#64748B;font-size:0.95rem;max-width:580px;margin:0 auto;text-align:center;">Each service is designed for investors who treat capital allocation as a serious discipline — not a speculative activity.</p>
+        </div>
+        <div class="iar-services-grid reveal">
+
+          <!-- 1 -->
+          <div class="iar-service-card">
+            <div class="iar-service-icon ic-teal"><i class="fas fa-chart-line"></i></div>
+            <span class="iar-service-tag">High-Conviction Ideas</span>
+            <h3 class="iar-service-title">Equity Advisory</h3>
+            <p class="iar-service-body">Curated equity recommendations backed by deep fundamental research — covering business quality, management integrity, valuation, and risk scenarios for each idea.</p>
+            <ul class="iar-service-points">
+              <li><i class="fas fa-check"></i> Buy / Hold / Exit recommendations with rationale</li>
+              <li><i class="fas fa-check"></i> Entry price ranges and target horizon</li>
+              <li><i class="fas fa-check"></i> Risk factors and exit triggers defined upfront</li>
+              <li><i class="fas fa-check"></i> Ongoing monitoring and update alerts</li>
+            </ul>
+          </div>
+
+          <!-- 2 -->
+          <div class="iar-service-card">
+            <div class="iar-service-icon ic-blue"><i class="fas fa-clipboard-check"></i></div>
+            <span class="iar-service-tag">Bespoke Analysis</span>
+            <h3 class="iar-service-title">Portfolio Review &amp; Audit</h3>
+            <p class="iar-service-body">Independent, conflict-free assessment of your existing equity portfolio — covering concentration risk, sector overlaps, hidden correlations, and alignment with your investment objectives.</p>
+            <ul class="iar-service-points">
+              <li><i class="fas fa-check"></i> Full portfolio X-ray with risk attribution</li>
+              <li><i class="fas fa-check"></i> Sector and market-cap concentration analysis</li>
+              <li><i class="fas fa-check"></i> Underperformer identification and action plan</li>
+              <li><i class="fas fa-check"></i> Written report with actionable recommendations</li>
+            </ul>
+          </div>
+
+          <!-- 3 -->
+          <div class="iar-service-card">
+            <div class="iar-service-icon ic-amber"><i class="fas fa-industry"></i></div>
+            <span class="iar-service-tag">Deep-Dive Reports</span>
+            <h3 class="iar-service-title">Sector Research</h3>
+            <p class="iar-service-body">Comprehensive sector intelligence reports covering industry structure, regulatory environment, competitive dynamics, earnings cycle, and the best-positioned companies within each sector.</p>
+            <ul class="iar-service-points">
+              <li><i class="fas fa-check"></i> TAM, growth driver and regulatory analysis</li>
+              <li><i class="fas fa-check"></i> Competitive landscape and pricing power</li>
+              <li><i class="fas fa-check"></i> Stock screening within sector universe</li>
+              <li><i class="fas fa-check"></i> Quarterly sector update reports</li>
+            </ul>
+          </div>
+
+          <!-- 4 -->
+          <div class="iar-service-card">
+            <div class="iar-service-icon ic-purple"><i class="fas fa-globe"></i></div>
+            <span class="iar-service-tag">Top-Down View</span>
+            <h3 class="iar-service-title">Macro &amp; Market Strategy</h3>
+            <p class="iar-service-body">Macro-level market commentary and asset allocation strategy — integrating global macro signals, domestic policy environment, earnings cycle, and valuation framework to guide portfolio positioning.</p>
+            <ul class="iar-service-points">
+              <li><i class="fas fa-check"></i> Weekly Market Compass brief</li>
+              <li><i class="fas fa-check"></i> Quarterly macro and outlook report</li>
+              <li><i class="fas fa-check"></i> Asset allocation guidance (equity / debt / gold)</li>
+              <li><i class="fas fa-check"></i> Event-driven special situation notes</li>
+            </ul>
+          </div>
+
+          <!-- 5 -->
+          <div class="iar-service-card">
+            <div class="iar-service-icon ic-rose"><i class="fas fa-users"></i></div>
+            <span class="iar-service-tag">Ongoing Retainer</span>
+            <h3 class="iar-service-title">Family Office Advisory</h3>
+            <p class="iar-service-body">Dedicated advisory support for single and multi-family offices — acting as an embedded research partner for investment committees, providing decision-support frameworks and research infrastructure.</p>
+            <ul class="iar-service-points">
+              <li><i class="fas fa-check"></i> Dedicated senior advisor relationship</li>
+              <li><i class="fas fa-check"></i> Investment committee research support</li>
+              <li><i class="fas fa-check"></i> Portfolio governance framework design</li>
+              <li><i class="fas fa-check"></i> Monthly review calls and annual strategy session</li>
+            </ul>
+          </div>
+
+          <!-- 6 -->
+          <div class="iar-service-card">
+            <div class="iar-service-icon ic-green"><i class="fas fa-university"></i></div>
+            <span class="iar-service-tag">Custom Mandate</span>
+            <h3 class="iar-service-title">Institutional Research</h3>
+            <p class="iar-service-body">Bespoke research mandates for PE/VC funds, corporate treasuries, and institutional investors requiring deep due diligence on specific sectors, companies, or investment opportunities.</p>
+            <ul class="iar-service-points">
+              <li><i class="fas fa-check"></i> Pre-investment due diligence support</li>
+              <li><i class="fas fa-check"></i> Competitor intelligence and benchmarking</li>
+              <li><i class="fas fa-check"></i> Management quality and governance assessment</li>
+              <li><i class="fas fa-check"></i> Engagement-based or project-fee model</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ENGAGEMENT MODELS ===================== -->
+    <section class="iar-engage" id="engagement">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">ENGAGEMENT MODELS</span>
+          <h2 class="leadership-title" style="color:#fff;">Choose How You <span>Work With Us.</span></h2>
+          <p style="color:#94A3B8;font-size:0.95rem;max-width:560px;margin:0 auto;text-align:center;">Three flexible engagement structures designed to match your level of advisory need — from curated research access to a dedicated embedded advisor.</p>
+        </div>
+        <div class="iar-engage-grid reveal">
+
+          <!-- Tier 1: Research Subscription -->
+          <div class="iar-engage-card">
+            <span class="iar-engage-badge">Research Access</span>
+            <div class="iar-engage-title">Research Subscription</div>
+            <p class="iar-engage-subtitle">For investors who want curated research and market intelligence — delivered consistently without needing a dedicated advisor engagement.</p>
+            <div class="iar-engage-price">Subscription-based pricing &mdash; monthly or annual</div>
+            <ul class="iar-engage-features">
+              <li><i class="fas fa-check-circle"></i> Weekly Market Compass brief</li>
+              <li><i class="fas fa-check-circle"></i> 2–3 equity ideas per month with full research note</li>
+              <li><i class="fas fa-check-circle"></i> Monthly sector deep-dive report</li>
+              <li><i class="fas fa-check-circle"></i> Quarterly macro strategy outlook</li>
+              <li><i class="fas fa-check-circle"></i> Access to research portal and idea tracker</li>
+              <li><i class="fas fa-check-circle"></i> Quarterly group webinar with the research team</li>
+            </ul>
+            <a href="contact.html" class="iar-engage-cta"><i class="fas fa-arrow-right"></i> Enquire About Subscription</a>
+          </div>
+
+          <!-- Tier 2: Advisory Retainer (Featured) -->
+          <div class="iar-engage-card featured">
+            <span class="iar-engage-badge popular"><i class="fas fa-star" style="font-size:0.65rem;"></i> Most Chosen</span>
+            <div class="iar-engage-title">Advisory Retainer</div>
+            <p class="iar-engage-subtitle">For family offices and UHNIs who need a dedicated advisor — providing ongoing, personalised research support and direct access to SPVH's senior analysts.</p>
+            <div class="iar-engage-price">Annual retainer fee &mdash; fixed engagement</div>
+            <ul class="iar-engage-features">
+              <li><i class="fas fa-check-circle"></i> Everything in Research Subscription</li>
+              <li><i class="fas fa-check-circle"></i> Dedicated senior advisor (named relationship)</li>
+              <li><i class="fas fa-check-circle"></i> Monthly 1-on-1 portfolio review call</li>
+              <li><i class="fas fa-check-circle"></i> Bespoke portfolio audit (semi-annual)</li>
+              <li><i class="fas fa-check-circle"></i> Direct WhatsApp / call access to analyst</li>
+              <li><i class="fas fa-check-circle"></i> Custom research notes on request (4 per quarter)</li>
+              <li><i class="fas fa-check-circle"></i> Priority access to new ideas and special situations</li>
+              <li><i class="fas fa-check-circle"></i> Annual in-person strategy session</li>
+            </ul>
+            <a href="contact.html" class="iar-engage-cta"><i class="fas fa-calendar-check"></i> Schedule Discovery Call</a>
+          </div>
+
+          <!-- Tier 3: Bespoke -->
+          <div class="iar-engage-card">
+            <span class="iar-engage-badge">Custom Mandate</span>
+            <div class="iar-engage-title">Bespoke Engagement</div>
+            <p class="iar-engage-subtitle">For institutions, PE/VC funds, and corporate treasuries that need project-based research, due diligence support, or a custom research infrastructure partnership.</p>
+            <div class="iar-engage-price">Project-based or engagement fee &mdash; custom structure</div>
+            <ul class="iar-engage-features">
+              <li><i class="fas fa-check-circle"></i> Scoped research mandate (sector, company, theme)</li>
+              <li><i class="fas fa-check-circle"></i> Pre-investment due diligence reports</li>
+              <li><i class="fas fa-check-circle"></i> Management quality and governance assessment</li>
+              <li><i class="fas fa-check-circle"></i> Competitor and pricing intelligence</li>
+              <li><i class="fas fa-check-circle"></i> Expert network and channel check support</li>
+              <li><i class="fas fa-check-circle"></i> White-label research for investment committees</li>
+            </ul>
+            <a href="contact.html" class="iar-engage-cta"><i class="fas fa-arrow-right"></i> Discuss Your Mandate</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RESEARCH PRODUCTS ===================== -->
+    <section class="iar-products" id="research">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">RESEARCH PRODUCTS</span>
+          <h2 class="leadership-title">Intelligence Delivered <span>On a Schedule.</span></h2>
+          <p style="color:#64748B;font-size:0.95rem;max-width:580px;margin:0 auto;text-align:center;">Our research calendar runs year-round — subscribers receive structured intelligence at regular intervals, with special situation notes as events demand.</p>
+        </div>
+        <div class="iar-products-grid reveal">
+
+          <div class="iar-product-card">
+            <span class="iar-product-freq">Weekly</span>
+            <h3 class="iar-product-title">Market Compass</h3>
+            <p class="iar-product-body">A concise weekly brief covering market structure, sector rotation signals, key macro events, and the SPVH research team's tactical stance for the week ahead.</p>
+            <div class="iar-product-meta">
+              <span class="iar-product-tag">4–6 Pages</span>
+              <span class="iar-product-tag">Every Monday</span>
+              <span class="iar-product-tag">All Tiers</span>
+            </div>
+          </div>
+
+          <div class="iar-product-card">
+            <span class="iar-product-freq">Monthly</span>
+            <h3 class="iar-product-title">Alpha Ideas Report</h3>
+            <p class="iar-product-body">A detailed monthly report featuring 2–3 high-conviction equity ideas — each with full fundamental analysis, valuation model, risk matrix, and a clearly stated investment thesis.</p>
+            <div class="iar-product-meta">
+              <span class="iar-product-tag">15–25 Pages</span>
+              <span class="iar-product-tag">Every Month-End</span>
+              <span class="iar-product-tag">All Tiers</span>
+            </div>
+          </div>
+
+          <div class="iar-product-card">
+            <span class="iar-product-freq">Quarterly</span>
+            <h3 class="iar-product-title">Sector Deep-Dive Series</h3>
+            <p class="iar-product-body">A rotating quarterly deep-dive into a single sector — covering industry structure, regulatory landscape, earnings cycle, supply-demand dynamics, and the 3–5 best-positioned stocks.</p>
+            <div class="iar-product-meta">
+              <span class="iar-product-tag">40–60 Pages</span>
+              <span class="iar-product-tag">Quarterly</span>
+              <span class="iar-product-tag">All Tiers</span>
+            </div>
+          </div>
+
+          <div class="iar-product-card">
+            <span class="iar-product-freq">Semi-Annual</span>
+            <h3 class="iar-product-title">Portfolio Audit Report</h3>
+            <p class="iar-product-body">A bespoke audit of the subscriber's existing equity portfolio — assessing concentration risk, sector biases, liquidity profile, and alignment to long-term wealth objectives.</p>
+            <div class="iar-product-meta">
+              <span class="iar-product-tag">Personalised</span>
+              <span class="iar-product-tag">Retainer Only</span>
+              <span class="iar-product-tag">Written Report</span>
+            </div>
+          </div>
+
+          <div class="iar-product-card">
+            <span class="iar-product-freq">Annual</span>
+            <h3 class="iar-product-title">Macro &amp; Outlook Report</h3>
+            <p class="iar-product-body">The annual SPVH research outlook — covering GDP forecasts, earnings cycle projections, sector allocation framework, and the team's high-conviction investment themes for the coming financial year.</p>
+            <div class="iar-product-meta">
+              <span class="iar-product-tag">60+ Pages</span>
+              <span class="iar-product-tag">January &amp; April</span>
+              <span class="iar-product-tag">All Tiers</span>
+            </div>
+          </div>
+
+          <div class="iar-product-card">
+            <span class="iar-product-freq">As-Needed</span>
+            <h3 class="iar-product-title">Special Situation Notes</h3>
+            <p class="iar-product-body">Event-driven research notes triggered by earnings surprises, M&amp;A announcements, regulatory changes, or management reshuffles — delivered within 24 hours of a significant market event.</p>
+            <div class="iar-product-meta">
+              <span class="iar-product-tag">2–5 Pages</span>
+              <span class="iar-product-tag">Event-Driven</span>
+              <span class="iar-product-tag">All Tiers</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== COVERAGE UNIVERSE ===================== -->
+    <section class="iar-coverage" id="coverage">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">COVERAGE UNIVERSE</span>
+          <h2 class="leadership-title">200+ Companies. <span>12 Sectors.</span></h2>
+        </div>
+        <div class="iar-coverage-grid">
+
+          <!-- Left: sector bars -->
+          <div class="iar-sector-list reveal">
+            <div class="iar-sector-item">
+              <div class="iar-sector-dot" style="background:#47a996;"></div>
+              <div class="iar-sector-name">Banking &amp; Financial Services</div>
+              <div class="iar-sector-bar-wrap"><div class="iar-sector-bar" style="width:90%;"></div></div>
+              <div class="iar-sector-count">38 cos</div>
+            </div>
+            <div class="iar-sector-item">
+              <div class="iar-sector-dot" style="background:#496bad;"></div>
+              <div class="iar-sector-name">Technology &amp; IT Services</div>
+              <div class="iar-sector-bar-wrap"><div class="iar-sector-bar" style="width:75%;"></div></div>
+              <div class="iar-sector-count">28 cos</div>
+            </div>
+            <div class="iar-sector-item">
+              <div class="iar-sector-dot" style="background:#C9A84C;"></div>
+              <div class="iar-sector-name">Healthcare &amp; Pharma</div>
+              <div class="iar-sector-bar-wrap"><div class="iar-sector-bar" style="width:68%;"></div></div>
+              <div class="iar-sector-count">24 cos</div>
+            </div>
+            <div class="iar-sector-item">
+              <div class="iar-sector-dot" style="background:#7C3AED;"></div>
+              <div class="iar-sector-name">Consumer &amp; Retail</div>
+              <div class="iar-sector-bar-wrap"><div class="iar-sector-bar" style="width:62%;"></div></div>
+              <div class="iar-sector-count">22 cos</div>
+            </div>
+            <div class="iar-sector-item">
+              <div class="iar-sector-dot" style="background:#DC2626;"></div>
+              <div class="iar-sector-name">Capital Goods &amp; Industrials</div>
+              <div class="iar-sector-bar-wrap"><div class="iar-sector-bar" style="width:55%;"></div></div>
+              <div class="iar-sector-count">20 cos</div>
+            </div>
+            <div class="iar-sector-item">
+              <div class="iar-sector-dot" style="background:#059669;"></div>
+              <div class="iar-sector-name">Infrastructure &amp; Real Estate</div>
+              <div class="iar-sector-bar-wrap"><div class="iar-sector-bar" style="width:50%;"></div></div>
+              <div class="iar-sector-count">18 cos</div>
+            </div>
+            <div class="iar-sector-item">
+              <div class="iar-sector-dot" style="background:#EA580C;"></div>
+              <div class="iar-sector-name">Metals &amp; Materials</div>
+              <div class="iar-sector-bar-wrap"><div class="iar-sector-bar" style="width:45%;"></div></div>
+              <div class="iar-sector-count">16 cos</div>
+            </div>
+            <div class="iar-sector-item">
+              <div class="iar-sector-dot" style="background:#0284C7;"></div>
+              <div class="iar-sector-name">Specialty Chemicals</div>
+              <div class="iar-sector-bar-wrap"><div class="iar-sector-bar" style="width:40%;"></div></div>
+              <div class="iar-sector-count">14 cos</div>
+            </div>
+          </div>
+
+          <!-- Right: stat cards -->
+          <div class="reveal" style="animation-delay:0.1s;">
+            <div class="iar-coverage-stats">
+              <div class="iar-cov-stat">
+                <div class="iar-cov-stat-num">200+</div>
+                <div class="iar-cov-stat-lbl">Companies Under Active Coverage</div>
+              </div>
+              <div class="iar-cov-stat">
+                <div class="iar-cov-stat-num">12</div>
+                <div class="iar-cov-stat-lbl">Sectors with Dedicated Analyst Coverage</div>
+              </div>
+              <div class="iar-cov-stat">
+                <div class="iar-cov-stat-num">82%</div>
+                <div class="iar-cov-stat-lbl">Conviction Call Accuracy (5-Year Track Record)</div>
+              </div>
+              <div class="iar-cov-stat">
+                <div class="iar-cov-stat-num">600+</div>
+                <div class="iar-cov-stat-lbl">Management Interactions &amp; Channel Checks Annually</div>
+              </div>
+              <div class="iar-cov-stat">
+                <div class="iar-cov-stat-num">48+</div>
+                <div class="iar-cov-stat-lbl">Research Reports Published Every Year</div>
+              </div>
+              <div class="iar-cov-stat">
+                <div class="iar-cov-stat-num">100%</div>
+                <div class="iar-cov-stat-lbl">Independent — No Broking / Distribution Bias</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== WHO WE SERVE ===================== -->
+    <section class="iar-clients" id="who-we-serve">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">WHO WE SERVE</span>
+          <h2 class="leadership-title">Built for Investors Who <span>Think Long-Term.</span></h2>
+        </div>
+        <div class="iar-clients-grid reveal">
+
+          <div class="iar-client-card">
+            <div class="iar-client-icon ic-teal"><i class="fas fa-home"></i></div>
+            <div class="iar-client-name">Family Offices</div>
+            <p class="iar-client-desc">Single and multi-family offices seeking an independent research partner for investment committee support.</p>
+          </div>
+
+          <div class="iar-client-card">
+            <div class="iar-client-icon ic-blue"><i class="fas fa-user-shield"></i></div>
+            <div class="iar-client-name">UHNIs &amp; HNIs</div>
+            <p class="iar-client-desc">High-net-worth individuals managing direct equity portfolios who demand institutional-quality research.</p>
+          </div>
+
+          <div class="iar-client-card">
+            <div class="iar-client-icon ic-amber"><i class="fas fa-industry"></i></div>
+            <div class="iar-client-name">Promoter Families</div>
+            <p class="iar-client-desc">Business families diversifying promoter wealth into listed markets through a disciplined, advisory-led approach.</p>
+          </div>
+
+          <div class="iar-client-card">
+            <div class="iar-client-icon ic-purple"><i class="fas fa-landmark"></i></div>
+            <div class="iar-client-name">Corporate Treasuries</div>
+            <p class="iar-client-desc">Companies deploying surplus liquidity through structured equity strategies with advisory oversight.</p>
+          </div>
+
+          <div class="iar-client-card">
+            <div class="iar-client-icon ic-green"><i class="fas fa-globe"></i></div>
+            <div class="iar-client-name">NRI Investors</div>
+            <p class="iar-client-desc">Non-resident Indians allocating to Indian equities through PMS or direct holdings with research support.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROCESS ===================== -->
+    <section class="iar-process" id="process">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">HOW IT WORKS</span>
+          <h2 class="leadership-title">From Conversation to <span>Conviction in 5 Steps.</span></h2>
+        </div>
+        <div class="iar-process-timeline reveal">
+
+          <div class="iar-step">
+            <div class="iar-step-num">1</div>
+            <div class="iar-step-title">Discovery Call</div>
+            <p class="iar-step-body">We understand your investment philosophy, current portfolio, risk appetite, and what you expect from the advisory relationship.</p>
+          </div>
+
+          <div class="iar-step">
+            <div class="iar-step-num">2</div>
+            <div class="iar-step-title">Engagement Design</div>
+            <p class="iar-step-body">We match you to the right engagement model (Subscription / Retainer / Bespoke) and define the research scope, cadence, and deliverables.</p>
+          </div>
+
+          <div class="iar-step">
+            <div class="iar-step-num">3</div>
+            <div class="iar-step-title">Onboarding &amp; KYC</div>
+            <p class="iar-step-body">Agreement signing, SEBI IA KYC documentation, risk profiling, and portal access setup — completed within 72 hours.</p>
+          </div>
+
+          <div class="iar-step">
+            <div class="iar-step-num">4</div>
+            <div class="iar-step-title">Research Delivery</div>
+            <p class="iar-step-body">Structured delivery begins — weekly briefs, monthly ideas, quarterly deep-dives, and on-demand advisory support throughout the engagement.</p>
+          </div>
+
+          <div class="iar-step">
+            <div class="iar-step-num">5</div>
+            <div class="iar-step-title">Review &amp; Refine</div>
+            <p class="iar-step-body">Periodic performance reviews, call accuracy tracking, and engagement calibration — ensuring the advisory keeps pace with your evolving objectives.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== WHY SPVH ===================== -->
+    <section class="iar-why" id="why-spvh">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">THE SPVH RESEARCH ADVANTAGE</span>
+          <h2 class="leadership-title" style="color:#fff;">Why Serious Investors Choose <span>SPVH Research.</span></h2>
+        </div>
+        <div class="iar-why-grid reveal">
+
+          <div class="iar-why-card">
+            <div class="iar-why-icon"><i class="fas fa-ban"></i></div>
+            <div class="iar-why-title">Zero Broking Conflict</div>
+            <p class="iar-why-body">We do not run a broking desk. Every research call is driven purely by fundamental conviction — no transaction commission incentive distorts our views.</p>
+          </div>
+
+          <div class="iar-why-card">
+            <div class="iar-why-icon"><i class="fas fa-microscope"></i></div>
+            <div class="iar-why-title">Primary Research First</div>
+            <p class="iar-why-body">Our analysts conduct 600+ management interactions and channel checks annually — primary research drives our views, not recycled sell-side consensus.</p>
+          </div>
+
+          <div class="iar-why-card">
+            <div class="iar-why-icon"><i class="fas fa-chess-king"></i></div>
+            <div class="iar-why-title">Management Quality Focus</div>
+            <p class="iar-why-body">We place capital allocation quality and management integrity at the centre of every investment thesis — because the best businesses are run by the best managers.</p>
+          </div>
+
+          <div class="iar-why-card">
+            <div class="iar-why-icon"><i class="fas fa-history"></i></div>
+            <div class="iar-why-title">Verified Track Record</div>
+            <p class="iar-why-body">Our equity advisory idea tracker is maintained transparently — every published idea, its entry date, and realised outcome is archived and available for client review.</p>
+          </div>
+
+          <div class="iar-why-card">
+            <div class="iar-why-icon"><i class="fas fa-headset"></i></div>
+            <div class="iar-why-title">Direct Analyst Access</div>
+            <p class="iar-why-body">Retainer clients get direct access to the analyst who covers their stock — not a customer service team. Real conversations with the actual researcher.</p>
+          </div>
+
+          <div class="iar-why-card">
+            <div class="iar-why-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="iar-why-title">SEBI Registered &amp; Compliant</div>
+            <p class="iar-why-body">SPVH is a SEBI Registered Investment Adviser operating under full regulatory compliance — including mandatory risk profiling, suitability assessment, and fee disclosure norms.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== COMPLIANCE STRIP ===================== -->
+    <section class="iar-compliance">
+      <div class="container">
+        <div class="iar-compliance-inner">
+          <span class="iar-comp-label">Regulatory Standing</span>
+          <div class="iar-comp-divider"></div>
+          <div class="iar-comp-item">
+            <i class="fas fa-shield-alt"></i>
+            <div class="iar-comp-text"><strong>SEBI IA Registered</strong>Reg. No. INA000XXXXXX</div>
+          </div>
+          <div class="iar-comp-divider"></div>
+          <div class="iar-comp-item">
+            <i class="fas fa-file-contract"></i>
+            <div class="iar-comp-text"><strong>Risk Profiling</strong>Mandatory for all clients</div>
+          </div>
+          <div class="iar-comp-divider"></div>
+          <div class="iar-comp-item">
+            <i class="fas fa-receipt"></i>
+            <div class="iar-comp-text"><strong>Fee Transparency</strong>Full upfront disclosure</div>
+          </div>
+          <div class="iar-comp-divider"></div>
+          <div class="iar-comp-item">
+            <i class="fas fa-ban"></i>
+            <div class="iar-comp-text"><strong>No Distributor Commissions</strong>Fee-only model</div>
+          </div>
+          <div class="iar-comp-divider"></div>
+          <div class="iar-comp-item">
+            <i class="fas fa-lock"></i>
+            <div class="iar-comp-text"><strong>Data Privacy</strong>SPDI Act compliant</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CTA ===================== -->
+    <section class="iar-cta">
+      <div class="container">
+        <div class="iar-cta-inner reveal">
+          <h2>Start a Research Conversation<br>That Changes How You Invest.</h2>
+          <p>Whether you want a quick portfolio audit or a long-term research partnership, our team is ready to build a custom advisory engagement around your goals. No obligation. No sales pitch.</p>
+          <div class="iar-cta-btns">
+            <a href="contact.html" class="iar-cta-btn-white"><i class="fas fa-calendar-check"></i> Schedule a Discovery Call</a>
+            <a href="resources.html" class="iar-cta-btn-outline"><i class="fas fa-download"></i> Download Sample Research</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
+  <!-- ===================== FOOTER ===================== -->
   <footer class="footer-new">
     <div class="container">
       <div class="footer-top-grid">
