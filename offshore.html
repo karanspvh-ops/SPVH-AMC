@@ -1,34 +1,526 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-  <meta charset='UTF-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <title>SPVH AMC | OFFSHORE</title>
-  <link rel='stylesheet' href='styles.css'>
-  <link rel='stylesheet' href='responsive.css'>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPVH AMC | Offshore &amp; Global Funds</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ============================================================
+       OFFSHORE PAGE — FULL DESIGN
+    ============================================================ */
+
+    /* ---------- HERO ---------- */
+    .off-hero {
+      background: linear-gradient(135deg, #0A1628 0%, #0d1e3a 55%, #071120 100%);
+      padding: 170px 0 90px;
+      position: relative;
+      overflow: hidden;
+    }
+    .off-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 75% 40%, rgba(71,169,150,0.13) 0%, transparent 60%),
+                  radial-gradient(ellipse at 15% 85%, rgba(73,107,173,0.11) 0%, transparent 55%),
+                  radial-gradient(ellipse at 85% 90%, rgba(201,168,76,0.06) 0%, transparent 45%);
+      pointer-events: none;
+    }
+    .off-hero-globe {
+      position: absolute; top: 50%; right: -40px;
+      transform: translateY(-50%);
+      width: 520px; height: 520px;
+      border-radius: 50%;
+      border: 1px solid rgba(71,169,150,0.08);
+      box-shadow: inset 0 0 80px rgba(71,169,150,0.04), 0 0 80px rgba(71,169,150,0.04);
+      pointer-events: none; z-index: 1;
+    }
+    .off-hero-globe::before {
+      content: '';
+      position: absolute; inset: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba(71,169,150,0.06);
+    }
+    .off-hero-globe::after {
+      content: '';
+      position: absolute; inset: 80px;
+      border-radius: 50%;
+      border: 1px solid rgba(71,169,150,0.05);
+    }
+    .off-hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 370px;
+      gap: 5rem;
+      align-items: center;
+      position: relative; z-index: 2;
+    }
+    .off-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: #47a996; font-size: 12px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .off-hero-eyebrow::before {
+      content: ''; width: 32px; height: 2px; background: #47a996;
+    }
+    .off-hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+      font-weight: 800; color: #fff;
+      line-height: 1.1; margin-bottom: 1.5rem;
+    }
+    .off-hero h1 span { color: #47a996; }
+    .off-hero-body {
+      color: #94A3B8; font-size: 1.05rem; line-height: 1.8;
+      max-width: 560px; margin-bottom: 2.5rem;
+    }
+    .off-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .off-btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #47a996; color: #fff; padding: 14px 28px;
+      border-radius: 4px; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.88rem; letter-spacing: 0.5px;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .off-btn-primary:hover { background: #3d9688; color: #fff; transform: translateY(-2px); }
+    .off-btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: #fff; padding: 14px 28px;
+      border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.25);
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      font-size: 0.88rem; text-decoration: none; transition: all 0.3s;
+    }
+    .off-btn-ghost:hover { border-color: #47a996; color: #47a996; }
+    .off-hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(71,169,150,0.1); border: 1px solid rgba(71,169,150,0.2);
+      border-radius: 4px; padding: 8px 14px;
+      color: #47a996; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.5px; width: fit-content;
+    }
+    .off-hero-stats {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 32px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    .off-hero-stat { display: flex; flex-direction: column; gap: 4px; }
+    .off-hero-stat-val {
+      font-family: 'Montserrat', sans-serif; font-size: 2rem;
+      font-weight: 800; color: #fff;
+    }
+    .off-hero-stat-val span { color: #47a996; }
+    .off-hero-stat-lbl {
+      font-size: 0.8rem; color: #64748B;
+      letter-spacing: 1px; text-transform: uppercase; font-weight: 600;
+    }
+    .off-hero-stat-div { height: 1px; background: rgba(255,255,255,0.06); }
+
+    /* ---------- WHY OFFSHORE ---------- */
+    .off-why { background: #fff; padding: 100px 0; }
+    .off-why-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: start; margin-top: 3.5rem;
+    }
+    .off-why-content h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.7rem; font-weight: 700;
+      color: #0A1628; margin-bottom: 1.25rem;
+    }
+    .off-why-content p { color: #475569; line-height: 1.85; margin-bottom: 1rem; font-size: 1rem; }
+    .off-why-points { list-style: none; padding: 0; margin: 1.5rem 0 0; }
+    .off-why-points li {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 13px 0; border-bottom: 1px solid #F1F5F9;
+      color: #334155; font-size: 0.95rem;
+    }
+    .off-why-points li:last-child { border-bottom: none; }
+    .off-why-points li i { color: #47a996; margin-top: 3px; flex-shrink: 0; }
+    .off-why-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .off-why-stat {
+      background: #F0F4FA; border-radius: 10px;
+      padding: 28px 24px; border-left: 4px solid #47a996;
+    }
+    .off-why-stat-num {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.9rem; font-weight: 800; color: #496bad; margin-bottom: 6px;
+    }
+    .off-why-stat-lbl {
+      font-size: 0.8rem; color: #64748B;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px;
+    }
+
+    /* ---------- STRUCTURES ---------- */
+    .off-structures {
+      background: #0A1628; padding: 100px 0;
+      position: relative; overflow: hidden;
+    }
+    .off-structures::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 80% 20%, rgba(71,169,150,0.08) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .off-struct-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem; margin-top: 3.5rem;
+    }
+    .off-struct-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 30px 24px;
+      position: relative; overflow: hidden;
+      transition: all 0.35s ease;
+    }
+    .off-struct-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #47a996, #496bad);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+    .off-struct-card:hover { background: rgba(255,255,255,0.07); transform: translateY(-4px); }
+    .off-struct-card:hover::before { transform: scaleX(1); }
+    .off-struct-icon {
+      width: 50px; height: 50px; border-radius: 10px;
+      background: rgba(71,169,150,0.15);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .off-struct-icon i { color: #47a996; font-size: 1.25rem; }
+    .off-struct-tag {
+      display: inline-block; margin-bottom: 1rem;
+      background: rgba(71,169,150,0.12); border: 1px solid rgba(71,169,150,0.2);
+      border-radius: 3px; padding: 3px 10px;
+      color: #47a996; font-size: 0.72rem;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .off-struct-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem;
+    }
+    .off-struct-body { color: #94A3B8; font-size: 0.88rem; line-height: 1.7; margin-bottom: 1.25rem; }
+    .off-struct-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .off-struct-pill {
+      background: rgba(255,255,255,0.06); border-radius: 3px;
+      padding: 4px 10px; color: #CBD5E1; font-size: 0.75rem; font-weight: 500;
+    }
+
+    /* ---------- FUND OFFERINGS ---------- */
+    .off-funds { background: #F0F4FA; padding: 100px 0; }
+    .off-funds-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem; margin-top: 3.5rem;
+    }
+    .off-fund-card {
+      background: #fff; border-radius: 14px; overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      display: flex; flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .off-fund-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+    .off-fund-card-head {
+      background: #0A1628; padding: 28px 28px 24px;
+      position: relative; overflow: hidden;
+    }
+    .off-fund-card:nth-child(1) .off-fund-card-head { border-bottom: 3px solid #47a996; }
+    .off-fund-card:nth-child(2) .off-fund-card-head { border-bottom: 3px solid #496bad; }
+    .off-fund-card:nth-child(3) .off-fund-card-head { border-bottom: 3px solid #C9A84C; }
+    .off-fund-category {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .off-fund-card:nth-child(1) .off-fund-category { color: #47a996; }
+    .off-fund-card:nth-child(2) .off-fund-category { color: #7fa8e8; }
+    .off-fund-card:nth-child(3) .off-fund-category { color: #C9A84C; }
+    .off-fund-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.15rem; font-weight: 700; color: #fff;
+      line-height: 1.3; margin-bottom: 0.6rem;
+    }
+    .off-fund-reg { font-size: 0.78rem; color: rgba(255,255,255,0.5); font-weight: 500; }
+    .off-fund-card-body {
+      padding: 24px 28px; flex: 1;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .off-fund-desc { color: #475569; font-size: 0.92rem; line-height: 1.7; }
+    .off-fund-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .off-fund-kpi { background: #F0F4FA; border-radius: 8px; padding: 12px 14px; }
+    .off-fund-kpi-val {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.15rem; font-weight: 800; color: #496bad; margin-bottom: 2px;
+    }
+    .off-fund-kpi-lbl {
+      font-size: 0.72rem; color: #64748B;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .off-fund-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .off-fund-tag {
+      background: rgba(71,169,150,0.08);
+      border: 1px solid rgba(71,169,150,0.18); border-radius: 3px;
+      padding: 4px 10px; color: #47a996; font-size: 0.75rem; font-weight: 600;
+    }
+    .off-fund-card-footer {
+      padding: 20px 28px 24px;
+      border-top: 1px solid #F1F5F9;
+      display: flex; gap: 10px;
+    }
+    .off-fund-cta-primary {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      gap: 7px; background: #47a996; color: #fff;
+      padding: 11px 16px; border-radius: 4px;
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 0.82rem; text-decoration: none; transition: all 0.3s;
+    }
+    .off-fund-cta-primary:hover { background: #3d9688; color: #fff; }
+    .off-fund-cta-ghost {
+      display: flex; align-items: center; gap: 7px;
+      background: transparent; color: #64748B;
+      padding: 11px 16px; border-radius: 4px;
+      border: 1px solid #E2E8F0;
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      font-size: 0.82rem; text-decoration: none; transition: all 0.3s;
+    }
+    .off-fund-cta-ghost:hover { border-color: #496bad; color: #496bad; }
+
+    /* ---------- GEOGRAPHIC COVERAGE ---------- */
+    .off-geo { background: #fff; padding: 100px 0; }
+    .off-geo-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 1.25rem; margin-top: 3.5rem;
+    }
+    .off-geo-card {
+      text-align: center; padding: 28px 16px;
+      border-radius: 12px; border: 1px solid #E2E8F0;
+      transition: all 0.3s;
+    }
+    .off-geo-card:hover {
+      border-color: #47a996;
+      box-shadow: 0 8px 24px rgba(71,169,150,0.12);
+      transform: translateY(-4px);
+    }
+    .off-geo-flag { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+    .off-geo-region {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.88rem; font-weight: 700; color: #0A1628; margin-bottom: 6px;
+    }
+    .off-geo-markets { font-size: 0.78rem; color: #64748B; line-height: 1.5; }
+    .off-geo-badge {
+      display: inline-block; margin-top: 10px;
+      background: rgba(71,169,150,0.08); border-radius: 3px;
+      padding: 2px 8px; color: #47a996; font-size: 0.7rem; font-weight: 700;
+    }
+
+    /* ---------- REGULATORY STRIP ---------- */
+    .off-reg-strip {
+      background: #0A1628; padding: 56px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .off-reg-inner {
+      display: flex; align-items: center; gap: 2rem;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .off-reg-label {
+      color: #47a996; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; white-space: nowrap;
+    }
+    .off-reg-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.1); }
+    .off-reg-item { display: flex; align-items: center; gap: 10px; }
+    .off-reg-item i { color: #47a996; font-size: 1.1rem; }
+    .off-reg-item-text { font-size: 0.88rem; color: #CBD5E1; font-weight: 500; }
+    .off-reg-item-text strong { color: #fff; display: block; font-size: 0.82rem; }
+
+    /* ---------- INVESTMENT PROCESS ---------- */
+    .off-process { background: #F0F4FA; padding: 100px 0; }
+    .off-process-steps {
+      display: flex; gap: 0; margin-top: 3.5rem;
+      position: relative;
+    }
+    .off-process-steps::before {
+      content: '';
+      position: absolute; top: 28px; left: 5%; width: 90%; height: 2px;
+      background: linear-gradient(90deg, #47a996, #496bad);
+      z-index: 0;
+    }
+    .off-step {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      position: relative; z-index: 1; padding: 0 16px;
+    }
+    .off-step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #0A1628; border: 3px solid #47a996;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.2rem; font-weight: 800; color: #47a996;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 0 8px #F0F4FA;
+    }
+    .off-step-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem; font-weight: 700; color: #0A1628; margin-bottom: 0.6rem;
+    }
+    .off-step-body { font-size: 0.85rem; color: #64748B; line-height: 1.6; }
+
+    /* ---------- WHY SPVH OFFSHORE ---------- */
+    .off-why-spvh { background: #fff; padding: 100px 0; }
+    .off-diff-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .off-diff-card {
+      padding: 32px; border-radius: 12px;
+      border: 1px solid #E2E8F0; transition: all 0.3s;
+    }
+    .off-diff-card:hover { border-color: #47a996; box-shadow: 0 8px 28px rgba(71,169,150,0.1); }
+    .off-diff-icon {
+      width: 52px; height: 52px; border-radius: 12px;
+      background: rgba(71,169,150,0.1);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .off-diff-icon i { color: #47a996; font-size: 1.3rem; }
+    .off-diff-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem; font-weight: 700; color: #0A1628; margin-bottom: 0.6rem;
+    }
+    .off-diff-body { font-size: 0.9rem; color: #64748B; line-height: 1.7; }
+
+    /* ---------- TAX & COMPLIANCE ---------- */
+    .off-tax { background: #0A1628; padding: 100px 0; position: relative; overflow: hidden; }
+    .off-tax::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(73,107,173,0.12) 0%, transparent 60%);
+    }
+    .off-tax-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: start;
+      position: relative; z-index: 2; margin-top: 3.5rem;
+    }
+    .off-tax-item {
+      display: flex; gap: 16px; padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .off-tax-item:last-child { border-bottom: none; }
+    .off-tax-item-icon {
+      width: 40px; height: 40px; border-radius: 8px;
+      background: rgba(71,169,150,0.12);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .off-tax-item-icon i { color: #47a996; font-size: 1rem; }
+    .off-tax-item-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 4px;
+    }
+    .off-tax-item-body { font-size: 0.88rem; color: #94A3B8; line-height: 1.6; }
+    .off-tax-disclaimer {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 28px;
+    }
+    .off-tax-disclaimer h4 {
+      color: #47a996; font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .off-tax-disclaimer p {
+      color: #94A3B8; font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.75rem;
+    }
+    .off-tax-disclaimer p:last-child { margin-bottom: 0; }
+
+    /* ---------- CTA ---------- */
+    .off-cta {
+      background: linear-gradient(135deg, #47a996 0%, #496bad 100%);
+      padding: 90px 0; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .off-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 120%, rgba(255,255,255,0.12) 0%, transparent 60%);
+    }
+    .off-cta-inner { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; }
+    .off-cta h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 800; color: #fff; margin-bottom: 1rem;
+    }
+    .off-cta p { color: rgba(255,255,255,0.85); font-size: 1.05rem; margin-bottom: 2.5rem; }
+    .off-cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .off-cta-btn-white {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: #0A1628; padding: 15px 32px;
+      border-radius: 4px; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: all 0.3s;
+    }
+    .off-cta-btn-white:hover { background: #F0F4FA; color: #0A1628; transform: translateY(-2px); }
+    .off-cta-btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: #fff; padding: 15px 32px;
+      border-radius: 4px; border: 2px solid rgba(255,255,255,0.45);
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 0.9rem; text-decoration: none; transition: all 0.3s;
+    }
+    .off-cta-btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1200px) {
+      .off-hero      { padding-top: 120px; }
+      .off-struct-grid { grid-template-columns: repeat(2, 1fr); }
+      .off-geo-grid  { grid-template-columns: repeat(3, 1fr); }
+      .off-hero-globe { display: none; }
+    }
+    @media (max-width: 1024px) {
+      .off-hero      { padding-top: 110px; }
+      .off-hero-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .off-hero-stats { flex-direction: row; flex-wrap: wrap; gap: 20px; }
+      .off-hero-stat { flex: 1; min-width: 140px; }
+      .off-why-grid  { grid-template-columns: 1fr; gap: 3rem; }
+      .off-funds-grid { grid-template-columns: 1fr 1fr; }
+      .off-diff-grid { grid-template-columns: 1fr 1fr; }
+      .off-tax-grid  { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    @media (max-width: 768px) {
+      .off-hero      { padding-top: 90px; }
+      .off-struct-grid { grid-template-columns: 1fr; }
+      .off-funds-grid { grid-template-columns: 1fr; }
+      .off-process-steps { flex-direction: column; gap: 2rem; }
+      .off-process-steps::before { display: none; }
+      .off-diff-grid { grid-template-columns: 1fr; }
+      .off-geo-grid  { grid-template-columns: repeat(2, 1fr); }
+      .off-reg-divider { display: none; }
+      .off-why-stats { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .off-geo-grid  { grid-template-columns: 1fr 1fr; }
+      .off-hero-actions { flex-direction: column; }
+      .off-cta-btns  { flex-direction: column; align-items: center; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Sticky Nav -->
+
+  <!-- ===================== NAV ===================== -->
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-      
       <ul class="nav-menu">
         <li class="nav-item">
-          <a href="#">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
           <ul class="dropdown-menu">
-            <li><a href="about.html">Firm Overview</a></li>
-            <li><a href="team.html">Leadership Team</a></li>
-            <li><a href="philosophy.html">Investment Philosophy</a></li>
+            <li><a href="about.html#firm-overview">Firm Overview</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#">Investment Solutions <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <a href="pms.html">Investment Solutions <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
           <ul class="dropdown-menu">
             <li><a href="pms.html">Portfolio Management Services</a></li>
             <li><a href="aif.html">Alternative Investment Funds</a></li>
-            <li><a href="offshore.html">Offshore Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
             <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
           </ul>
         </li>
@@ -36,42 +528,602 @@
         <li class="nav-item"><a href="insights.html">Insights</a></li>
         <li class="nav-item"><a href="resources.html">Resources</a></li>
       </ul>
-
       <div class="nav-actions">
         <a href="#" class="login-link">Investor Login</a>
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
-
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
-      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
   </header>
 
   <main>
-    <!-- Hero (Dark) -->
-    <section class="hero bg-dark">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="off-hero">
+      <div class="off-hero-globe"></div>
       <div class="container">
-        <div class="hero-content reveal">
-          <h1>Generational Wealth.<br><span>Institutional Precision.</span></h1>
-          <p>SPVH AMC delivers specialized alternative and portfolio management solutions designed specifically for family offices and institutional investors. Absolute returns driven by uncompromised research.</p>
-          <a href="about.html" class="btn btn-outline-light" style="margin-top: 1rem;">Discover Our Framework</a>
+        <div class="off-hero-grid">
+
+          <!-- Left: Text -->
+          <div class="reveal">
+            <div class="off-hero-eyebrow">Offshore &amp; Global Funds</div>
+            <h1>Access the World's<br>Best Markets.<br><span>From India.</span></h1>
+            <p class="off-hero-body">SPVH's Offshore &amp; Global Funds platform gives Indian UHNIs, Family Offices, and Institutional Investors structured access to international equity markets, private credit, and global alternatives — through SEBI-compliant, tax-efficient vehicles domiciled in GIFT City, Mauritius, Singapore, and the Cayman Islands.</p>
+            <div class="off-hero-actions">
+              <a href="#fund-offerings" class="off-btn-primary"><i class="fas fa-globe"></i> Explore Our Funds</a>
+              <a href="contact.html" class="off-btn-ghost"><i class="fas fa-calendar-alt"></i> Schedule Consultation</a>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:1.75rem;">
+              <div class="off-hero-badge"><i class="fas fa-university"></i>&nbsp; GIFT IFSC &mdash; SEBI Regulated</div>
+              <div class="off-hero-badge"><i class="fas fa-globe-asia"></i>&nbsp; LRS / FEMA Compliant</div>
+            </div>
+          </div>
+
+          <!-- Right: Stats -->
+          <div class="off-hero-stats reveal" style="animation-delay:0.15s;">
+            <div class="off-hero-stat">
+              <div class="off-hero-stat-val">USD <span>500M+</span></div>
+              <div class="off-hero-stat-lbl">Target Global AUM</div>
+            </div>
+            <div class="off-hero-stat-div"></div>
+            <div class="off-hero-stat">
+              <div class="off-hero-stat-val">4 <span>Structures</span></div>
+              <div class="off-hero-stat-lbl">GIFT City · Mauritius · Singapore · Cayman</div>
+            </div>
+            <div class="off-hero-stat-div"></div>
+            <div class="off-hero-stat">
+              <div class="off-hero-stat-val">25<span>+ Markets</span></div>
+              <div class="off-hero-stat-lbl">Global Market Coverage</div>
+            </div>
+            <div class="off-hero-stat-div"></div>
+            <div class="off-hero-stat">
+              <div class="off-hero-stat-val">USD <span>250K</span></div>
+              <div class="off-hero-stat-lbl">Minimum Investment</div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
 
-    <!-- Stats Counters -->
-<main>
-  <section class='hero bg-dark' style='min-height: 40vh; height: 40vh;'>
-    <div class='container'>
-      <div class='hero-content reveal'>
-        <h1 style='font-size: 3rem;'>OFFSHORE</h1>
+    <!-- ===================== WHY OFFSHORE ===================== -->
+    <section class="off-why" id="why-offshore">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">WHY INVEST OFFSHORE</span>
+          <h2 class="leadership-title">Your Wealth Deserves a <span>Global Footprint.</span></h2>
+        </div>
+        <div class="off-why-grid">
+          <div class="reveal">
+            <h3>Diversification Beyond Indian Markets</h3>
+            <p>India's equity markets, though dynamic, represent less than 3% of global market capitalisation. Confining wealth to a single geography creates concentration risk that sophisticated investors cannot afford.</p>
+            <p>SPVH's offshore platform provides structured access to global opportunities — US technology, European consumer brands, GCC infrastructure, and Asian growth economies — built on institutional-grade research and risk frameworks.</p>
+            <ul class="off-why-points">
+              <li><i class="fas fa-check-circle"></i> Currency diversification — hold USD, EUR, AED and GBP-denominated assets</li>
+              <li><i class="fas fa-check-circle"></i> Access global innovators and pre-IPO companies unavailable in India</li>
+              <li><i class="fas fa-check-circle"></i> Hedge against domestic macroeconomic and political cycles</li>
+              <li><i class="fas fa-check-circle"></i> Estate planning across jurisdictions with DTAA treaty protections</li>
+              <li><i class="fas fa-check-circle"></i> Participate in global private equity, credit, and real asset opportunities</li>
+            </ul>
+          </div>
+          <div class="off-why-stats reveal" style="animation-delay:0.1s;">
+            <div class="off-why-stat">
+              <div class="off-why-stat-num">&lt;3%</div>
+              <div class="off-why-stat-lbl">India's Share of Global Market Cap</div>
+            </div>
+            <div class="off-why-stat">
+              <div class="off-why-stat-num">USD 250K</div>
+              <div class="off-why-stat-lbl">LRS Annual Limit per Individual</div>
+            </div>
+            <div class="off-why-stat">
+              <div class="off-why-stat-num">90+</div>
+              <div class="off-why-stat-lbl">DTAA Treaties Available to Indian Investors</div>
+            </div>
+            <div class="off-why-stat">
+              <div class="off-why-stat-num">GIFT</div>
+              <div class="off-why-stat-lbl">India's IFSC — World-Class Offshore Hub</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== INVESTMENT STRUCTURES ===================== -->
+    <section class="off-structures" id="structures">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">INVESTMENT STRUCTURES</span>
+          <h2 class="leadership-title" style="color:#fff;">Four Pathways to <span>Global Capital.</span></h2>
+          <p style="color:#94A3B8;font-size:0.95rem;max-width:600px;margin:0 auto;text-align:center;">Each structure is designed for a specific investor profile, tax requirement, and geographic target — ensuring your wealth is held in the most efficient vehicle for your jurisdiction.</p>
+        </div>
+        <div class="off-struct-grid reveal">
+
+          <div class="off-struct-card">
+            <div class="off-struct-icon"><i class="fas fa-landmark"></i></div>
+            <span class="off-struct-tag">GIFT IFSC</span>
+            <h3 class="off-struct-title">GIFT City International Fund</h3>
+            <p class="off-struct-body">A SEBI-regulated fund domiciled within India's GIFT IFSC. Ideal for investors seeking global exposure through an India-based, INR-denominated onboarding with full regulatory transparency and simple income-tax treatment.</p>
+            <div class="off-struct-pills">
+              <span class="off-struct-pill">SEBI Regulated</span>
+              <span class="off-struct-pill">INR Onboarding</span>
+              <span class="off-struct-pill">LRS Compliant</span>
+              <span class="off-struct-pill">Min. ₹7 Cr</span>
+            </div>
+          </div>
+
+          <div class="off-struct-card">
+            <div class="off-struct-icon"><i class="fas fa-water"></i></div>
+            <span class="off-struct-tag">MAURITIUS</span>
+            <h3 class="off-struct-title">Mauritius Global Feeder Vehicle</h3>
+            <p class="off-struct-body">A GBC-1 licensed fund structure in Mauritius offering India-Mauritius DTAA benefits, favourable capital gains treatment on third-country equities, and efficient repatriation of returns to India.</p>
+            <div class="off-struct-pills">
+              <span class="off-struct-pill">India-MU DTAA</span>
+              <span class="off-struct-pill">GBC-1 License</span>
+              <span class="off-struct-pill">USD Denominated</span>
+              <span class="off-struct-pill">Min. USD 250K</span>
+            </div>
+          </div>
+
+          <div class="off-struct-card">
+            <div class="off-struct-icon"><i class="fas fa-city"></i></div>
+            <span class="off-struct-tag">SINGAPORE</span>
+            <h3 class="off-struct-title">Singapore VCC / LP Structure</h3>
+            <p class="off-struct-body">A Variable Capital Company or Limited Partnership in Singapore, providing access to Asia-Pacific markets, institutional credibility, and a robust tax treaty network across 90+ countries via MAS-regulated vehicles.</p>
+            <div class="off-struct-pills">
+              <span class="off-struct-pill">MAS Regulated</span>
+              <span class="off-struct-pill">Asia-Pacific Focus</span>
+              <span class="off-struct-pill">90+ Tax Treaties</span>
+              <span class="off-struct-pill">Min. USD 500K</span>
+            </div>
+          </div>
+
+          <div class="off-struct-card">
+            <div class="off-struct-icon"><i class="fas fa-anchor"></i></div>
+            <span class="off-struct-tag">CAYMAN ISLANDS</span>
+            <h3 class="off-struct-title">Cayman Exempted LP / SPC</h3>
+            <p class="off-struct-body">The institutional standard for global alternative investments. A Cayman Exempted LP or Segregated Portfolio Company providing access to global private equity, hedge fund strategies, and credit through CIMA-regulated vehicles.</p>
+            <div class="off-struct-pills">
+              <span class="off-struct-pill">CIMA Regulated</span>
+              <span class="off-struct-pill">Institutional Grade</span>
+              <span class="off-struct-pill">PE / HF Access</span>
+              <span class="off-struct-pill">Min. USD 1M</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FUND OFFERINGS ===================== -->
+    <section class="off-funds" id="fund-offerings">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">OUR FUND OFFERINGS</span>
+          <h2 class="leadership-title">Strategies Built for <span>Global Growth.</span></h2>
+          <p style="color:#64748B;font-size:0.95rem;max-width:600px;margin:0 auto;text-align:center;">Each fund is managed by SPVH's dedicated global investments team, with deep expertise in the respective geography and asset class.</p>
+        </div>
+        <div class="off-funds-grid">
+
+          <!-- Fund 1: Global Multi-Asset -->
+          <div class="off-fund-card reveal">
+            <div class="off-fund-card-head">
+              <div class="off-fund-category">GIFT IFSC &middot; Category II AIF</div>
+              <div class="off-fund-name">SPVH Global Multi-Asset Fund</div>
+              <div class="off-fund-reg">SEBI Reg: IN/AIF2/GC/XXXX &middot; Open for Subscription</div>
+            </div>
+            <div class="off-fund-card-body">
+              <p class="off-fund-desc">A diversified global fund investing across US equities, European bonds, Asian small caps, global REITs, and commodities — targeting risk-adjusted returns through dynamic asset allocation across 6 asset classes.</p>
+              <div class="off-fund-kpis">
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">18–22%</div>
+                  <div class="off-fund-kpi-lbl">Target Return (USD)</div>
+                </div>
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">USD 250K</div>
+                  <div class="off-fund-kpi-lbl">Min. Investment</div>
+                </div>
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">3 Years</div>
+                  <div class="off-fund-kpi-lbl">Recommended Tenure</div>
+                </div>
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">6</div>
+                  <div class="off-fund-kpi-lbl">Asset Classes</div>
+                </div>
+              </div>
+              <div class="off-fund-tags">
+                <span class="off-fund-tag">Multi-Asset</span>
+                <span class="off-fund-tag">Global Diversification</span>
+                <span class="off-fund-tag">USD Denominated</span>
+                <span class="off-fund-tag">Dynamic Allocation</span>
+              </div>
+            </div>
+            <div class="off-fund-card-footer">
+              <a href="resources.html" class="off-fund-cta-primary"><i class="fas fa-download"></i> Fund Deck</a>
+              <a href="contact.html" class="off-fund-cta-ghost"><i class="fas fa-phone-alt"></i> Enquire</a>
+            </div>
+          </div>
+
+          <!-- Fund 2: US Innovation -->
+          <div class="off-fund-card reveal" style="animation-delay:0.1s;">
+            <div class="off-fund-card-head">
+              <div class="off-fund-category">GIFT IFSC &middot; Category III AIF</div>
+              <div class="off-fund-name">SPVH US Innovation &amp; Tech Fund</div>
+              <div class="off-fund-reg">SEBI Reg: IN/AIF3/GC/XXXX &middot; Open for Subscription</div>
+            </div>
+            <div class="off-fund-card-body">
+              <p class="off-fund-desc">Concentrated exposure to US technology, AI, semiconductor, and innovation-led growth companies — including pre-IPO opportunities and listed large-cap technology leaders across NYSE and NASDAQ.</p>
+              <div class="off-fund-kpis">
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">25–30%</div>
+                  <div class="off-fund-kpi-lbl">Target Return (USD)</div>
+                </div>
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">USD 500K</div>
+                  <div class="off-fund-kpi-lbl">Min. Investment</div>
+                </div>
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">5 Years</div>
+                  <div class="off-fund-kpi-lbl">Recommended Tenure</div>
+                </div>
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">20–30</div>
+                  <div class="off-fund-kpi-lbl">Portfolio Stocks</div>
+                </div>
+              </div>
+              <div class="off-fund-tags">
+                <span class="off-fund-tag">US Markets</span>
+                <span class="off-fund-tag">Tech &amp; AI Focus</span>
+                <span class="off-fund-tag">Pre-IPO Access</span>
+                <span class="off-fund-tag">High Conviction</span>
+              </div>
+            </div>
+            <div class="off-fund-card-footer">
+              <a href="resources.html" class="off-fund-cta-primary"><i class="fas fa-download"></i> Fund Deck</a>
+              <a href="contact.html" class="off-fund-cta-ghost"><i class="fas fa-phone-alt"></i> Enquire</a>
+            </div>
+          </div>
+
+          <!-- Fund 3: GCC -->
+          <div class="off-fund-card reveal" style="animation-delay:0.2s;">
+            <div class="off-fund-card-head">
+              <div class="off-fund-category">MAURITIUS GBC-1 &middot; Closed-End Fund</div>
+              <div class="off-fund-name">SPVH GCC &amp; Middle East Fund</div>
+              <div class="off-fund-reg">FSC Mauritius Licensed &middot; Raising &middot; Target: USD 100M</div>
+            </div>
+            <div class="off-fund-card-body">
+              <p class="off-fund-desc">A dedicated fund targeting high-growth opportunities across the Gulf Cooperation Council — UAE, Saudi Arabia, Qatar, and Kuwait — spanning real estate, infrastructure, private credit, and listed equities.</p>
+              <div class="off-fund-kpis">
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">20–25%</div>
+                  <div class="off-fund-kpi-lbl">Target IRR (USD)</div>
+                </div>
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">USD 1M</div>
+                  <div class="off-fund-kpi-lbl">Min. Investment</div>
+                </div>
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">7 Years</div>
+                  <div class="off-fund-kpi-lbl">Fund Life</div>
+                </div>
+                <div class="off-fund-kpi">
+                  <div class="off-fund-kpi-val">4+</div>
+                  <div class="off-fund-kpi-lbl">GCC Countries</div>
+                </div>
+              </div>
+              <div class="off-fund-tags">
+                <span class="off-fund-tag">GCC Markets</span>
+                <span class="off-fund-tag">Real Assets</span>
+                <span class="off-fund-tag">Private Credit</span>
+                <span class="off-fund-tag">DTAA Structured</span>
+              </div>
+            </div>
+            <div class="off-fund-card-footer">
+              <a href="resources.html" class="off-fund-cta-primary"><i class="fas fa-download"></i> Fund Deck</a>
+              <a href="contact.html" class="off-fund-cta-ghost"><i class="fas fa-phone-alt"></i> Enquire</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GEOGRAPHIC COVERAGE ===================== -->
+    <section class="off-geo" id="coverage">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">GEOGRAPHIC COVERAGE</span>
+          <h2 class="leadership-title">Investing Across <span>5 Continents.</span></h2>
+        </div>
+        <div class="off-geo-grid reveal">
+          <div class="off-geo-card">
+            <span class="off-geo-flag">🇺🇸</span>
+            <div class="off-geo-region">United States</div>
+            <div class="off-geo-markets">Technology · Healthcare<br>Private Equity · Credit</div>
+            <span class="off-geo-badge">Primary Market</span>
+          </div>
+          <div class="off-geo-card">
+            <span class="off-geo-flag">🇦🇪</span>
+            <div class="off-geo-region">GCC &amp; Middle East</div>
+            <div class="off-geo-markets">UAE · Saudi Arabia · Qatar<br>Real Estate · Infrastructure</div>
+            <span class="off-geo-badge">Actively Investing</span>
+          </div>
+          <div class="off-geo-card">
+            <span class="off-geo-flag">🇸🇬</span>
+            <div class="off-geo-region">South-East Asia</div>
+            <div class="off-geo-markets">Singapore · Vietnam<br>Indonesia · Thailand</div>
+            <span class="off-geo-badge">Growth Focus</span>
+          </div>
+          <div class="off-geo-card">
+            <span class="off-geo-flag">🇬🇧</span>
+            <div class="off-geo-region">Europe</div>
+            <div class="off-geo-markets">UK · Germany · France<br>Consumer · Industrials</div>
+            <span class="off-geo-badge">Value Focus</span>
+          </div>
+          <div class="off-geo-card">
+            <span class="off-geo-flag">🇯🇵</span>
+            <div class="off-geo-region">Japan &amp; APAC</div>
+            <div class="off-geo-markets">Japan · South Korea · Taiwan<br>Australia</div>
+            <span class="off-geo-badge">Selective Entry</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== REGULATORY STRIP ===================== -->
+    <section class="off-reg-strip">
+      <div class="container">
+        <div class="off-reg-inner">
+          <span class="off-reg-label">Regulated &amp; Compliant</span>
+          <div class="off-reg-divider"></div>
+          <div class="off-reg-item">
+            <i class="fas fa-shield-alt"></i>
+            <div class="off-reg-item-text"><strong>SEBI Regulated</strong>GIFT IFSC AIF Manager</div>
+          </div>
+          <div class="off-reg-divider"></div>
+          <div class="off-reg-item">
+            <i class="fas fa-university"></i>
+            <div class="off-reg-item-text"><strong>FSC Mauritius</strong>GBC-1 License Holder</div>
+          </div>
+          <div class="off-reg-divider"></div>
+          <div class="off-reg-item">
+            <i class="fas fa-balance-scale"></i>
+            <div class="off-reg-item-text"><strong>RBI / FEMA</strong>LRS &amp; ODI Compliant</div>
+          </div>
+          <div class="off-reg-divider"></div>
+          <div class="off-reg-item">
+            <i class="fas fa-file-contract"></i>
+            <div class="off-reg-item-text"><strong>DTAA Network</strong>India Treaty Benefits</div>
+          </div>
+          <div class="off-reg-divider"></div>
+          <div class="off-reg-item">
+            <i class="fas fa-lock"></i>
+            <div class="off-reg-item-text"><strong>FATCA / CRS</strong>Global Tax Compliant</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== INVESTMENT PROCESS ===================== -->
+    <section class="off-process" id="how-to-invest">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">INVESTMENT PROCESS</span>
+          <h2 class="leadership-title">Global Investing in <span>5 Simple Steps.</span></h2>
+          <p style="color:#64748B;font-size:0.95rem;max-width:560px;margin:0 auto;text-align:center;">Our offshore team guides you from first consultation through full deployment — with complete documentation support and regulatory hand-holding at every stage.</p>
+        </div>
+        <div class="off-process-steps reveal">
+          <div class="off-step">
+            <div class="off-step-num">1</div>
+            <div class="off-step-title">Investor Profiling</div>
+            <p class="off-step-body">Risk assessment, investment objective mapping, and global allocation strategy design tailored to your wealth goals and tax residency.</p>
+          </div>
+          <div class="off-step">
+            <div class="off-step-num">2</div>
+            <div class="off-step-title">Structure Selection</div>
+            <p class="off-step-body">Choose the optimal vehicle — GIFT IFSC, Mauritius, Singapore, or Cayman — based on your tax profile and target geographies.</p>
+          </div>
+          <div class="off-step">
+            <div class="off-step-num">3</div>
+            <div class="off-step-title">KYC &amp; Documentation</div>
+            <p class="off-step-body">Complete KYC / AML documentation, subscription agreements, and regulatory filings — fully supported by our compliance team.</p>
+          </div>
+          <div class="off-step">
+            <div class="off-step-num">4</div>
+            <div class="off-step-title">Fund Transfer</div>
+            <p class="off-step-body">Remit via LRS (USD 250K / person / year) or ODI route. Bank facilitation and FEMA compliance managed end-to-end by SPVH.</p>
+          </div>
+          <div class="off-step">
+            <div class="off-step-num">5</div>
+            <div class="off-step-title">Portfolio Monitoring</div>
+            <p class="off-step-body">24/7 investor portal access with real-time NAV, quarterly reports, capital account statements, and annual Schedule FA data packages.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== WHY SPVH ===================== -->
+    <section class="off-why-spvh" id="why-spvh">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">THE SPVH ADVANTAGE</span>
+          <h2 class="leadership-title">Why India's Most Discerning<br>Investors Choose <span>SPVH.</span></h2>
+        </div>
+        <div class="off-diff-grid reveal">
+          <div class="off-diff-card">
+            <div class="off-diff-icon"><i class="fas fa-search-dollar"></i></div>
+            <h4 class="off-diff-title">Institutional Research Depth</h4>
+            <p class="off-diff-body">Our global investments team conducts deep-dive fundamental analysis on every portfolio company, covering 25+ markets and sectors — not index replication.</p>
+          </div>
+          <div class="off-diff-card">
+            <div class="off-diff-icon"><i class="fas fa-network-wired"></i></div>
+            <h4 class="off-diff-title">Best-in-Class Global Custody</h4>
+            <p class="off-diff-body">Assets are held with internationally recognised prime brokers and custodians — Interactive Brokers, Pershing, HSBC Global — with full asset segregation and investor protection.</p>
+          </div>
+          <div class="off-diff-card">
+            <div class="off-diff-icon"><i class="fas fa-receipt"></i></div>
+            <h4 class="off-diff-title">End-to-End Tax Support</h4>
+            <p class="off-diff-body">Our tax advisory team ensures optimal treaty utilisation, DTAA benefit claims, Schedule FA compliance, and annual FEMA / RBI reporting — fully managed for investors.</p>
+          </div>
+          <div class="off-diff-card">
+            <div class="off-diff-icon"><i class="fas fa-satellite-dish"></i></div>
+            <h4 class="off-diff-title">Real-Time Investor Access</h4>
+            <p class="off-diff-body">A dedicated investor portal provides 24/7 access to your offshore portfolio — live NAV, transactions, capital account statements, and performance attribution by geography and asset class.</p>
+          </div>
+          <div class="off-diff-card">
+            <div class="off-diff-icon"><i class="fas fa-users-cog"></i></div>
+            <h4 class="off-diff-title">Dedicated Relationship Team</h4>
+            <p class="off-diff-body">Every offshore investor is assigned a senior relationship manager and a global investments specialist for personalised service — from onboarding through exit and repatriation.</p>
+          </div>
+          <div class="off-diff-card">
+            <div class="off-diff-icon"><i class="fas fa-handshake"></i></div>
+            <h4 class="off-diff-title">Co-Investment Opportunities</h4>
+            <p class="off-diff-body">Select offshore investors gain access to exclusive co-investment rights alongside flagship funds — concentrated exposure to specific global deal opportunities at negotiated terms.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TAX & COMPLIANCE ===================== -->
+    <section class="off-tax" id="tax-compliance">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">TAX &amp; COMPLIANCE FRAMEWORK</span>
+          <h2 class="leadership-title" style="color:#fff;">Tax-Efficient. Fully <span>Compliant.</span></h2>
+          <p style="color:#94A3B8;font-size:0.95rem;max-width:580px;margin:0 auto;text-align:center;">SPVH's offshore platform is built around India's regulatory framework — every rupee invested offshore is legally structured and optimally taxed.</p>
+        </div>
+        <div class="off-tax-grid">
+
+          <!-- Left column -->
+          <div class="reveal">
+            <div class="off-tax-item">
+              <div class="off-tax-item-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+              <div>
+                <div class="off-tax-item-title">LRS Route — USD 250,000 per Year</div>
+                <p class="off-tax-item-body">Under RBI's Liberalised Remittance Scheme, Indian residents can remit up to USD 250,000 per financial year for overseas fund investments. A family of four can deploy USD 1M annually.</p>
+              </div>
+            </div>
+            <div class="off-tax-item">
+              <div class="off-tax-item-icon"><i class="fas fa-balance-scale-right"></i></div>
+              <div>
+                <div class="off-tax-item-title">Double Taxation Avoidance Agreements</div>
+                <p class="off-tax-item-body">India has DTAAs with 90+ countries. Our structures are designed to leverage treaty benefits — avoiding double taxation on dividends, capital gains, and interest income at source.</p>
+              </div>
+            </div>
+            <div class="off-tax-item">
+              <div class="off-tax-item-icon"><i class="fas fa-globe"></i></div>
+              <div>
+                <div class="off-tax-item-title">Schedule FA Reporting (ITR)</div>
+                <p class="off-tax-item-body">Indian residents holding offshore assets must disclose in Schedule FA of their ITR. Our team provides annual Schedule FA data packages to ensure full income-tax compliance.</p>
+              </div>
+            </div>
+            <div class="off-tax-item">
+              <div class="off-tax-item-icon"><i class="fas fa-exchange-alt"></i></div>
+              <div>
+                <div class="off-tax-item-title">ODI Route for Corporates &amp; Trusts</div>
+                <p class="off-tax-item-body">Indian companies and trusts can invest through the Overseas Direct Investment route under FEMA — with higher limits and specific structural requirements handled completely by our team.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div class="reveal" style="animation-delay:0.1s;">
+            <div class="off-tax-disclaimer">
+              <h4>Important Regulatory Information</h4>
+              <p>All offshore investments facilitated by SPVH Asset Management are subject to compliance with the Foreign Exchange Management Act (FEMA) 1999, RBI Master Directions on Liberalised Remittance Scheme, and applicable SEBI regulations for funds domiciled in GIFT IFSC.</p>
+              <p>Investors are required to ensure personal tax compliance including Schedule FA disclosure, FATCA self-certification, and Common Reporting Standard (CRS) declarations as applicable to their residency status.</p>
+              <p>SPVH strongly recommends engaging independent tax advisors for personalised advice on offshore investment taxation. This information is educational only and does not constitute tax or legal advice.</p>
+              <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.08);">
+                <div style="display:flex;align-items:center;gap:10px;color:#47a996;font-size:0.82rem;font-weight:700;margin-bottom:0.75rem;">
+                  <i class="fas fa-shield-alt"></i> REGULATORY FILINGS WE SUPPORT
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                  <span class="off-struct-pill">Schedule FA (ITR)</span>
+                  <span class="off-struct-pill">FEMA ODI Forms</span>
+                  <span class="off-struct-pill">FATCA / W-8BEN</span>
+                  <span class="off-struct-pill">CRS Self-Cert</span>
+                  <span class="off-struct-pill">GIFT IFSC Filings</span>
+                  <span class="off-struct-pill">Annual FLA Return</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CTA ===================== -->
+    <section class="off-cta">
+      <div class="container">
+        <div class="off-cta-inner reveal">
+          <h2>Ready to Take Your Wealth<br>Beyond Borders?</h2>
+          <p>Our offshore investment specialists are available for a private, no-obligation consultation — helping you identify the right structure and strategy for your global wealth goals.</p>
+          <div class="off-cta-btns">
+            <a href="contact.html" class="off-cta-btn-white"><i class="fas fa-calendar-check"></i> Schedule a Consultation</a>
+            <a href="resources.html" class="off-cta-btn-outline"><i class="fas fa-download"></i> Download Offshore Kit</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer-new">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-col-brand reveal" style="animation-delay:0s;">
+          <a href="index.html" class="footer-logo-img" style="display:inline-block;margin-bottom:1.25rem;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height:73px;width:auto;display:block;">
+          </a>
+          <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col-links reveal" style="animation-delay:0.1s;">
+          <h4 class="footer-heading">COMPANY</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-links reveal" style="animation-delay:0.2s;">
+          <h4 class="footer-heading">OUR SOLUTIONS</h4>
+          <ul>
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-contact reveal" style="animation-delay:0.3s;">
+          <h4 class="footer-heading">GET IN TOUCH</h4>
+          <div class="contact-line"><i class="fas fa-map-marker-alt"></i><span>Registered Office Address, Mumbai &mdash; 400051</span></div>
+          <div class="contact-line"><i class="fas fa-phone-alt"></i><span>+91 22 4000 0000</span></div>
+          <div class="contact-line"><i class="fas fa-envelope"></i><span>info@spvhamc.com</span></div>
+          <a href="contact.html" class="footer-cta-link">Schedule Consultation &rarr;</a>
+        </div>
       </div>
     </div>
-  </section>
-  <section class='section-padding' style='min-height: 50vh;'><div class='container'><h2 style='text-align:center;'>OFFSHORE Module Under Construction</h2></div></section>
-</main>
-  <footer class="bg-dark">    <div class="container">       <div class="footer-grid">         <div>           <a href="index.html" class="logo" style="color: white;">SPVH<span style="color: var(--secondary);">AMC</span></a>           <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1.5rem;">Corporate Headquarters:<br>SPVH Tower, Bandra Kurla Complex,<br>Mumbai, Maharashtra 400051.</p>           <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 1rem;">Email: ir@spvhamc.com<br>Tel: +91 22 4000 0000</p>         </div>         <div>           <h4 class="footer-title">Strategies</h4>           <ul class="footer-links">             <li><a href="pms.html">Portfolio Management</a></li>             <li><a href="aif.html">Alternative Funds</a></li>             <li><a href="offshore.html">FPI Structuring</a></li>             <li><a href="performance.html">Performance Data</a></li>           </ul>         </div>         <div>           <h4 class="footer-title">Firm</h4>           <ul class="footer-links">             <li><a href="about.html">About Us</a></li>             <li><a href="team.html">Leadership</a></li>             <li><a href="philosophy.html">Philosophy</a></li>             <li><a href="insights.html">Insights</a></li>             <li><a href="contact.html">Contact Us</a></li>           </ul>         </div>         <div>           <h4 class="footer-title">Secure Portals</h4>           <ul class="footer-links">             <li><a href="#">Client Login</a></li>             <li><a href="#">Distributor Login</a></li>             <li><a href="resources.html">Factsheets Download</a></li>             <li><a href="#">Governance Disclosures</a></li>           </ul>         </div>       </div>       <div class="footer-bottom">         <div class="legal-text">           <strong style="color:white; margin-bottom: 0.5rem; display:block;">SEBI REGULATORY DISCLAIMER</strong>           SPVH Asset Management Company is registered with the Securities and Exchange Board of India (SEBI) as a Portfolio Manager (Registration No. INP000000000) and Alternative Investment Fund Manager (Registration No. IN/AIF2/00-00/0000).            Information provided on this website is for educational and informational purposes only for High Net Worth Individuals and Institutional Entities. It does not constitute an offer to sell or a solicitation to buy any security or investment product.            Investments in securities market are subject to market risks. Read all the related documents carefully before investing. Past performance of the Portfolio Manager/Record of the fund manager is not indicative of future results.         </div>         <div class="copyright">           <span>&copy; 2026 SPVH Asset Management Company. All Rights Reserved.</span>           <span style="font-family: 'Montserrat', sans-serif;">Privacy Policy | Terms of Use</span>         </div>       </div>     </div>   </footer>    <script src="script.js"></script> </body> </html>
+    <div class="footer-divider"></div>
+    <div class="container">
+      <div class="footer-bottom-bar reveal" style="animation-delay:0.4s;">
+        <div class="footer-copyright">&copy; 2026 SPVH Asset Management Company (SPVH Private Limited | CIN: U67110MH2022PTC381574). All Rights Reserved. &nbsp;&nbsp;SPVH AMC is a fund manager across all SEBI regulated alternative products.</div>
+        <div class="footer-legal-links">
+          <a href="#">Privacy Policy</a><span class="dot">&middot;</span>
+          <a href="#">Disclaimer</a><span class="dot">&middot;</span>
+          <a href="#">Regulatory Information</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-
-
+  <script src="script.js"></script>
+</body>
+</html>
