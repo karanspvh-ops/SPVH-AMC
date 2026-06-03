@@ -8,6 +8,81 @@
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ============================================================
+       HOME / LANDING — NEW SECTIONS  (prefix: .hm-*)
+    ============================================================ */
+
+    /* ---------- WHY SPVH ---------- */
+    .hm-why { background: #ffffff; padding: 100px 0; }
+    .hm-why-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .hm-why-card {
+      background: #F8FAFC; border: 1px solid #E8EEF6; border-radius: 14px;
+      padding: 34px 30px; position: relative; overflow: hidden;
+      transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+    .hm-why-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #47a996, #496bad);
+      transform: scaleX(0); transform-origin: left; transition: transform 0.35s ease;
+    }
+    .hm-why-card:hover {
+      transform: translateY(-6px); box-shadow: 0 16px 40px rgba(73,107,173,0.12);
+      border-color: transparent;
+    }
+    .hm-why-card:hover::before { transform: scaleX(1); }
+    .hm-why-icon {
+      width: 54px; height: 54px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(71,169,150,0.12), rgba(73,107,173,0.12));
+      display: flex; align-items: center; justify-content: center;
+      color: #47a996; font-size: 1.3rem; margin-bottom: 1.3rem;
+    }
+    .hm-why-card h3 {
+      font-family: 'Montserrat', sans-serif; font-size: 1.15rem; font-weight: 700;
+      color: #0A1628; margin-bottom: 0.65rem;
+    }
+    .hm-why-card p { color: #475569; font-size: 0.92rem; line-height: 1.7; }
+
+    /* ---------- OUR PROCESS ---------- */
+    .hm-process { background: #ffffff; padding: 100px 0; }
+    .hm-proc-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1.75rem; margin-top: 3.5rem; position: relative;
+    }
+    .hm-proc-step { position: relative; padding-right: 1rem; }
+    .hm-proc-step:not(:last-child)::after {
+      content: ''; position: absolute; top: 22px; right: -1rem; width: 2rem; height: 2px;
+      background: repeating-linear-gradient(to right, #C9D4E6 0 6px, transparent 6px 11px);
+    }
+    .hm-proc-num {
+      font-family: 'Montserrat', sans-serif; font-size: 2.6rem; font-weight: 800;
+      line-height: 1; margin-bottom: 1.1rem;
+      background: linear-gradient(135deg, #47a996, #496bad);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hm-proc-step h3 {
+      font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700;
+      color: #0A1628; margin-bottom: 0.55rem;
+    }
+    .hm-proc-step p { color: #475569; font-size: 0.9rem; line-height: 1.7; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1024px) {
+      .hm-why-grid { grid-template-columns: repeat(2, 1fr); }
+      .hm-proc-grid { grid-template-columns: repeat(2, 1fr); gap: 2.5rem 1.75rem; }
+      .hm-proc-step:not(:last-child)::after { display: none; }
+    }
+    @media (max-width: 768px) {
+      .hm-why { padding: 70px 0; }
+      .hm-process { padding: 70px 0; }
+      .hm-why-grid { grid-template-columns: 1fr; }
+      .hm-proc-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
@@ -15,7 +90,7 @@
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-      
+
       <ul class="nav-menu">
         <li class="nav-item">
           <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
@@ -51,17 +126,22 @@
   </header>
 
   <main>
-    <!-- Cinematic Hero -->
+    <!-- ═══════════════════════════════════════════════════════
+         1 · CINEMATIC HERO  +  STOCK TICKER (kept intact)
+    ════════════════════════════════════════════════════════ -->
     <section class="hero cinematic-hero">
       <div class="overlay-gradient"></div>
       <div class="container hero-container">
         <div class="hero-content reveal">
           <h1 class="hero-title">From India to World.<br><span class="hero-subtitle">Your generational wealth journey begins here.</span></h1>
           <p class="hero-text">SPVH Asset Management is a sophisticated investment management firm encompassing alternative solutions designed specifically for UHNI, Family Office, Institutional Investors.</p>
-          <a href="about.html#pillars" class="btn btn-primary" style="margin-top: 1.5rem; padding: 1rem 2.5rem; font-size: 1rem;">Explore More</a>
+          <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top: 1.5rem;">
+            <a href="pms.html" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1rem;">Explore Our Solutions</a>
+            <a href="contact.html" class="btn btn-secondary" style="padding: 1rem 2.5rem; font-size: 1rem;">Schedule a Consultation</a>
+          </div>
         </div>
       </div>
-      
+
       <!-- Ticker Complex -->
       <div class="hero-ticker-complex">
         <div class="announcement-bar">
@@ -74,7 +154,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Stock Marquee (Live TradingView Widget) -->
         <div class="stock-marquee" style="padding: 0;">
           <!-- TradingView Widget BEGIN -->
@@ -103,35 +183,37 @@
       </div>
     </section>
 
-    <!-- Key Statistics -->
+    <!-- ═══════════════════════════════════════════════════════
+         2 · KEY STATISTICS / TRUST BAR
+    ════════════════════════════════════════════════════════ -->
     <section class="key-statistics" style="background-color: #FAFAFA; padding: 80px 0;">
       <div class="container">
         <div class="key-stats-row">
-          
+
           <div class="key-stat-item stat-box reveal">
             <div class="stat-accent"></div>
             <div class="stat-value">₹<span class="counter" data-target="950" data-duration="1500">0</span> Cr+</div>
             <div class="stat-label">Asset Under Management &amp; Administration</div>
           </div>
-          
+
           <div class="stat-divider reveal" style="animation-delay: 0.1s;"></div>
-          
+
           <div class="key-stat-item stat-box reveal" style="animation-delay: 0.2s;">
             <div class="stat-accent"></div>
             <div class="stat-value"><span class="counter" data-target="22" data-duration="1500">0</span>%</div>
             <div class="stat-label">CAGR Since Inception</div>
           </div>
-          
+
           <div class="stat-divider reveal" style="animation-delay: 0.3s;"></div>
-          
+
           <div class="key-stat-item stat-box reveal" style="animation-delay: 0.4s;">
             <div class="stat-accent"></div>
             <div class="stat-value"><span class="counter" data-target="250" data-duration="1500">0</span>+</div>
             <div class="stat-label">HNI/ UHNI &amp; Families Served</div>
           </div>
-          
+
           <div class="stat-divider reveal" style="animation-delay: 0.5s;"></div>
-          
+
           <div class="key-stat-item stat-box reveal" style="animation-delay: 0.6s;">
             <div class="stat-accent"></div>
             <div class="stat-value"><span class="counter" data-target="15" data-duration="1500">0</span>+ Years</div>
@@ -142,11 +224,14 @@
       </div>
     </section>
 
-    <!-- About -->
+    <!-- ═══════════════════════════════════════════════════════
+         3 · WHO WE ARE / ABOUT
+    ════════════════════════════════════════════════════════ -->
     <section class="about-section" style="background-color: #ffffff; padding: 100px 0; overflow: hidden;">
       <div class="container">
         <div class="about-new-grid">
           <div class="about-new-content reveal-left">
+            <span class="solutions-subtitle">WHO WE ARE</span>
             <h2 class="about-new-title">Built on Research. Driven by Conviction.</h2>
             <div class="about-new-accent"></div>
             <p class="about-new-text">SPVH Asset Management Company is the investment arm of the SPVH Group &mdash; a multi-generational holding company with diversified interests across sectors. We bring institutional-grade investment discipline to family offices, HNIs, and ultra-high-net-worth investors across India.</p>
@@ -169,16 +254,18 @@
       </div>
     </section>
 
-    <!-- Solutions -->
+    <!-- ═══════════════════════════════════════════════════════
+         4 · INVESTMENT SOLUTIONS
+    ════════════════════════════════════════════════════════ -->
     <section class="solutions-section" style="background-color: #F0F4FA; padding: 100px 0;">
       <div class="container">
         <div class="solutions-title-wrapper reveal">
           <span class="solutions-subtitle">WHAT WE OFFER</span>
           <h2 class="solutions-title">Solutions Designed for <span>Serious Investors.</span></h2>
         </div>
-        
+
         <div class="solutions-grid">
-          
+
           <!-- Card 1 -->
           <div class="solution-card reveal" style="animation-delay: 0s;">
             <i class="fas fa-chart-pie solution-icon"></i>
@@ -223,16 +310,64 @@
       </div>
     </section>
 
-    <!-- Philosophy -->
+    <!-- ═══════════════════════════════════════════════════════
+         5 · WHY SPVH AMC  (new section)
+    ════════════════════════════════════════════════════════ -->
+    <section class="hm-why">
+      <div class="container">
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">WHY SPVH AMC</span>
+          <h2 class="leadership-title">An Edge Built on <span style="color:#496bad;">Discipline &amp; Alignment.</span></h2>
+          <p style="color:#64748B;font-size:0.95rem;max-width:620px;margin:0.75rem auto 0;text-align:center;">Six reasons India's most discerning investors trust SPVH AMC with their generational capital.</p>
+        </div>
+
+        <div class="hm-why-grid">
+          <div class="hm-why-card reveal">
+            <div class="hm-why-icon"><i class="fas fa-magnifying-glass-chart"></i></div>
+            <h3>Research-First Conviction</h3>
+            <p>Every position is built on deep fundamental research and a bottom-up, conviction-led process &mdash; never benchmark-hugging or momentum-chasing.</p>
+          </div>
+          <div class="hm-why-card reveal" style="animation-delay:0.1s;">
+            <div class="hm-why-icon"><i class="fas fa-shield-halved"></i></div>
+            <h3>Regulated Across Products</h3>
+            <p>A fully SEBI-regulated fund manager across PMS, Category II &amp; III AIF, and GIFT City IFSC structures &mdash; institutional governance at every layer.</p>
+          </div>
+          <div class="hm-why-card reveal" style="animation-delay:0.2s;">
+            <div class="hm-why-icon"><i class="fas fa-handshake-angle"></i></div>
+            <h3>Proprietary Deal Flow</h3>
+            <p>Access to pre-IPO allocations, anchor books, and private opportunities sourced through the SPVH Group's multi-sector network.</p>
+          </div>
+          <div class="hm-why-card reveal" style="animation-delay:0.05s;">
+            <div class="hm-why-icon"><i class="fas fa-scale-balanced"></i></div>
+            <h3>Aligned Incentives</h3>
+            <p>Performance-linked fees with hurdle rates and high-watermarks. We win when you win &mdash; genuine skin in the game on every strategy.</p>
+          </div>
+          <div class="hm-why-card reveal" style="animation-delay:0.15s;">
+            <div class="hm-why-icon"><i class="fas fa-earth-asia"></i></div>
+            <h3>Global + Domestic Reach</h3>
+            <p>From Indian midcaps to GIFT City offshore funds across emerging Asia &mdash; one platform for bidirectional, cross-border capital.</p>
+          </div>
+          <div class="hm-why-card reveal" style="animation-delay:0.25s;">
+            <div class="hm-why-icon"><i class="fas fa-users-gear"></i></div>
+            <h3>Family-Office Discipline</h3>
+            <p>Bespoke portfolio construction, transparent reporting, and a long-term, owner-mindset partnership tailored to UHNIs and family offices.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         6 · INVESTMENT PHILOSOPHY
+    ════════════════════════════════════════════════════════ -->
     <section class="philosophy-section" style="background-color: #0A1628; padding: 100px 0;">
       <div class="container">
         <div class="philosophy-title-wrapper reveal">
           <span class="philosophy-subtitle">HOW WE THINK</span>
           <h2 class="philosophy-title">A Philosophy Built for <span>Wealth That Lasts.</span></h2>
         </div>
-        
+
         <div class="philosophy-grid">
-          
+
           <!-- Card 1 -->
           <div class="philosophy-card reveal" style="animation-delay: 0s;">
             <span class="philosophy-number">01</span>
@@ -268,13 +403,13 @@
         </div>
 
         <div style="text-align: center; margin-top: 4rem;" class="reveal">
-          <a href="#" class="philosophy-btn">Read Our Full Philosophy &rarr;</a>
+          <a href="about.html#philosophy" class="philosophy-btn">Read Our Full Philosophy &rarr;</a>
         </div>
       </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════
-         PERFORMANCE DASHBOARD  ·  Track Record Section
+         7 · PERFORMANCE DASHBOARD · Track Record
     ════════════════════════════════════════════════════════ -->
     <style>
       /* ── Dashboard · Integrated Site Theme ─────────────────── */
@@ -575,8 +710,7 @@
 
         </div>
 
-        <!-- Bottom Row: Top Performers + Strategy Table -->
-        <!-- Comparative Analysis Table — full width -->
+        <!-- Bottom Row: Comparative Analysis Table — full width -->
         <div class="dash-bottom-grid">
           <div class="dash-panel reveal">
             <div class="panel-header">
@@ -840,119 +974,55 @@
     })();
     </script>
 
-    <!-- Client Testimonials -->
-    <section class="testimonials-dark-section" style="background-color: #0A1628; padding: 100px 0;">
+    <!-- ═══════════════════════════════════════════════════════
+         8 · OUR PROCESS  (new section)
+    ════════════════════════════════════════════════════════ -->
+    <section class="hm-process">
       <div class="container">
-        
         <div class="leadership-title-wrapper reveal">
-          <span class="leadership-subtitle">WHAT OUR INVESTORS SAY</span>
-          <h2 class="leadership-title" style="color: white;">Trust Built Over <span style="color: #47a996;">Years of Delivering Returns.</span></h2>
+          <span class="leadership-subtitle">HOW WE PARTNER</span>
+          <h2 class="leadership-title">A Disciplined Path from <span style="color:#47a996;">First Call to Compounding.</span></h2>
+          <p style="color:#64748B;font-size:0.95rem;max-width:600px;margin:0.75rem auto 0;text-align:center;">A transparent, four-step onboarding journey designed around your objectives — not ours.</p>
         </div>
 
-        <div class="carousel-wrapper reveal">
-          <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
-          
-          <div class="carousel-track-container">
-            <div class="carousel-track" id="testimonialTrack">
-              
-              <!-- Card 1 -->
-              <div class="testi-card">
-                <div class="testi-card-inner">
-                  <div class="testi-quote-mark">&ldquo;</div>
-                  <div class="testi-stars">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  </div>
-                  <p class="testi-text">"SPVH AMC has completely transformed how we think about our family's long-term wealth. Their research depth and transparency sets them apart from every other firm we have worked with."</p>
-                  <div class="testi-profile">
-                    <div class="testi-avatar">SR</div>
-                    <div class="testi-info">
-                      <h4>Siddharth R.</h4>
-                      <span>FOUNDER, TECHNOLOGY GROUP | MUMBAI</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Card 2 -->
-              <div class="testi-card">
-                <div class="testi-card-inner">
-                  <div class="testi-quote-mark">&ldquo;</div>
-                  <div class="testi-stars">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  </div>
-                  <p class="testi-text">"We value predictable compounding. SPVH's obsession with downside protection and active management gives us total confidence during extreme macroeconomic volatility."</p>
-                  <div class="testi-profile">
-                    <div class="testi-avatar">NK</div>
-                    <div class="testi-info">
-                      <h4>Naina K.</h4>
-                      <span>CHIEF INVESTMENT OFFICER, ENDOWMENT FUND</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Card 3 -->
-              <div class="testi-card">
-                <div class="testi-card-inner">
-                  <div class="testi-quote-mark">&ldquo;</div>
-                  <div class="testi-stars">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  </div>
-                  <p class="testi-text">"Transitioning our offshore capital via SPVH's structured FPI solutions was seamless. Their deep on-ground intelligence provides edge that foreign institutions cannot replicate."</p>
-                  <div class="testi-profile">
-                    <div class="testi-avatar">DM</div>
-                    <div class="testi-info">
-                      <h4>David M.</h4>
-                      <span>DIRECTOR, GLOBAL PENSION TRUST</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Card 4 (Carousel extension) -->
-              <div class="testi-card">
-                <div class="testi-card-inner">
-                  <div class="testi-quote-mark">&ldquo;</div>
-                  <div class="testi-stars">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  </div>
-                  <p class="testi-text">"The level of bespoke investment advisory we received was unmatched. They identified market gaps clearly and built a robust framework for our multi-generational asset allocation."</p>
-                  <div class="testi-profile">
-                    <div class="testi-avatar">AP</div>
-                    <div class="testi-info">
-                      <h4>Arjun P.</h4>
-                      <span>MANAGING PARTNER, VENTURE CAPITAL</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
+        <div class="hm-proc-grid">
+          <div class="hm-proc-step reveal">
+            <div class="hm-proc-num">01</div>
+            <h3>Discovery &amp; Profiling</h3>
+            <p>We understand your wealth objectives, risk appetite, liquidity needs, and existing portfolio to define the right mandate.</p>
           </div>
-
-          <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+          <div class="hm-proc-step reveal" style="animation-delay:0.1s;">
+            <div class="hm-proc-num">02</div>
+            <h3>Strategy &amp; Allocation</h3>
+            <p>Our research team designs a tailored allocation across PMS, AIF, and global strategies aligned precisely to your goals.</p>
+          </div>
+          <div class="hm-proc-step reveal" style="animation-delay:0.2s;">
+            <div class="hm-proc-num">03</div>
+            <h3>Onboarding &amp; Deployment</h3>
+            <p>Seamless KYC, documentation, and disciplined capital deployment with full regulatory compliance at every step.</p>
+          </div>
+          <div class="hm-proc-step reveal" style="animation-delay:0.3s;">
+            <div class="hm-proc-num">04</div>
+            <h3>Monitoring &amp; Reporting</h3>
+            <p>Continuous portfolio oversight, periodic reviews, and transparent reporting — with direct access to your investment team.</p>
+          </div>
         </div>
-        
-        <div class="carousel-dots" id="carouselDots">
-          <!-- Dots generated by JS -->
-        </div>
-
-        <p class="testi-disclaimer">[Testimonials shared with investor consent. Identities partially anonymized for privacy.]</p>
-        
       </div>
     </section>
 
-    <!-- Insights & Thought Leadership -->
+    <!-- ═══════════════════════════════════════════════════════
+         9 · INSIGHTS & THOUGHT LEADERSHIP
+    ════════════════════════════════════════════════════════ -->
     <section class="insights-section" style="background-color: #FAFAFA; padding: 100px 0;">
       <div class="container">
-        
+
         <div class="insights-header reveal">
           <h2 class="insights-title">Latest <span>Insights & Research.</span></h2>
           <a href="insights.html" class="insights-view-all">View All Insights &rarr;</a>
         </div>
 
         <div class="insights-grid">
-          
+
           <!-- Card 1 -->
           <div class="insight-card-new reveal" style="animation-delay: 0s;">
             <div class="insight-thumb">
@@ -1015,21 +1085,127 @@
         <div class="insights-cta-wrapper reveal" style="animation-delay: 0.45s;">
           <a href="insights.html" class="insights-btn">Explore All Research & Insights</a>
         </div>
-        
+
       </div>
     </section>
 
-    <!-- Awards & Recognition -->
+    <!-- ═══════════════════════════════════════════════════════
+         10 · CLIENT TESTIMONIALS
+    ════════════════════════════════════════════════════════ -->
+    <section class="testimonials-dark-section" style="background-color: #0A1628; padding: 100px 0;">
+      <div class="container">
+
+        <div class="leadership-title-wrapper reveal">
+          <span class="leadership-subtitle">WHAT OUR INVESTORS SAY</span>
+          <h2 class="leadership-title" style="color: white;">Trust Built Over <span style="color: #47a996;">Years of Delivering Returns.</span></h2>
+        </div>
+
+        <div class="carousel-wrapper reveal">
+          <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+
+          <div class="carousel-track-container">
+            <div class="carousel-track" id="testimonialTrack">
+
+              <!-- Card 1 -->
+              <div class="testi-card">
+                <div class="testi-card-inner">
+                  <div class="testi-quote-mark">&ldquo;</div>
+                  <div class="testi-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                  <p class="testi-text">"SPVH AMC has completely transformed how we think about our family's long-term wealth. Their research depth and transparency sets them apart from every other firm we have worked with."</p>
+                  <div class="testi-profile">
+                    <div class="testi-avatar">SR</div>
+                    <div class="testi-info">
+                      <h4>Siddharth R.</h4>
+                      <span>FOUNDER, TECHNOLOGY GROUP | MUMBAI</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="testi-card">
+                <div class="testi-card-inner">
+                  <div class="testi-quote-mark">&ldquo;</div>
+                  <div class="testi-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                  <p class="testi-text">"We value predictable compounding. SPVH's obsession with downside protection and active management gives us total confidence during extreme macroeconomic volatility."</p>
+                  <div class="testi-profile">
+                    <div class="testi-avatar">NK</div>
+                    <div class="testi-info">
+                      <h4>Naina K.</h4>
+                      <span>CHIEF INVESTMENT OFFICER, ENDOWMENT FUND</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="testi-card">
+                <div class="testi-card-inner">
+                  <div class="testi-quote-mark">&ldquo;</div>
+                  <div class="testi-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                  <p class="testi-text">"Transitioning our offshore capital via SPVH's structured FPI solutions was seamless. Their deep on-ground intelligence provides edge that foreign institutions cannot replicate."</p>
+                  <div class="testi-profile">
+                    <div class="testi-avatar">DM</div>
+                    <div class="testi-info">
+                      <h4>David M.</h4>
+                      <span>DIRECTOR, GLOBAL PENSION TRUST</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4 (Carousel extension) -->
+              <div class="testi-card">
+                <div class="testi-card-inner">
+                  <div class="testi-quote-mark">&ldquo;</div>
+                  <div class="testi-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  </div>
+                  <p class="testi-text">"The level of bespoke investment advisory we received was unmatched. They identified market gaps clearly and built a robust framework for our multi-generational asset allocation."</p>
+                  <div class="testi-profile">
+                    <div class="testi-avatar">AP</div>
+                    <div class="testi-info">
+                      <h4>Arjun P.</h4>
+                      <span>MANAGING PARTNER, VENTURE CAPITAL</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <div class="carousel-dots" id="carouselDots">
+          <!-- Dots generated by JS -->
+        </div>
+
+        <p class="testi-disclaimer">[Testimonials shared with investor consent. Identities partially anonymized for privacy.]</p>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         11 · AWARDS & RECOGNITION
+    ════════════════════════════════════════════════════════ -->
     <section class="awards-recognition-section" style="background-color: #F0F4FA; padding: 80px 0; overflow: hidden;">
       <div class="container">
-        
+
         <div class="leadership-title-wrapper reveal">
           <span class="leadership-subtitle">RECOGNITION & TRUST</span>
           <h2 class="leadership-title">Recognised by <span style="color: #496bad;">Industry Leaders.</span></h2>
         </div>
 
         <div class="awards-new-grid">
-          
+
           <!-- Award 1 -->
           <div class="award-card-new reveal" style="animation-delay: 0s;">
             <i class="fas fa-trophy award-icon"></i>
@@ -1067,7 +1243,7 @@
         <div class="media-strip-wrapper reveal-right" style="animation-delay: 0.6s;">
           <div class="media-strip-divider"></div>
           <span class="media-strip-label">AS SEEN IN & ASSOCIATED WITH</span>
-          
+
           <div class="media-marquee-container">
             <div class="media-marquee-track">
               <!-- Duplicated set for seamless loop -->
@@ -1092,7 +1268,7 @@
               <div class="media-logo-box">BSE</div>
             </div>
           </div>
-          
+
         </div>
 
         <p class="awards-disclaimer">[Awards and recognitions are based on internal nominations and third-party evaluations. Not indicative of future performance.]</p>
@@ -1100,14 +1276,16 @@
       </div>
     </section>
 
-    <!-- Pre-Footer CTA -->
+    <!-- ═══════════════════════════════════════════════════════
+         12 · PRE-FOOTER CTA
+    ════════════════════════════════════════════════════════ -->
     <section class="pre-footer-cta-new" style="background-color: #0A1628; padding: 100px 0; position: relative; overflow: hidden;">
-      
+
       <!-- Abstract Pattern Overlay -->
       <div class="cta-abstract-overlay pattern-1"></div>
 
       <div class="container" style="position: relative; z-index: 2;">
-        
+
         <div class="cta-content-wrapper text-center">
           <span class="cta-label reveal">START YOUR JOURNEY</span>
           <h2 class="cta-heading reveal">Ready to Build <span style="color: #47a996;">Wealth That Lasts Generations?</span></h2>
@@ -1481,5 +1659,3 @@
   </script>
 </body>
 </html>
-
-
