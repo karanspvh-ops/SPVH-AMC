@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPVH AMC | Emerging World Fund — GIFT City Cat III AIF (Outbound)</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ============================================================
+       FUND DETAIL PAGE  (prefix: .fd-*)  ·  Accent: BLUE (Outbound)
+       Built in the website's existing offshore design language.
+    ============================================================ */
+    :root { --fd-accent: #496bad; --fd-accent2: #47a996; }
+
+    /* ---------- HERO ---------- */
+    .fd-hero {
+      background: linear-gradient(135deg, #0A1628 0%, #0d1e3a 55%, #071120 100%);
+      padding: 170px 0 80px; position: relative; overflow: hidden;
+    }
+    .fd-hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 75% 35%, rgba(73,107,173,0.16) 0%, transparent 58%),
+                  radial-gradient(ellipse at 12% 85%, rgba(71,169,150,0.10) 0%, transparent 55%);
+    }
+    .fd-hero-grid {
+      display: grid; grid-template-columns: 1fr 340px; gap: 3.5rem;
+      align-items: center; position: relative; z-index: 2;
+    }
+    .fd-breadcrumb { font-size: 0.8rem; color: #64748B; margin-bottom: 1.5rem; }
+    .fd-breadcrumb a { color: #94A3B8; text-decoration: none; transition: color 0.2s; }
+    .fd-breadcrumb a:hover { color: var(--fd-accent); }
+    .fd-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(73,107,173,0.16); border: 1px solid rgba(73,107,173,0.34);
+      border-radius: 4px; padding: 6px 14px; color: #7fa8e8;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .fd-hero h1 {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(2.2rem, 4vw, 3.3rem);
+      font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 1rem;
+    }
+    .fd-hero h1 span { color: #7fa8e8; }
+    .fd-hero-tagline {
+      color: #cdd7e5; font-size: 1.05rem; font-weight: 600;
+      margin-bottom: 1.25rem; line-height: 1.5;
+    }
+    .fd-hero-lead { color: #94A3B8; font-size: 1rem; line-height: 1.8; max-width: 600px; margin-bottom: 2rem; }
+    .fd-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .fd-btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--fd-accent); color: #fff; padding: 14px 28px;
+      border-radius: 4px; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.88rem; letter-spacing: 0.5px;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .fd-btn-primary:hover { background: #3d5b96; color: #fff; transform: translateY(-2px); }
+    .fd-btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: #fff; padding: 14px 28px;
+      border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.25);
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      font-size: 0.88rem; text-decoration: none; transition: all 0.3s;
+    }
+    .fd-btn-ghost:hover { border-color: #7fa8e8; color: #7fa8e8; }
+    /* hero KPI panel */
+    .fd-hero-kpi {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; padding: 32px; text-align: center;
+    }
+    .fd-hero-kpi-val {
+      font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 800;
+      color: #7fa8e8; line-height: 1; margin-bottom: 0.5rem;
+    }
+    .fd-hero-kpi-lbl {
+      font-size: 0.72rem; color: #94A3B8; text-transform: uppercase;
+      letter-spacing: 1.5px; font-weight: 700; margin-bottom: 0.75rem;
+    }
+    .fd-hero-kpi-sub { font-size: 0.82rem; color: #64748B; line-height: 1.6; }
+    /* hero mini strip */
+    .fd-hero-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid rgba(255,255,255,0.08); margin-top: 3rem;
+      position: relative; z-index: 2;
+    }
+    .fd-hero-strip-cell { padding: 24px 24px 4px; border-left: 1px solid rgba(255,255,255,0.08); }
+    .fd-hero-strip-cell:first-child { border-left: none; padding-left: 4px; }
+    .fd-hs-val { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .fd-hs-lbl { font-size: 0.72rem; color: #64748B; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+    /* ---------- GENERIC SECTION ---------- */
+    .fd-section { padding: 90px 0; background: #fff; }
+    .fd-section.alt { background: #F0F4FA; }
+    .fd-section.dark { background: #0A1628; position: relative; overflow: hidden; }
+    .fd-section.dark::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 80% 15%, rgba(73,107,173,0.10) 0%, transparent 55%);
+    }
+    .fd-sec-head { max-width: 760px; margin-bottom: 3rem; position: relative; z-index: 1; }
+    .fd-sec-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+    .fd-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: #7fa8e8; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .fd-eyebrow::before { content: ''; width: 30px; height: 2px; background: var(--fd-accent); }
+    .fd-sec-head.center .fd-eyebrow::before { display: none; }
+    .fd-title {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 800; color: #0A1628; line-height: 1.2; margin-bottom: 1rem;
+    }
+    .fd-section.dark .fd-title { color: #fff; }
+    .fd-lead { color: #475569; font-size: 1rem; line-height: 1.85; }
+    .fd-section.dark .fd-lead { color: #94A3B8; }
+    .fd-mini-tag {
+      display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #94A3B8; margin: 0 0 1.25rem;
+    }
+
+    /* ---------- PHILOSOPHY QUOTE ---------- */
+    .fd-philo {
+      background: linear-gradient(135deg, #fff, #F0F4FA);
+      border: 1px solid #E2E8F0; border-left: 4px solid var(--fd-accent);
+      border-radius: 0 12px 12px 0; padding: 36px 40px; position: relative;
+    }
+    .fd-philo-mark {
+      font-family: Georgia, serif; font-size: 4rem; color: var(--fd-accent);
+      opacity: 0.25; line-height: 0.6; position: absolute; top: 22px; left: 18px;
+    }
+    .fd-philo p {
+      font-size: 1.2rem; line-height: 1.7; color: #1e293b; font-weight: 500;
+      font-style: italic; position: relative; z-index: 1; padding-left: 1.5rem;
+    }
+
+    /* ---------- FIELD GRID ---------- */
+    .fd-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .fd-fields.two { grid-template-columns: repeat(2, 1fr); }
+    .fd-field {
+      background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 20px 22px;
+    }
+    .fd-section.alt .fd-field { background: #fff; }
+    .fd-field-lbl {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: #94A3B8; margin-bottom: 0.6rem;
+    }
+    .fd-field-val { font-size: 0.98rem; color: #1e293b; font-weight: 600; line-height: 1.5; }
+    .fd-field-val.big { font-family: 'Montserrat', sans-serif; font-size: 1.45rem; font-weight: 800; color: #496bad; }
+
+    /* ---------- FRAMEWORK ROWS ---------- */
+    .fd-fw-row {
+      display: flex; gap: 0; border: 1px solid #E2E8F0; border-radius: 10px;
+      overflow: hidden; margin-bottom: 0.85rem; background: #fff;
+    }
+    .fd-section.alt .fd-fw-row { background: #fff; }
+    .fd-fw-key {
+      min-width: 64px; display: flex; align-items: center; justify-content: center;
+      background: #0d7377; color: #fff;
+      font-family: 'Montserrat', sans-serif; font-size: 1.7rem; font-weight: 800;
+    }
+    .fd-fw-body { padding: 18px 24px; flex: 1; }
+    .fd-fw-body strong {
+      display: block; font-family: 'Montserrat', sans-serif; font-size: 1rem;
+      font-weight: 700; color: #0A1628; margin-bottom: 0.35rem;
+    }
+    .fd-fw-body span { font-size: 0.92rem; color: #475569; line-height: 1.7; }
+
+    /* ---------- ACCENT BOXES ---------- */
+    .fd-box-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    .fd-box {
+      background: #F8FAFC; border: 1px solid #E2E8F0; border-left: 3px solid var(--fd-accent);
+      border-radius: 0 10px 10px 0; padding: 24px 26px;
+    }
+    .fd-section.alt .fd-box { background: #fff; }
+    .fd-box.teal { border-left-color: #47a996; }
+    .fd-box.blue { border-left-color: #496bad; }
+    .fd-box.gold { border-left-color: #C9A84C; }
+    .fd-box.amber { border-left-color: #D4500A; }
+    .fd-box h4 {
+      font-family: 'Montserrat', sans-serif; font-size: 1.02rem; font-weight: 700;
+      color: #0A1628; margin-bottom: 0.6rem;
+    }
+    .fd-box p { font-size: 0.92rem; color: #475569; line-height: 1.75; }
+
+    /* ---------- ALLOCATION BARS ---------- */
+    .fd-alloc-row { display: flex; align-items: center; gap: 18px; margin-bottom: 0.85rem; }
+    .fd-alloc-name { font-size: 0.92rem; color: #334155; min-width: 280px; font-weight: 500; }
+    .fd-alloc-track { flex: 1; background: #E2E8F0; border-radius: 4px; height: 10px; overflow: hidden; }
+    .fd-section.alt .fd-alloc-track { background: #dde5ef; }
+    .fd-alloc-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #496bad, #6b8fd8); }
+    .fd-alloc-pct {
+      font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 800;
+      color: #0A1628; min-width: 46px; text-align: right;
+    }
+
+    /* ---------- EDGE VS ---------- */
+    .fd-edge {
+      display: grid; grid-template-columns: 1fr 64px 1fr; gap: 0;
+      border: 1px solid #E2E8F0; border-radius: 10px; overflow: hidden; margin-bottom: 1rem;
+    }
+    .fd-edge-comp { background: #F1F5F9; padding: 22px 24px; }
+    .fd-edge-spvh { background: #fff; padding: 22px 24px; }
+    .fd-edge-mid {
+      background: #0A1628; display: flex; align-items: center; justify-content: center;
+      color: #7fa8e8; font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 0.8rem; letter-spacing: 1px;
+    }
+    .fd-edge strong {
+      display: block; font-family: 'Montserrat', sans-serif; font-size: 0.78rem;
+      font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .fd-edge-comp strong { color: #94A3B8; }
+    .fd-edge-spvh strong { color: #496bad; }
+    .fd-edge-comp p, .fd-edge-spvh p { font-size: 0.9rem; line-height: 1.7; }
+    .fd-edge-comp p { color: #64748B; }
+    .fd-edge-spvh p { color: #334155; }
+
+    /* ---------- RISK METRICS ---------- */
+    .fd-risk { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-top: 2rem; }
+    .fd-metric {
+      background: #fff; border: 1px solid #E2E8F0; border-radius: 10px;
+      padding: 24px 18px; text-align: center; position: relative; overflow: hidden;
+    }
+    .fd-metric::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--fd-accent); }
+    .fd-metric-val { font-family: 'Montserrat', sans-serif; font-size: 1.7rem; font-weight: 800; color: #0A1628; margin-bottom: 0.4rem; }
+    .fd-metric-lbl { font-size: 0.72rem; color: #64748B; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+    /* ---------- TAGS ---------- */
+    .fd-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.5rem; }
+    .fd-tag {
+      background: rgba(73,107,173,0.1); border: 1px solid rgba(73,107,173,0.25);
+      border-radius: 4px; padding: 9px 16px; color: #496bad; font-size: 0.85rem; font-weight: 600;
+    }
+    .fd-section.dark .fd-tag { background: rgba(73,107,173,0.16); border-color: rgba(73,107,173,0.35); color: #9bb8e8; }
+
+    /* ---------- CTA BAND ---------- */
+    .fd-cta { background: linear-gradient(135deg, #496bad 0%, #344f87 100%); padding: 80px 0; text-align: center; }
+    .fd-cta h2 { font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; color: #fff; margin-bottom: 1rem; }
+    .fd-cta p { color: rgba(255,255,255,0.9); font-size: 1.05rem; margin-bottom: 2rem; max-width: 560px; margin-left: auto; margin-right: auto; }
+    .fd-cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .fd-cta-btn-light { background: #fff; color: #0A1628; padding: 14px 30px; border-radius: 4px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: all 0.3s; }
+    .fd-cta-btn-light:hover { transform: translateY(-2px); color: #0A1628; }
+    .fd-cta-btn-out { background: transparent; color: #fff; padding: 14px 30px; border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.6); font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.3s; }
+    .fd-cta-btn-out:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    /* ---------- DISCLAIMER ---------- */
+    .fd-disclaimer { background: #F0F4FA; padding: 40px 0; }
+    .fd-disclaimer p { font-size: 0.78rem; color: #94A3B8; line-height: 1.7; max-width: 1000px; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1200px) { .fd-hero { padding-top: 120px; } }
+    @media (max-width: 1024px) {
+      .fd-hero { padding-top: 110px; }
+      .fd-hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .fd-fields { grid-template-columns: repeat(2, 1fr); }
+      .fd-risk { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .fd-hero { padding-top: 90px; }
+      .fd-hero-strip { grid-template-columns: 1fr 1fr; }
+      .fd-hero-strip-cell { border-left: none; border-top: 1px solid rgba(255,255,255,0.08); padding-left: 4px; }
+      .fd-hero-strip-cell:first-child { border-top: none; }
+      .fd-fields, .fd-fields.two, .fd-box-grid { grid-template-columns: 1fr; }
+      .fd-alloc-name { min-width: 150px; }
+      .fd-edge { grid-template-columns: 1fr; }
+      .fd-edge-mid { padding: 8px; }
+      .fd-risk { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .fd-hero-strip { grid-template-columns: 1fr; }
+      .fd-hero-actions, .fd-cta-btns { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== NAV ===================== -->
+  <header id="header">
+    <div class="container nav-container">
+      <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html#firm-overview">Firm Overview</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="pms.html">Investment Solutions <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a href="performance.html">Performance</a></li>
+        <li class="nav-item"><a href="insights.html">Insights</a></li>
+        <li class="nav-item"><a href="resources.html">Resources</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="#" class="login-link">Investor Login</a>
+        <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
+      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="fd-hero">
+      <div class="container">
+        <div class="fd-hero-grid">
+          <div class="reveal">
+            <div class="fd-breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; <a href="offshore.html">Offshore &amp; Global Funds</a> &nbsp;/&nbsp; Emerging World Fund</div>
+            <div class="fd-pill"><i class="fas fa-arrow-up-from-bracket"></i> GIFT City IFSC &middot; Cat III AIF &middot; Outbound &middot; FoF + Direct &middot; Product 02</div>
+            <h1>SPVH <span>Emerging World</span> Fund</h1>
+            <p class="fd-hero-tagline">India's Capital, Deployed in the World's Next Growth Stories — Active EM Alpha at Institutional Precision.</p>
+            <p class="fd-hero-lead">A USD-denominated, Category III AIF registered at GIFT City IFSC — designed for Indian HNIs, UHNIs, family offices, and NRIs seeking active, high-conviction exposure to the world's highest-growth emerging economies: China, Korea, ASEAN (Vietnam, Indonesia, Thailand), and select EM FoF — without the fee drag of passive ETF feeders. Accessible via LRS ($250K/yr) for residents and directly for NRIs.</p>
+            <div class="fd-hero-actions">
+              <a href="contact.html" class="fd-btn-primary"><i class="fas fa-calendar-alt"></i> Enquire About This Fund</a>
+              <a href="offshore.html#fund-offerings" class="fd-btn-ghost"><i class="fas fa-arrow-left"></i> Back to All Funds</a>
+            </div>
+          </div>
+          <div class="fd-hero-kpi reveal" style="animation-delay:0.15s;">
+            <div class="fd-hero-kpi-val">20–28%</div>
+            <div class="fd-hero-kpi-lbl">Target Return (USD)</div>
+            <div class="fd-hero-kpi-sub">Net of fees &middot; 3–5 year horizon<br>MSCI EM benchmark: +34.4% in 2025</div>
+          </div>
+        </div>
+
+        <!-- mini strip -->
+        <div class="fd-hero-strip reveal" style="animation-delay:0.25s;">
+          <div class="fd-hero-strip-cell"><div class="fd-hs-val">USD 75,000</div><div class="fd-hs-lbl">Minimum Investment</div></div>
+          <div class="fd-hero-strip-cell"><div class="fd-hs-val">8 Markets</div><div class="fd-hs-lbl">Country Coverage</div></div>
+          <div class="fd-hero-strip-cell"><div class="fd-hs-val">&lt;20%</div><div class="fd-hs-lbl">Max Drawdown</div></div>
+          <div class="fd-hero-strip-cell"><div class="fd-hs-val">USD 300M</div><div class="fd-hs-lbl">3-Year Fund Target</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PHILOSOPHY ===================== -->
+    <section class="fd-section">
+      <div class="container">
+        <div class="fd-sec-head reveal">
+          <div class="fd-eyebrow">Fund Philosophy</div>
+          <h2 class="fd-title">Correcting India's Global Allocation Gap.</h2>
+        </div>
+        <div class="fd-philo reveal">
+          <span class="fd-philo-mark">&ldquo;</span>
+          <p>India is already 4% of global market capitalisation — but Indian investors have less than 1% of their wealth in global equities. Meanwhile, emerging markets outside India — China's AI revolution, Korea's semiconductor renaissance, Vietnam's manufacturing ascent — delivered 30–50% in 2025. The SPVH Emerging World Fund is the vehicle that corrects this imbalance: bringing India's investment intelligence to the world's highest-growth emerging economies.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FUND SNAPSHOT ===================== -->
+    <section class="fd-section alt">
+      <div class="container">
+        <div class="fd-sec-head reveal">
+          <div class="fd-eyebrow">Fund Snapshot</div>
+          <h2 class="fd-title">Structure at a Glance.</h2>
+        </div>
+        <div class="fd-fields reveal">
+          <div class="fd-field"><div class="fd-field-lbl">Fund Category</div><div class="fd-field-val">IFSCA Cat III AIF — Outbound</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">Structure</div><div class="fd-field-val">Open-Ended &middot; USD &middot; FoF + Direct Hybrid</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">Portfolio</div><div class="fd-field-val big">Hybrid Model</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">Minimum Investment</div><div class="fd-field-val big">USD 75,000</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">Resident Indian Access</div><div class="fd-field-val">Via LRS — $250,000/yr cap &middot; Unlisted entities via OPI route</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">Regulatory Domicile</div><div class="fd-field-val">GIFT City IFSC &middot; IFSCA Registered FME</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== WORLD FRAMEWORK ===================== -->
+    <section class="fd-section">
+      <div class="container">
+        <div class="fd-sec-head reveal">
+          <div class="fd-eyebrow">Proprietary Framework</div>
+          <h2 class="fd-title">The <span style="color:#0d7377;">WORLD</span> Investment Framework.</h2>
+          <p class="fd-lead">Five disciplined pillars combining top-down macro country rotation, a cost-efficient FoF + direct hybrid, risk-calibrated country bands, on-ground local intelligence, and dollar-return optimisation — capturing the EM growth premium that passive ETF feeders miss entirely.</p>
+        </div>
+        <div class="reveal">
+          <div class="fd-fw-row">
+            <div class="fd-fw-key">W</div>
+            <div class="fd-fw-body"><strong>Winner Country Selection (Top-Down Macro Rotation)</strong><span>Proprietary 5-factor country scoring matrix — GDP growth momentum, earnings revision cycle, valuation vs 5-year mean, currency stability, geopolitical risk score. Updated quarterly. Determines country allocation bands (min 5%, max 35% per country). Prevents static allocation drag — the #1 failure of passive EM ETFs.</span></div>
+          </div>
+          <div class="fd-fw-row">
+            <div class="fd-fw-key">O</div>
+            <div class="fd-fw-body"><strong>Optimised FoF + Direct Hybrid Architecture</strong><span>For markets where SPVH lacks deep local research (e.g. Vietnam), deploy via institutional share class of proven local-expert EM managers (Robeco, Matthews Asia, KAM Korea). For high-conviction, clearly-valued markets (China Internet, Korea Semis, Indonesia banking), invest directly in listed equities — reducing fee layers while maintaining research quality.</span></div>
+          </div>
+          <div class="fd-fw-row">
+            <div class="fd-fw-key">R</div>
+            <div class="fd-fw-body"><strong>Risk-Calibrated Country Bands</strong><span>Each country allocation has a predefined risk budget. High-conviction, lower-risk countries (Korea, Taiwan): up to 30%. High-growth, higher-risk countries (Vietnam, Indonesia): capped at 15% each. Prevents tail-risk concentration while ensuring the portfolio actually captures EM outperformance — unlike S&amp;P 500 feeders that miss EM entirely.</span></div>
+          </div>
+          <div class="fd-fw-row">
+            <div class="fd-fw-key">L</div>
+            <div class="fd-fw-body"><strong>Local Intelligence Network</strong><span>SPVH's existing Asia and ASEAN JV partnerships (12+ JV partners across SPVH Group) provide on-ground intelligence in key EM markets — the same network used for SPVH's I-Banking consulting in ASEAN, now monetised into investment alpha. Local management meets, supply-chain analysis, and regulatory monitoring in each target market.</span></div>
+          </div>
+          <div class="fd-fw-row">
+            <div class="fd-fw-key">D</div>
+            <div class="fd-fw-body"><strong>Dollar-Return Optimisation</strong><span>Every investment is analysed in USD terms — not local currency. Currency hedge overlay considered for high-depreciation-risk countries (e.g. Indonesian Rupiah). Target is 20–28% USD net return — not local currency returns that can be eroded by 10–15% depreciation. INR/USD tailwind also benefits Indian LPs investing via LRS.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== COUNTRY ALLOCATION ===================== -->
+    <section class="fd-section alt">
+      <div class="container">
+        <div class="fd-sec-head reveal">
+          <div class="fd-eyebrow">Launch Thesis · FY2026–27</div>
+          <h2 class="fd-title">Country / Region Allocation.</h2>
+        </div>
+        <div class="reveal">
+          <div class="fd-alloc-row"><span class="fd-alloc-name">Greater China (Mainland + HK)</span><div class="fd-alloc-track"><div class="fd-alloc-fill" style="width:100%"></div></div><span class="fd-alloc-pct">25%</span></div>
+          <div class="fd-alloc-row"><span class="fd-alloc-name">South Korea (Semis + AI + Governance Reform)</span><div class="fd-alloc-track"><div class="fd-alloc-fill" style="width:80%"></div></div><span class="fd-alloc-pct">20%</span></div>
+          <div class="fd-alloc-row"><span class="fd-alloc-name">Taiwan (Semiconductor Supply Chain)</span><div class="fd-alloc-track"><div class="fd-alloc-fill" style="width:60%"></div></div><span class="fd-alloc-pct">15%</span></div>
+          <div class="fd-alloc-row"><span class="fd-alloc-name">Vietnam (Manufacturing + Digital)</span><div class="fd-alloc-track"><div class="fd-alloc-fill" style="width:40%"></div></div><span class="fd-alloc-pct">10%</span></div>
+          <div class="fd-alloc-row"><span class="fd-alloc-name">Indonesia (Domestic Consumption + Banking)</span><div class="fd-alloc-track"><div class="fd-alloc-fill" style="width:40%"></div></div><span class="fd-alloc-pct">10%</span></div>
+          <div class="fd-alloc-row"><span class="fd-alloc-name">ASEAN Opportunistic (Thailand, Malaysia, Philippines)</span><div class="fd-alloc-track"><div class="fd-alloc-fill" style="width:32%"></div></div><span class="fd-alloc-pct">8%</span></div>
+          <div class="fd-alloc-row"><span class="fd-alloc-name">Brazil + Mexico (EM ex-Asia satellite)</span><div class="fd-alloc-track"><div class="fd-alloc-fill" style="width:20%"></div></div><span class="fd-alloc-pct">5%</span></div>
+          <div class="fd-alloc-row"><span class="fd-alloc-name">Cash / FX Reserve / Tactical</span><div class="fd-alloc-track"><div class="fd-alloc-fill" style="width:28%"></div></div><span class="fd-alloc-pct">7%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SECTOR THEMES ===================== -->
+    <section class="fd-section">
+      <div class="container">
+        <div class="fd-sec-head reveal">
+          <div class="fd-eyebrow">Conviction Themes</div>
+          <h2 class="fd-title">High-Conviction Sector Themes by Country.</h2>
+        </div>
+        <div class="fd-box-grid reveal">
+          <div class="fd-box teal">
+            <h4>Greater China — AI &amp; Consumer Recovery</h4>
+            <p>China Internet (Tencent, Alibaba), DeepSeek-driven AI hardware demand, semiconductor EDA tools, and domestic consumer-discretionary recovery. Hong Kong-listed H-shares at 60–70% discount to intrinsic value. Taiwan TSMC — an irreplaceable AI chip supply-chain node.</p>
+          </div>
+          <div class="fd-box blue">
+            <h4>South Korea — Governance Reform + AI Semis</h4>
+            <p>Samsung Electronics at a historic valuation discount. SK Hynix HBM (High Bandwidth Memory) — critical to every AI datacenter globally. Korea's governance reform (Value-Up programme) creating a re-rating opportunity. Korean financials (KB Financial) benefiting from reform-led multiple expansion.</p>
+          </div>
+          <div class="fd-box gold">
+            <h4>Vietnam — Manufacturing Ascent</h4>
+            <p>China+1 supply-chain relocation. Vietnam is the #1 beneficiary of global manufacturing diversification. Samsung, Apple, and LG already operate major hubs. Local textile, electronics, and logistics plays at an early growth stage. GDP 6%+ growth driven by export manufacturing.</p>
+          </div>
+          <div class="fd-box amber">
+            <h4>Indonesia — Domestic Consumption Giant</h4>
+            <p>280 million population. Banking penetration &lt;40%. Digital-payment adoption accelerating. GoTo, Bank Central Asia, and Mandiri at early-stage middle-class expansion. Indonesia represents the EM opportunity India was 15 years ago — massive domestic demand, underbanked, urbanising rapidly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FoF VS DIRECT ===================== -->
+    <section class="fd-section alt">
+      <div class="container">
+        <div class="fd-sec-head reveal">
+          <div class="fd-eyebrow">Hybrid Architecture</div>
+          <h2 class="fd-title">FoF vs Direct Equity.</h2>
+        </div>
+        <div class="fd-box-grid reveal">
+          <div class="fd-box blue">
+            <h4>FoF Layer — 40–50% of Portfolio</h4>
+            <p>Institutional share-class allocations to proven EM managers: Robeco Emerging Stars (Korea/Taiwan overweight), Matthews Asia Emerging Markets (China + SEA), JPMorgan Greater China. Negotiated institutional fees (0.3–0.6% vs retail 1.5%). Managers selected using a 5-factor quantitative screen: IR, Sharpe, downside capture, manager tenure, AUM stability.</p>
+          </div>
+          <div class="fd-box teal">
+            <h4>Direct Equity Layer — 45–55% of Portfolio</h4>
+            <p>High-conviction direct positions where SPVH has local research capability and strong conviction: Korea semiconductors (Samsung, SK Hynix), China internet (Tencent, Alibaba H-shares), Indonesia banking (BCA, Bank Mandiri), and Vietnam ETFs as proxy. The direct layer reduces total fee drag by 80–120 bps vs pure FoF.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== COMPETITIVE EDGE ===================== -->
+    <section class="fd-section">
+      <div class="container">
+        <div class="fd-sec-head reveal">
+          <div class="fd-eyebrow">Competitive Edge</div>
+          <h2 class="fd-title">How Emerging World Outpositions Peers.</h2>
+        </div>
+        <div class="reveal">
+          <div class="fd-edge">
+            <div class="fd-edge-comp"><strong>Edelweiss Greater China FoF</strong><p>Single-country (China). Passive feeder into a JPMorgan fund. No ASEAN, no Korea, no macro rotation. 0.5% direct + underlying JPMorgan fees. Limited active alpha.</p></div>
+            <div class="fd-edge-mid">VS</div>
+            <div class="fd-edge-spvh"><strong>SPVH Emerging World Fund</strong><p>8-market EM basket. Active country rotation via the WORLD framework. Hybrid FoF + direct reduces fee drag. Adds Korea, Vietnam, and Indonesia — all 2025 outperformers — to the mandate.</p></div>
+          </div>
+          <div class="fd-edge">
+            <div class="fd-edge-comp"><strong>PPFAS / DSP S&amp;P 500 / Nasdaq FoF</strong><p>US developed-market only. Completely missed MSCI EM's +34.4% in 2025 vs the S&amp;P 500's +17.9%. Passive, no downside management. Not positioned for the EM structural outperformance cycle.</p></div>
+            <div class="fd-edge-mid">VS</div>
+            <div class="fd-edge-spvh"><strong>SPVH Emerging World Fund</strong><p>Pure EM focus captures the EM premium (historically +5–8% annualised over DM). The WORLD framework provides active downside management missing in all passive structures. USD return target 20–28%.</p></div>
+          </div>
+          <div class="fd-edge">
+            <div class="fd-edge-comp"><strong>Robeco Emerging Stars (Global UCITS)</strong><p>Best-performing EM fund globally in 2025 (+50%). But NOT accessible to Indian HNI/FO investors — global UCITS only, not a GIFT City structure. No India-compatible regulatory format.</p></div>
+            <div class="fd-edge-mid">VS</div>
+            <div class="fd-edge-spvh"><strong>SPVH Emerging World Fund</strong><p>Delivers the same Robeco-style Korea/Taiwan/China overweight within the GIFT City IFSCA framework — making it LRS-accessible to Indian residents and directly investable for NRIs. Fills the gap Robeco leaves for Indian capital.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FEES, STRUCTURE & RISK ===================== -->
+    <section class="fd-section alt">
+      <div class="container">
+        <div class="fd-sec-head reveal">
+          <div class="fd-eyebrow">Fees, Structure &amp; Risk</div>
+          <h2 class="fd-title">Terms &amp; Risk Architecture.</h2>
+        </div>
+        <div class="fd-fields reveal">
+          <div class="fd-field"><div class="fd-field-lbl">Management Fee</div><div class="fd-field-val">1.5% p.a. on NAV (USD)</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">Performance Fee</div><div class="fd-field-val">20% above 15% USD hurdle &middot; high watermark</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">FoF Underlying Fees</div><div class="fd-field-val">Institutional share class: 0.30–0.60% (vs retail 1.5%)</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">Total Expense Ratio (Est.)</div><div class="fd-field-val">~2.0–2.5% combined vs 3.0–3.5% for pure retail FoF</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">Lock-in Period</div><div class="fd-field-val">12 Months &middot; Quarterly redemption thereafter</div></div>
+          <div class="fd-field"><div class="fd-field-lbl">Fund Size Target</div><div class="fd-field-val">USD 100M (Seed) → USD 300M (3-Year)</div></div>
+        </div>
+
+        <div class="fd-risk reveal">
+          <div class="fd-metric"><div class="fd-metric-val">20–28%</div><div class="fd-metric-lbl">USD Return Target</div></div>
+          <div class="fd-metric"><div class="fd-metric-val">&lt;20%</div><div class="fd-metric-lbl">Max Drawdown</div></div>
+          <div class="fd-metric"><div class="fd-metric-val">≥1.3</div><div class="fd-metric-lbl">Sharpe Target</div></div>
+          <div class="fd-metric"><div class="fd-metric-val">8</div><div class="fd-metric-lbl">Country Coverage</div></div>
+          <div class="fd-metric"><div class="fd-metric-val">$300M</div><div class="fd-metric-lbl">3-Year Target</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TARGET INVESTOR ===================== -->
+    <section class="fd-section dark">
+      <div class="container">
+        <div class="fd-sec-head reveal" style="z-index:1;">
+          <div class="fd-eyebrow">Who It's For</div>
+          <h2 class="fd-title">Target LP Investor Profile.</h2>
+          <p class="fd-lead">Built for Indian and NRI capital seeking sophisticated, actively-managed global EM diversification — the vehicle for a first global allocation beyond an India-saturated portfolio.</p>
+        </div>
+        <div class="fd-tags reveal">
+          <span class="fd-tag">Indian HNI / UHNI (₹50L+ via LRS)</span>
+          <span class="fd-tag">NRI Family Office (UAE / Singapore / US)</span>
+          <span class="fd-tag">Domestic Family Office (Global Diversification)</span>
+          <span class="fd-tag">Corporate Treasury (via OPI Route)</span>
+          <span class="fd-tag">Experienced PMS/AIF Investor — First Global Allocation</span>
+          <span class="fd-tag">Asia-Based UHNW Investor</span>
+          <span class="fd-tag">India-Saturated Portfolio — Seeking EM Diversification</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CTA ===================== -->
+    <section class="fd-cta">
+      <div class="container">
+        <h2 class="reveal">Interested in the Emerging World Fund?</h2>
+        <p class="reveal">Speak with our GIFT City global investments team for the detailed PPM, fund terms, and LRS onboarding process.</p>
+        <div class="fd-cta-btns reveal-pop">
+          <a href="contact.html" class="fd-cta-btn-light">Schedule a Consultation</a>
+          <a href="offshore.html#fund-offerings" class="fd-cta-btn-out">View Other Funds</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DISCLAIMER ===================== -->
+    <div class="fd-disclaimer">
+      <div class="container">
+        <p><strong>Regulatory Disclaimer:</strong> The SPVH Emerging World Fund is a proposed Category III AIF structure and requires IFSCA registration and applicable legal/compliance approvals prior to launch. All return targets are forward-looking estimates and do not constitute guarantees. Indian residents may invest in outbound GIFT City AIFs only within RBI LRS limits of $250,000 per financial year. Investing in AIFs involves significant market risk, including potential loss of principal. Past performance of comparable funds does not guarantee future results. This page does not constitute an offer or solicitation for investment.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer-new">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-col-brand reveal" style="animation-delay:0s;">
+          <a href="index.html" class="footer-logo-img" style="display:inline-block;margin-bottom:1.25rem;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height:73px;width:auto;display:block;">
+          </a>
+          <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col-links reveal" style="animation-delay:0.1s;">
+          <h4 class="footer-heading">COMPANY</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-links reveal" style="animation-delay:0.2s;">
+          <h4 class="footer-heading">OUR SOLUTIONS</h4>
+          <ul>
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-contact reveal" style="animation-delay:0.3s;">
+          <h4 class="footer-heading">GET IN TOUCH</h4>
+          <div class="contact-line"><i class="fas fa-map-marker-alt"></i><span>Registered Office Address, Mumbai &mdash; 400051</span></div>
+          <div class="contact-line"><i class="fas fa-phone-alt"></i><span>+91 22 4000 0000</span></div>
+          <div class="contact-line"><i class="fas fa-envelope"></i><span>info@spvhamc.com</span></div>
+          <a href="contact.html" class="footer-cta-link">Schedule Consultation &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="container">
+      <div class="footer-bottom-bar reveal" style="animation-delay:0.4s;">
+        <div class="footer-copyright">&copy; 2026 SPVH Asset Management Company (SPVH Private Limited | CIN: U67110MH2022PTC381574). All Rights Reserved. &nbsp;&nbsp;SPVH AMC is a fund manager across all SEBI regulated alternative products.</div>
+        <div class="footer-legal-links">
+          <a href="#">Privacy Policy</a><span class="dot">&middot;</span>
+          <a href="#">Disclaimer</a><span class="dot">&middot;</span>
+          <a href="#">Regulatory Information</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
