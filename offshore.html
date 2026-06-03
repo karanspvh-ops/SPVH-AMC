@@ -117,47 +117,6 @@
     }
     .off-hero-stat-div { height: 1px; background: rgba(255,255,255,0.06); }
 
-    /* ---------- HERO · UPDATED CONTENT (serif headline + metrics strip) ---------- */
-    .off-hero-eyebrow--plain::before { display: none; }
-    .off-hero-title {
-      font-family: 'PlayfairDisplay', Georgia, serif;
-      font-size: clamp(2.6rem, 5vw, 4.4rem);
-      font-weight: 700; color: #fff;
-      line-height: 1.08; letter-spacing: -1px;
-      margin-bottom: 1.75rem;
-    }
-    .off-hero-title .off-hero-gold {
-      display: block; color: #C9A84C; font-style: italic;
-    }
-    .off-hero-lead {
-      color: #94A3B8; font-size: 1.05rem; line-height: 1.85;
-      max-width: 660px; margin-bottom: 0;
-    }
-    .off-hero-metrics {
-      display: grid; grid-template-columns: repeat(5, 1fr);
-      border-top: 1px solid rgba(255,255,255,0.08);
-      margin-top: 3.5rem; position: relative; z-index: 2;
-    }
-    .off-hero-metric {
-      padding: 28px 28px 6px;
-      border-left: 1px solid rgba(255,255,255,0.08);
-    }
-    .off-hero-metric:first-child { border-left: none; padding-left: 4px; }
-    .off-hero-metric-lbl {
-      font-size: 0.7rem; color: #47a996;
-      letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700;
-      margin-bottom: 0.9rem;
-    }
-    .off-hero-metric-val {
-      font-family: 'PlayfairDisplay', Georgia, serif;
-      font-size: 1.9rem; font-weight: 700; color: #fff;
-      line-height: 1; margin-bottom: 0.65rem;
-    }
-    .off-hero-metric-val.gold { color: #C9A84C; }
-    .off-hero-metric-val.blue { color: #6b8fd8; }
-    .off-hero-metric-val.green { color: #47a996; }
-    .off-hero-metric-sub { font-size: 0.78rem; color: #64748B; line-height: 1.5; }
-
     /* ---------- WHY OFFSHORE ---------- */
     .off-why { background: #fff; padding: 100px 0; }
     .off-why-grid {
@@ -518,9 +477,6 @@
       .off-hero-grid { grid-template-columns: 1fr; gap: 3rem; }
       .off-hero-stats { flex-direction: row; flex-wrap: wrap; gap: 20px; }
       .off-hero-stat { flex: 1; min-width: 140px; }
-      .off-hero-metrics { grid-template-columns: repeat(3, 1fr); }
-      .off-hero-metric { border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding-left: 4px; }
-      .off-hero-metric:first-child { border-top: none; }
       .off-why-grid  { grid-template-columns: 1fr; gap: 3rem; }
       .off-funds-grid { grid-template-columns: 1fr 1fr; }
       .off-diff-grid { grid-template-columns: 1fr 1fr; }
@@ -536,7 +492,6 @@
       .off-geo-grid  { grid-template-columns: repeat(2, 1fr); }
       .off-reg-divider { display: none; }
       .off-why-stats { grid-template-columns: 1fr; }
-      .off-hero-metrics { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 480px) {
       .off-geo-grid  { grid-template-columns: 1fr 1fr; }
@@ -587,48 +542,46 @@
     <section class="off-hero">
       <div class="off-hero-globe"></div>
       <div class="container">
-        <!-- Text block -->
-        <div class="reveal">
-          <div class="off-hero-eyebrow off-hero-eyebrow--plain">Global Fund Architecture &middot; GIFT City IFSC &middot; May 2026</div>
-          <h1 class="off-hero-title">Capital Without Borders. <span class="off-hero-gold">Alpha Without Limits.</span></h1>
-          <p class="off-hero-lead">A rigorous competitor landscape, regulatory architecture brief, and two institutional-grade offshore fund strategies &mdash; engineered to bring global capital into India, and Indian capital into the world's highest-growth emerging economies, through GIFT City IFSC.</p>
-          <div class="off-hero-actions" style="margin-top:2.25rem;">
-            <a href="#fund-offerings" class="off-btn-primary"><i class="fas fa-globe"></i> Explore Our Funds</a>
-            <a href="contact.html" class="off-btn-ghost"><i class="fas fa-calendar-alt"></i> Schedule Consultation</a>
-          </div>
-          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:1.5rem;">
-            <div class="off-hero-badge"><i class="fas fa-university"></i>&nbsp; GIFT IFSC &mdash; SEBI Regulated</div>
-            <div class="off-hero-badge"><i class="fas fa-globe-asia"></i>&nbsp; LRS / FEMA Compliant</div>
-          </div>
-        </div>
+        <div class="off-hero-grid">
 
-        <!-- Full-width metrics strip -->
-        <div class="off-hero-metrics reveal" style="animation-delay:0.15s;">
-          <div class="off-hero-metric">
-            <div class="off-hero-metric-lbl">GIFT City AIF Commitments</div>
-            <div class="off-hero-metric-val gold">$26.3B</div>
-            <div class="off-hero-metric-sub">As of Sep 2025 &middot; 117% YoY growth</div>
+          <!-- Left: Text -->
+          <div class="reveal">
+            <div class="off-hero-eyebrow">Offshore &amp; Global Funds</div>
+            <h1>Access the World's<br>Best Markets.<br><span>From India.</span></h1>
+            <p class="off-hero-body">SPVH's Offshore &amp; Global Funds platform gives Indian UHNIs, Family Offices, and Institutional Investors structured access to international equity markets, private credit, and global alternatives — through SEBI-compliant, tax-efficient vehicles domiciled in GIFT City, Mauritius, Singapore, and the Cayman Islands.</p>
+            <div class="off-hero-actions">
+              <a href="#fund-offerings" class="off-btn-primary"><i class="fas fa-globe"></i> Explore Our Funds</a>
+              <a href="contact.html" class="off-btn-ghost"><i class="fas fa-calendar-alt"></i> Schedule Consultation</a>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:1.75rem;">
+              <div class="off-hero-badge"><i class="fas fa-university"></i>&nbsp; GIFT IFSC &mdash; SEBI Regulated</div>
+              <div class="off-hero-badge"><i class="fas fa-globe-asia"></i>&nbsp; LRS / FEMA Compliant</div>
+            </div>
           </div>
-          <div class="off-hero-metric">
-            <div class="off-hero-metric-lbl">Active FMEs in GIFT City</div>
-            <div class="off-hero-metric-val blue">194+</div>
-            <div class="off-hero-metric-sub">Managing 310+ AIF schemes</div>
+
+          <!-- Right: Stats -->
+          <div class="off-hero-stats reveal" style="animation-delay:0.15s;">
+            <div class="off-hero-stat">
+              <div class="off-hero-stat-val">USD <span>500M+</span></div>
+              <div class="off-hero-stat-lbl">Target Global AUM</div>
+            </div>
+            <div class="off-hero-stat-div"></div>
+            <div class="off-hero-stat">
+              <div class="off-hero-stat-val">4 <span>Structures</span></div>
+              <div class="off-hero-stat-lbl">GIFT City · Mauritius · Singapore · Cayman</div>
+            </div>
+            <div class="off-hero-stat-div"></div>
+            <div class="off-hero-stat">
+              <div class="off-hero-stat-val">25<span>+ Markets</span></div>
+              <div class="off-hero-stat-lbl">Global Market Coverage</div>
+            </div>
+            <div class="off-hero-stat-div"></div>
+            <div class="off-hero-stat">
+              <div class="off-hero-stat-val">USD <span>250K</span></div>
+              <div class="off-hero-stat-lbl">Minimum Investment</div>
+            </div>
           </div>
-          <div class="off-hero-metric">
-            <div class="off-hero-metric-lbl">Products Designed</div>
-            <div class="off-hero-metric-val">2 Funds</div>
-            <div class="off-hero-metric-sub">1 Inbound &middot; 1 Outbound &middot; Cat III AIF</div>
-          </div>
-          <div class="off-hero-metric">
-            <div class="off-hero-metric-lbl">Target Fund Size</div>
-            <div class="off-hero-metric-val blue">$500M+</div>
-            <div class="off-hero-metric-sub">Combined target AUM &middot; 3-year horizon</div>
-          </div>
-          <div class="off-hero-metric">
-            <div class="off-hero-metric-lbl">MSCI EM Index 2025 Return</div>
-            <div class="off-hero-metric-val">+34.4%</div>
-            <div class="off-hero-metric-sub">vs S&amp;P 500 at +17.9% &mdash; EM outperformed</div>
-          </div>
+
         </div>
       </div>
     </section>
