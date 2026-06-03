@@ -117,6 +117,47 @@
     }
     .off-hero-stat-div { height: 1px; background: rgba(255,255,255,0.06); }
 
+    /* ---------- HERO · UPDATED CONTENT (serif headline + metrics strip) ---------- */
+    .off-hero-eyebrow--plain::before { display: none; }
+    .off-hero-title {
+      font-family: 'PlayfairDisplay', Georgia, serif;
+      font-size: clamp(2.6rem, 5vw, 4.4rem);
+      font-weight: 700; color: #fff;
+      line-height: 1.08; letter-spacing: -1px;
+      margin-bottom: 1.75rem;
+    }
+    .off-hero-title .off-hero-gold {
+      display: block; color: #C9A84C; font-style: italic;
+    }
+    .off-hero-lead {
+      color: #94A3B8; font-size: 1.05rem; line-height: 1.85;
+      max-width: 660px; margin-bottom: 0;
+    }
+    .off-hero-metrics {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 3.5rem; position: relative; z-index: 2;
+    }
+    .off-hero-metric {
+      padding: 28px 28px 6px;
+      border-left: 1px solid rgba(255,255,255,0.08);
+    }
+    .off-hero-metric:first-child { border-left: none; padding-left: 4px; }
+    .off-hero-metric-lbl {
+      font-size: 0.7rem; color: #47a996;
+      letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700;
+      margin-bottom: 0.9rem;
+    }
+    .off-hero-metric-val {
+      font-family: 'PlayfairDisplay', Georgia, serif;
+      font-size: 1.9rem; font-weight: 700; color: #fff;
+      line-height: 1; margin-bottom: 0.65rem;
+    }
+    .off-hero-metric-val.gold { color: #C9A84C; }
+    .off-hero-metric-val.blue { color: #6b8fd8; }
+    .off-hero-metric-val.green { color: #47a996; }
+    .off-hero-metric-sub { font-size: 0.78rem; color: #64748B; line-height: 1.5; }
+
     /* ---------- WHY OFFSHORE ---------- */
     .off-why { background: #fff; padding: 100px 0; }
     .off-why-grid {
