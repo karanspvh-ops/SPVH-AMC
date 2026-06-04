@@ -216,6 +216,34 @@
     .fd-edge-comp p { color: #64748B; }
     .fd-edge-spvh p { color: #334155; }
 
+    /* ---------- ADVANTAGE CARDS (self-contained edge) ---------- */
+    .fd-adv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    .fd-adv-card {
+      background: #fff; border: 1px solid #E2E8F0; border-radius: 12px;
+      padding: 30px 30px; display: flex; gap: 20px; align-items: flex-start;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .fd-section.alt .fd-adv-card { background: #fff; }
+    .fd-adv-card::before {
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+      background: var(--fd-accent); transform: scaleY(0); transform-origin: top;
+      transition: transform 0.3s ease;
+    }
+    .fd-adv-card:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(73,107,173,0.12); }
+    .fd-adv-card:hover::before { transform: scaleY(1); }
+    .fd-adv-icon {
+      flex-shrink: 0; width: 52px; height: 52px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(73,107,173,0.14), rgba(71,169,150,0.12));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--fd-accent); font-size: 1.25rem;
+    }
+    .fd-adv-body h4 {
+      font-family: 'Montserrat', sans-serif; font-size: 1.05rem; font-weight: 700;
+      color: #0A1628; margin-bottom: 0.5rem;
+    }
+    .fd-adv-body p { font-size: 0.92rem; color: #475569; line-height: 1.7; }
+
     /* ---------- RISK METRICS ---------- */
     .fd-risk { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-top: 2rem; }
     .fd-metric {
