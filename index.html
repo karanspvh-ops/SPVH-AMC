@@ -16,26 +16,69 @@
        headings, glass stat panels, navy/white/#F0F4FA sections.
     ============================================================ */
 
-    /* ---------- HERO ---------- */
+    /* ---------- HERO (full-viewport · cinematic) ---------- */
     .hm-hero {
-      background: linear-gradient(135deg, #0A1628 0%, #0f1f3d 55%, #0d1b36 100%);
-      padding: 170px 0 0; position: relative; overflow: hidden;
+      position: relative; overflow: hidden;
+      min-height: 100vh; display: flex; flex-direction: column;
+      padding-top: 150px; background: #070f1e;
     }
+    /* cinematic background image — slow Ken Burns zoom */
+    .hm-hero-media {
+      position: absolute; inset: 0; z-index: 0;
+      background: url('assets/images/heritage.png') center center / cover no-repeat;
+      opacity: 0; transform: scale(1.18);
+      animation: hmReveal 1.8s ease-out 0.1s forwards,
+                 hmKenBurns 26s ease-in-out 1.9s infinite alternate;
+    }
+    /* filmic dark overlay + brand glows */
     .hm-hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none;
+      content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        linear-gradient(118deg, rgba(7,15,30,0.95) 0%, rgba(10,22,40,0.80) 45%, rgba(7,15,30,0.58) 100%),
+        radial-gradient(ellipse at 80% 32%, rgba(73,107,173,0.22) 0%, transparent 55%),
+        radial-gradient(ellipse at 6% 88%, rgba(71,169,150,0.16) 0%, transparent 50%);
+    }
+    /* faint engineering grid, faded top & bottom */
+    .hm-hero::after {
+      content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
       background-image:
         linear-gradient(rgba(71,169,150,0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(71,169,150,0.05) 1px, transparent 1px);
       background-size: 70px 70px;
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 28%, #000 78%, transparent);
+              mask-image: linear-gradient(to bottom, transparent, #000 28%, #000 78%, transparent);
     }
-    .hm-hero::after {
-      content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse at 78% 35%, rgba(73,107,173,0.18) 0%, transparent 55%),
-                  radial-gradient(ellipse at 8% 80%, rgba(71,169,150,0.12) 0%, transparent 50%);
-    }
+    .hm-hero > .container { position: relative; z-index: 2; flex: 1; display: flex; align-items: center; width: 100%; }
     .hm-hero-grid {
       display: grid; grid-template-columns: 1fr 390px; gap: 4rem;
-      align-items: center; position: relative; z-index: 2; padding-bottom: 70px;
+      align-items: center; width: 100%; padding: 40px 0;
+    }
+    .hm-hero-scroll {
+      position: absolute; left: 50%; bottom: 118px; transform: translateX(-50%);
+      z-index: 2; color: rgba(255,255,255,0.5); font-size: 0.7rem; letter-spacing: 2px;
+      text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: hmRise 1s ease 1.5s both;
+    }
+    .hm-hero-scroll i { animation: hmBob 1.8s ease-in-out infinite; }
+
+    /* cinematic keyframes */
+    @keyframes hmReveal { to { opacity: 0.5; transform: scale(1.08); } }
+    @keyframes hmKenBurns { from { transform: scale(1.08); } to { transform: scale(1.2) translate(-1.5%, -1.5%); } }
+    @keyframes hmRise { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes hmBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+    /* staggered intro reveal */
+    .hm-hero-intro > * { opacity: 0; animation: hmRise 1s cubic-bezier(.2,.7,.2,1) forwards; }
+    .hm-hero-intro > *:nth-child(1) { animation-delay: 0.45s; }
+    .hm-hero-intro > *:nth-child(2) { animation-delay: 0.62s; }
+    .hm-hero-intro > *:nth-child(3) { animation-delay: 0.79s; }
+    .hm-hero-intro > *:nth-child(4) { animation-delay: 0.96s; }
+    .hm-hero-intro > *:nth-child(5) { animation-delay: 1.13s; }
+    .hm-hero-panel { opacity: 0; animation: hmRise 1.1s cubic-bezier(.2,.7,.2,1) 1.05s forwards; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hm-hero-media { animation: none; opacity: 0.5; transform: scale(1.08); }
+      .hm-hero-intro > *, .hm-hero-panel, .hm-hero-scroll { animation: none; opacity: 1; transform: none; }
     }
     .hm-hero-eyebrow {
       display: inline-flex; align-items: center; gap: 10px;
