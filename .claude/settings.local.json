@@ -23,7 +23,14 @@
       "Bash(grep 'footer-copyright\\\\|footer-col-brand\\\\|footer-heading' 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC/.claude/worktrees/practical-zhukovsky-199ec9/__TRACKED_VAR__')",
       "Bash(ls \"C:\\\\Users\\\\karan\\\\OneDrive\\\\Desktop\\\\Project\\\\Website Design\\\\SPVH AMC\\\\.claude\\\\worktrees\\\\practical-zhukovsky-199ec9\\\\\" --show-control-chars 2>/dev/null || dir \"C:\\\\Users\\\\karan\\\\OneDrive\\\\Desktop\\\\Project\\\\Website Design\\\\SPVH AMC\\\\.claude\\\\worktrees\\\\practical-zhukovsky-199ec9\\\\\" /b 2>/dev/null)",
       "Bash(git checkout *)",
-      "Bash(git commit -m 'Revert offshore hero to original \\(Access the World'\\\\''s Best Markets\\) *)"
+      "Bash(git commit -m 'Revert offshore hero to original \\(Access the World'\\\\''s Best Markets\\) *)",
+      "Bash(cd \"C:\\\\Users\\\\karan\\\\OneDrive\\\\Desktop\\\\Project\\\\Website Design\\\\SPVH AMC\\\\.claude\\\\worktrees\\\\practical-zhukovsky-199ec9\" && echo \"=== WORKTREES ===\" && git worktree list && echo \"=== CURRENT BRANCH ===\" && git branch --show-current && echo \"=== REMOTE ===\" && git remote -v | head -2 && echo \"=== does main-checkout index.html have new sections? ===\" && grep -c \"hm-why\" \"C:\\\\Users\\\\karan\\\\OneDrive\\\\Desktop\\\\Project\\\\Website Design\\\\SPVH AMC\\\\index.html\" 2>/dev/null || echo \"MAIN CHECKOUT FILE NOT FOUND OR NO MATCH\")",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' status --short)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' fetch origin --quiet)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' rev-parse main)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' rev-parse origin/main)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' merge-base --is-ancestor main origin/main)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' merge --ff-only origin/main)"
     ]
   },
   "hooks": {
