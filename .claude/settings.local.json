@@ -30,7 +30,13 @@
       "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' rev-parse main)",
       "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' rev-parse origin/main)",
       "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' merge-base --is-ancestor main origin/main)",
-      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' merge --ff-only origin/main)"
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' merge --ff-only origin/main)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' rev-parse HEAD)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' diff --stat .claude/settings.local.json)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' stash push -q -- .claude/settings.local.json)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' checkout --theirs -- .claude/settings.local.json)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' stash pop)"
     ]
   },
   "hooks": {
