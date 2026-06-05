@@ -105,7 +105,7 @@ header {
   transition: var(--transition);
 }
 
-.nav-container { display: flex; justify-content: space-between; align-items: center; height: 112px; max-width: 100% !important; padding: 0 4rem 0 2rem !important; }
+.nav-container { display: flex; justify-content: space-between; align-items: center; height: 112px; max-width: 100% !important; padding: 0 4rem !important; }
 
 .logo { display: flex; align-items: center; white-space: nowrap; }
 .logo img { height: 94px; width: auto; object-fit: contain; transition: var(--transition); }
