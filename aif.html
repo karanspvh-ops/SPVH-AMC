@@ -149,6 +149,44 @@
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.75rem; margin-top: 3.5rem;
       max-width: 1000px; margin-left: auto; margin-right: auto;
     }
+
+    /* ── AIF Platform · Compact horizontal cards (1×4) ── */
+    .aifx-list { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 3.5rem; max-width: 1060px; margin-left: auto; margin-right: auto; }
+    .aifx-card { position: relative; background: #fff; border: 1px solid #E8EEF6; border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: 1.55fr 1.7fr 196px; align-items: stretch; box-shadow: 0 4px 20px rgba(73,107,173,0.06); transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+    .aifx-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 5px; background: var(--ac, #47a996); }
+    .aifx-card:hover { transform: translateY(-3px); box-shadow: 0 16px 42px rgba(73,107,173,0.13); border-color: transparent; }
+    .aifx-id { padding: 28px 30px 28px 36px; }
+    .aifx-badges { display: flex; align-items: center; gap: 10px; margin-bottom: 0.9rem; }
+    .aifx-cat { font-size: 0.64rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; background: rgba(73,107,173,0.1); color: #496bad; }
+    .aifx-status { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; }
+    .aifx-status .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .aifx-status.open { color: #2f9b84; } .aifx-status.open .dot { background: #2f9b84; box-shadow: 0 0 0 3px rgba(71,169,150,0.18); }
+    .aifx-status.closed { color: #94A3B8; } .aifx-status.closed .dot { background: #94A3B8; }
+    .aifx-name { font-family: 'Montserrat', sans-serif; font-size: 1.3rem; font-weight: 800; color: #0A1628; line-height: 1.2; margin-bottom: 0.3rem; }
+    .aifx-strategy { font-size: 0.76rem; font-weight: 700; color: var(--ac, #47a996); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 0.7rem; }
+    .aifx-desc { font-size: 0.88rem; color: #64748B; line-height: 1.6; }
+    .aifx-metrics { display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; border-left: 1px solid #EEF2F8; }
+    .aifx-metric { padding: 16px 18px; border-right: 1px solid #EEF2F8; }
+    .aifx-metric:last-child { border-right: none; }
+    .aifx-metric-val { font-family: 'Montserrat', sans-serif; font-size: 1.15rem; font-weight: 800; color: #0A1628; line-height: 1.1; margin-bottom: 4px; }
+    .aifx-metric-val.accent { color: var(--ac, #47a996); }
+    .aifx-metric-lbl { font-size: 0.64rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    .aifx-cta { display: flex; align-items: center; justify-content: center; padding: 20px; border-left: 1px solid #EEF2F8; }
+    .aifx-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px 16px; border-radius: 9px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; text-decoration: none; transition: all 0.25s; }
+    .aifx-btn.solid { background: var(--ac, #47a996); color: #fff; }
+    .aifx-btn.solid:hover { filter: brightness(1.08); transform: translateY(-2px); }
+    .aifx-btn.muted { background: #F1F5F9; color: #94A3B8; cursor: default; }
+    @media (max-width: 980px) {
+      .aifx-card { grid-template-columns: 1fr; }
+      .aifx-metrics { border-left: none; border-top: 1px solid #EEF2F8; }
+      .aifx-cta { border-left: none; border-top: 1px solid #EEF2F8; }
+      .aifx-btn { width: auto; padding-left: 32px; padding-right: 32px; }
+    }
+    @media (max-width: 560px) {
+      .aifx-metrics { grid-template-columns: 1fr 1fr; }
+      .aifx-metric:nth-child(2) { border-right: none; }
+      .aifx-metric:nth-child(3) { border-top: 1px solid #EEF2F8; grid-column: 1 / -1; }
+    }
     .fund-card {
       background: #fff; border-radius: 12px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.06);
