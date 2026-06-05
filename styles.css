@@ -93,8 +93,8 @@ header {
   top: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 96%;
-  max-width: 1800px;
+  width: 95%;
+  max-width: 1600px;
   z-index: 1000;
   background-color: rgba(250, 250, 250, 0.80); /* 80% Opacity Base */
   backdrop-filter: blur(24px) saturate(180%);
