@@ -558,7 +558,7 @@
         '— CONTACT —',
         'Name: ' + name,
         'Email: ' + (val('sc-email') || '—'),
-        'Phone / WhatsApp: ' + (val('sc-phone') || '—'),
+        'Phone / WhatsApp: ' + (val('sc-country') ? val('sc-country') + ' ' : '') + (val('sc-phone') || '—'),
         'Company / Family Office: ' + (val('sc-company') || '—'),
         'Investor Type: ' + (val('sc-investor') || '—'),
         'Investment Ticket: ' + (val('sc-ticket') || '—'),
