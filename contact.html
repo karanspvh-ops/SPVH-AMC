@@ -562,6 +562,16 @@
         form.querySelector('.sc-cat').scrollIntoView({behavior:'smooth', block:'center'});
         return;
       }
+      // valid email required
+      if (!EMAIL_RE.test(emailEl.value.trim())) {
+        emailEl.setCustomValidity('Please enter a valid email address (e.g. name@example.com).');
+        emailEl.reportValidity(); emailEl.focus(); return;
+      }
+      // phone must contain digits only (at least 7)
+      if ((phoneEl.value.replace(/\D/g, '')).length < 7) {
+        phoneEl.setCustomValidity('Please enter a valid phone number (digits only).');
+        phoneEl.reportValidity(); phoneEl.focus(); return;
+      }
       if (!form.checkValidity()){ form.reportValidity(); return; }
 
       // ---- Compose the enquiry e-mail to info@spvhamc.com ----
