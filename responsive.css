@@ -749,3 +749,61 @@ body.menu-open {
   /* about-hero-new at 768px already set to 96px (still clears 68px nav) */
   /* philosophy-page-hero uses 1024px rule (100px), which still clears 68px nav */
 }
+
+/* =====================================================
+   CROSS-DEVICE HARDENING — iOS · Android · macOS · Windows
+   Behavioural responsive fixes only. No design or colour
+   changes: layouts, spacing, fonts (desktop) and the brand
+   palette all remain exactly as designed.
+   ===================================================== */
+
+/* 1 · Kill accidental horizontal scrolling on phones & tablets.
+       (overflow-x only — vertical scroll & sticky elements unaffected) */
+body { overflow-x: hidden; }
+
+/* 2 · Long emails / URLs / headings never break the layout */
+p, li, a, span, h1, h2, h3, h4, h5,
+.fd-hero-lead, .hm-hero-body, .sc-aside-lead, .aifx-desc {
+  overflow-wrap: break-word;
+}
+
+/* 3 · All media scales fluidly inside its container */
+img, svg, video, canvas, iframe { max-width: 100%; height: auto; }
+
+/* 4 · Smooth momentum scrolling for horizontal scrollers (data tables) on iOS */
+.tbl-wrap, .pms-table-outer, .dash-bottom-grid,
+.dash-comp-table, [style*="overflow-x"] { -webkit-overflow-scrolling: touch; }
+
+/* 5 · Dynamic viewport height for the full-screen landing hero.
+       Fixes the iOS Safari / Android Chrome address-bar 100vh gap
+       while leaving desktop (which ignores svh diff) identical. */
+@supports (min-height: 100svh) {
+  .hm-hero { min-height: 100svh; }
+}
+
+/* 6 · iOS Safari auto-zooms when a focused field is < 16px.
+       Enforce 16px on touch-class widths only — desktop sizing untouched. */
+@media (max-width: 900px) {
+  input, select, textarea,
+  .sc-field input, .sc-field select, .sc-field textarea,
+  .consult-form input, .consult-form select, .consult-form textarea {
+    font-size: 16px;
+  }
+}
+
+/* 7 · Comfortable 44px tap targets on touch devices (Apple/Google guideline) */
+@media (max-width: 768px) {
+  .btn, .nav-actions .btn-primary, .login-link,
+  .aifx-btn, .fd-btn-primary, .fd-btn-ghost,
+  .hm-btn-primary, .hm-btn-ghost, .off-btn-primary, .off-btn-ghost,
+  .pms-btn-primary, .pms-btn-ghost, .sc-submit, .consult-submit {
+    min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  }
+}
+
+/* 8 · Grid/flex children may shrink below content size — prevents
+       overflow blow-outs from long unbreakable strings on small screens */
+@media (max-width: 768px) {
+  .hm-sol-card, .hm-why-card, .fd-field, .fd-adv-card,
+  .aifx-card, .sc-prod, .sc-opt, .dash-kpi { min-width: 0; }
+}
