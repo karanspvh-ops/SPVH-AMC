@@ -968,7 +968,7 @@
           responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
           plugins:{
             legend:{display:false},
-            tooltip:{ backgroundColor:'#0A1628', borderColor:'rgba(255,255,255,0.14)', borderWidth:1, padding:12, titleColor:'#fff', bodyColor:'#cbd5e1',
+            tooltip:{ backgroundColor:'#fff', borderColor:'#E2E8F0', borderWidth:1, padding:12, titleColor:'#fff', bodyColor:'#cbd5e1',
               callbacks:{ label: ctx => { const v = ctx.parsed.y; const gain = (v-100).toFixed(1); return ctx.datasetIndex===0 ? ` Portfolio: ₹${v.toFixed(2)} Cr  (+${gain}%)` : ` Nifty 50: ${v.toFixed(1)}  (+${gain}%)`; } } }
           },
           scales:{ x:{ grid:{color:'#F1F5F9'}, ticks:{font:{size:11},color:'#94A3B8'} }, y:{ grid:{color:'#F1F5F9'}, min:80, ticks:{font:{size:11},color:'#94A3B8',callback:v=>'₹'+v} } }
@@ -981,7 +981,7 @@
         data:{ labels:['BFSI — Wealth','Metals & Tubes','Energy Transition','Tactical Banks','Healthcare'],
           datasets:[{ data:[33.6,18.8,17.5,16.7,13.4], backgroundColor:['#6366F1','#F97316','#EAB308','#14B8A6','#EC4899'], borderColor:'#0A1628', borderWidth:3, hoverOffset:6 }] },
         options:{ responsive:true, maintainAspectRatio:false, cutout:'70%',
-          plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#0A1628', borderColor:'rgba(255,255,255,0.14)', borderWidth:1, titleColor:'#fff', bodyColor:'#cbd5e1', callbacks:{label: ctx=>` ${ctx.label}: ${ctx.parsed}%`} } } }
+          plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#fff', borderColor:'#E2E8F0', borderWidth:1, titleColor:'#fff', bodyColor:'#cbd5e1', callbacks:{label: ctx=>` ${ctx.label}: ${ctx.parsed}%`} } } }
       });
     })();
     </script>
