@@ -110,6 +110,13 @@
       background-repeat: no-repeat; background-position: right 1rem center; }
     .sc-field textarea { resize: vertical; min-height: 110px; }
 
+    /* phone with country code */
+    .sc-phone-group { display: flex; }
+    .sc-phone-group .sc-phone-cc { width: 150px; flex: 0 0 auto; border-radius: 9px 0 0 9px; border-right: none; padding-right: 1.6rem; }
+    .sc-phone-group .sc-phone-num { border-radius: 0 9px 9px 0; flex: 1; }
+    .sc-phone-group .sc-phone-cc:focus { position: relative; z-index: 1; border-right: 1px solid #47a996; }
+    @media (max-width: 480px) { .sc-phone-group .sc-phone-cc { width: 124px; } }
+
     /* ---------- PRODUCT MULTI-SELECT ---------- */
     .sc-prod-hint { font-size: 0.85rem; color: #64748B; margin-bottom: 1rem; }
     .sc-prod-hint b { color: #47a996; }
