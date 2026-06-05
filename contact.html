@@ -517,24 +517,55 @@
         countEl.textContent = 'please select at least one';
         countEl.style.color = '#e05656';
         countEl.style.fontWeight = '700';
-        form.querySelector('.sc-products').scrollIntoView({behavior:'smooth', block:'center'});
+        form.querySelector('.sc-cat').scrollIntoView({behavior:'smooth', block:'center'});
         return;
       }
       if (!form.checkValidity()){ form.reportValidity(); return; }
 
+      // ---- Compose the enquiry e-mail to info@spvhamc.com ----
+      const val = id => (document.getElementById(id) ? document.getElementById(id).value : '').trim();
+      const name   = val('sc-name') || 'Prospective Investor';
+      const method = (form.querySelector('input[name="contact_method"]:checked') || {}).value || '—';
+
+      const body = [
+        'New consultation request submitted via the SPVH AMC website.',
+        '',
+        '— CONTACT —',
+        'Name: ' + name,
+        'Email: ' + (val('sc-email') || '—'),
+        'Phone / WhatsApp: ' + (val('sc-phone') || '—'),
+        'Company / Family Office: ' + (val('sc-company') || '—'),
+        'Investor Type: ' + (val('sc-investor') || '—'),
+        'Investment Ticket: ' + (val('sc-ticket') || '—'),
+        'Preferred Contact Method: ' + method,
+        '',
+        '— SOLUTIONS / PRODUCTS OF INTEREST —',
+        selected.map(s => '  • ' + s).join('\n'),
+        '',
+        '— MESSAGE —',
+        (val('sc-message') || '—')
+      ].join('\n');
+
+      const mailto = 'mailto:info@spvhamc.com'
+        + '?subject=' + encodeURIComponent('Consultation Request — ' + name)
+        + '&body=' + encodeURIComponent(body);
+
       const btn = form.querySelector('.sc-submit');
       btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening your email…';
 
-      // NOTE: wire to a real backend/email endpoint here.
+      // Route the query to info@spvhamc.com via the visitor's mail client
+      window.location.href = mailto;
+
       setTimeout(function(){
-        const name = (document.getElementById('sc-name').value || 'there').trim();
-        summary.innerHTML = '<b>' + name + '</b>, we\'ve noted your interest in:<br>' +
-          selected.map(s => '&bull; ' + s).join('<br>');
+        summary.innerHTML = '<b>' + name + '</b>, your request has been addressed to <b>info@spvhamc.com</b>.<br>'
+          + 'Interest noted in:<br>' + selected.map(s => '&bull; ' + s).join('<br>')
+          + '<br><br>If your email app didn\'t open, please write to us directly at '
+          + '<a href="mailto:info@spvhamc.com">info@spvhamc.com</a>.';
         form.style.display = 'none';
         success.classList.add('show');
         success.scrollIntoView({behavior:'smooth', block:'center'});
-      }, 1100);
+      }, 700);
     });
   })();
   </script>
