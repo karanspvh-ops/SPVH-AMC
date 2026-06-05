@@ -722,6 +722,69 @@
       @media (max-width: 480px) { .dash-kpi-strip { grid-template-columns: 1fr 1fr; } .dash-kpi { padding: 1.1rem 0.9rem; } .kpi-value { font-size: 1.5rem; } }
     </style>
 
+    <style>
+      /* ── Track Record · Cinematic Dark Override ────────────── */
+      .dash-section { background: linear-gradient(135deg,#070f1e 0%,#0A1628 55%,#0d1b36 100%) !important; position: relative; overflow: hidden; }
+      .dash-section::before { content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+        background: radial-gradient(ellipse at 82% 8%, rgba(73,107,173,0.18) 0%, transparent 55%),
+                    radial-gradient(ellipse at 4% 92%, rgba(71,169,150,0.13) 0%, transparent 50%); }
+      .dash-section::after { content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+        background-image: linear-gradient(rgba(71,169,150,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(71,169,150,0.045) 1px, transparent 1px);
+        background-size: 64px 64px;
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 86%, transparent);
+                mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 86%, transparent); }
+      .dash-section > .container { position: relative; z-index: 1; }
+      .dash-section .hm-heading { color: #fff !important; }
+      .dash-section .hm-sub { color: #94A3B8 !important; }
+
+      /* KPI glass tiles */
+      .dash-section .dash-kpi { background: rgba(255,255,255,0.04) !important; border: 1px solid rgba(255,255,255,0.09) !important; border-radius: 14px !important; text-align: left !important; box-shadow: none !important; }
+      .dash-section .dash-kpi::before { height: 2px !important; background: linear-gradient(90deg,#47a996,#496bad) !important; border-radius: 0 !important; }
+      .dash-section .dash-kpi:hover { border-color: rgba(71,169,150,0.35) !important; box-shadow: 0 16px 40px rgba(0,0,0,0.45) !important; transform: translateY(-4px); }
+      .dash-section .kpi-label { color: #7c93b0 !important; }
+      .dash-section .kpi-value { color: #fff !important; }
+      .dash-section .dash-kpi:nth-child(1) .kpi-value, .dash-section .dash-kpi:nth-child(4) .kpi-value { color: #47a996 !important; }
+      .dash-section .kpi-sub { color: #47a996 !important; }
+      .dash-section .kpi-sub.neutral { color: #7c93b0 !important; }
+
+      /* glass panels */
+      .dash-section .dash-panel { background: rgba(255,255,255,0.03) !important; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 14px !important; box-shadow: none !important; }
+      .dash-section .panel-header { border-bottom: 1px solid rgba(255,255,255,0.08) !important; }
+      .dash-section .panel-header span { color: #94A3B8 !important; }
+      .dash-section .panel-header .panel-title { color: #e2e8f0 !important; }
+      .dash-section .pleg { color: #94A3B8 !important; }
+      .dash-section .sector-rows li { border-bottom: 1px solid rgba(255,255,255,0.07) !important; color: #94A3B8 !important; }
+      .dash-section .sr-pct { color: #fff !important; }
+
+      /* comparison table — dark */
+      .dash-section .dash-comp-table thead tr { background: rgba(255,255,255,0.03) !important; border-bottom: 1px solid rgba(255,255,255,0.12) !important; }
+      .dash-section .dash-comp-table th { color: #cbd5e1 !important; }
+      .dash-section .dash-comp-table td { color: #94A3B8 !important; border-bottom: 1px solid rgba(255,255,255,0.06) !important; }
+      .dash-section .dash-comp-table tbody tr:hover { background: rgba(255,255,255,0.03) !important; }
+      .dash-section .ctr-name { color: #cbd5e1 !important; }
+      .dash-section .ctr-row-spvh .ctr-name { color: #fff !important; }
+      .dash-section .ctr-row-alpha .ctr-name { color: #9bb8e8 !important; }
+      .dash-section .ctr-sub { color: #7c93b0 !important; }
+      .dash-section .ctr-row-spvh { background: rgba(71,169,150,0.09) !important; }
+      .dash-section .ctr-row-spvh td { border-bottom-color: rgba(71,169,150,0.20) !important; }
+      .dash-section .ctr-row-spvh:hover { background: rgba(71,169,150,0.13) !important; }
+      .dash-section .ctr-row-alpha { background: rgba(73,107,173,0.13) !important; }
+      .dash-section .ctr-row-alpha td { color: #9bb8e8 !important; border-bottom-color: rgba(73,107,173,0.20) !important; }
+      .dash-section .ctr-row-alpha:hover { background: rgba(73,107,173,0.18) !important; }
+      .dash-section .cv-spvh-pos { color: #47a996 !important; }
+      .dash-section .cv-n50 { color: #94A3B8 !important; }
+      .dash-section .cv-mid { color: #cbd5e1 !important; }
+      .dash-section .cv-inception { color: #7c93b0 !important; }
+      .dash-section .dash-panel p { color: #7c93b0 !important; }
+      .dash-section .dash-panel p[style] { border-top-color: rgba(255,255,255,0.08) !important; }
+
+      /* footer bar */
+      .dash-section .dash-footer-bar { background: rgba(255,255,255,0.03) !important; border: 1px solid rgba(255,255,255,0.08) !important; border-left: 3px solid #47a996 !important; box-shadow: none !important; }
+      .dash-section .dash-footer-bar p { color: #7c93b0 !important; }
+      .dash-section .dash-full-link { color: #fff !important; }
+      .dash-section .dash-full-link:hover { color: #47a996 !important; }
+    </style>
+
     <section class="dash-section" id="track-record">
       <div class="container" style="position:relative;z-index:1;">
 
