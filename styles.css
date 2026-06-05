@@ -156,9 +156,9 @@ header {
   padding: 4px; /* inner spacing connecting the elements */
   background: transparent;
 }
-.login-link { font-family: 'Montserrat', sans-serif; font-size: 0.875rem; font-weight: 600; color: var(--primary); white-space: nowrap; padding: 0 1.5rem; }
+.login-link { font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; color: var(--primary); white-space: nowrap; padding: 0 1.5rem; }
 .login-link:hover { color: var(--secondary); }
-.nav-actions .btn-primary { border-radius: 50px; }
+.nav-actions .btn-primary { border-radius: 50px; font-size: 1rem; }
 
 .hamburger { display: none; font-size: 1.5rem; color: var(--bg-dark); cursor: pointer; }
 
