@@ -533,6 +533,23 @@
     }
     boxes.forEach(b => b.addEventListener('change', updateCount));
 
+    // Phone: accept digits (and spaces) only — strip anything else as typed
+    const phoneEl = document.getElementById('sc-phone');
+    phoneEl.setAttribute('inputmode', 'numeric');
+    phoneEl.addEventListener('input', function(){
+      const cleaned = this.value.replace(/[^0-9 ]/g, '');
+      if (cleaned !== this.value) this.value = cleaned;
+      this.setCustomValidity('');
+    });
+    phoneEl.addEventListener('keypress', function(e){
+      if (e.key && e.key.length === 1 && !/[0-9 ]/.test(e.key)) e.preventDefault();
+    });
+
+    // Email: live-clear custom errors
+    const emailEl = document.getElementById('sc-email');
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    emailEl.addEventListener('input', function(){ this.setCustomValidity(''); });
+
     form.addEventListener('submit', function(e){
       e.preventDefault();
 
