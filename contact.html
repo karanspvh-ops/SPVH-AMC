@@ -131,6 +131,28 @@
     .sc-prod input:checked + .sc-prod-box .sc-check { background: #47a996; border-color: #47a996; }
     .sc-prod input:focus-visible + .sc-prod-box { box-shadow: 0 0 0 3px rgba(71,169,150,0.18); }
 
+    /* ---------- CATEGORISED PRODUCT SELECT ---------- */
+    .sc-cat { margin-bottom: 1.5rem; }
+    .sc-cat:last-child { margin-bottom: 0; }
+    .sc-cat-head { display: flex; align-items: center; gap: 11px; font-family: 'Montserrat', sans-serif; font-size: 0.92rem; font-weight: 700; color: #0A1628; margin-bottom: 0.8rem; }
+    .sc-cat-ic { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+    .sc-cat.pms .sc-cat-ic { background: rgba(71,169,150,0.12); color: #47a996; }
+    .sc-cat.aif .sc-cat-ic { background: rgba(73,107,173,0.12); color: #496bad; }
+    .sc-cat.off .sc-cat-ic { background: rgba(201,168,76,0.16); color: #C9A84C; }
+    .sc-cat.adv .sc-cat-ic { background: rgba(71,169,150,0.12); color: #47a996; }
+    .sc-cat-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .sc-opt { position: relative; cursor: pointer; display: block; }
+    .sc-opt input { position: absolute; opacity: 0; pointer-events: none; }
+    .sc-opt-box { display: flex; align-items: center; gap: 9px; padding: 11px 14px; border: 1.5px solid #E2E8F0; border-radius: 9px; background: #F8FAFC; font-size: 0.87rem; font-weight: 600; color: #334155; transition: all 0.2s; height: 100%; }
+    .sc-opt-box .sc-check { margin-left: auto; width: 19px; height: 19px; border-radius: 6px; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.6rem; transition: all 0.2s; flex-shrink: 0; }
+    .sc-opt:hover .sc-opt-box { border-color: #47a996; background: #fff; }
+    .sc-opt input:checked + .sc-opt-box { border-color: #47a996; background: rgba(71,169,150,0.07); color: #0A1628; }
+    .sc-opt input:checked + .sc-opt-box .sc-check { background: #47a996; border-color: #47a996; }
+    .sc-opt input:focus-visible + .sc-opt-box { box-shadow: 0 0 0 3px rgba(71,169,150,0.18); }
+    .sc-opt.more { grid-column: 1 / -1; }
+    .sc-opt.more .sc-opt-box { border-style: dashed; color: #64748B; }
+    .sc-opt.more .sc-opt-box i { color: #94A3B8; }
+
     /* ---------- RADIO PILLS ---------- */
     .sc-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .sc-pill { position: relative; cursor: pointer; }
