@@ -36,7 +36,9 @@
       "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' diff --stat .claude/settings.local.json)",
       "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' stash push -q -- .claude/settings.local.json)",
       "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' checkout --theirs -- .claude/settings.local.json)",
-      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' stash pop)"
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' stash pop)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' rev-parse --short HEAD)",
+      "Bash(git -C 'C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC' rev-parse --short origin/main)"
     ]
   },
   "hooks": {

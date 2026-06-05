@@ -1,34 +1,218 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-  <meta charset='UTF-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <title>SPVH AMC | CONTACT</title>
-  <link rel='stylesheet' href='styles.css'>
-  <link rel='stylesheet' href='responsive.css'>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPVH AMC | Schedule a Consultation</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ============================================================
+       SCHEDULE A CONSULTATION  (prefix: .sc-*)
+    ============================================================ */
+
+    /* ---------- HERO ---------- */
+    .sc-hero {
+      background: linear-gradient(135deg, #070f1e 0%, #0A1628 55%, #0d1b36 100%);
+      padding: 170px 0 70px; position: relative; overflow: hidden;
+    }
+    .sc-hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 80% 30%, rgba(73,107,173,0.20) 0%, transparent 55%),
+                  radial-gradient(ellipse at 8% 85%, rgba(71,169,150,0.14) 0%, transparent 50%);
+    }
+    .sc-hero::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(71,169,150,0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(71,169,150,0.05) 1px, transparent 1px);
+      background-size: 70px 70px;
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, transparent);
+              mask-image: linear-gradient(to bottom, transparent, #000 30%, transparent);
+    }
+    .sc-hero-inner { position: relative; z-index: 2; text-align: center; max-width: 760px; margin: 0 auto; }
+    .sc-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px; color: #47a996;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; margin-bottom: 1.25rem;
+    }
+    .sc-hero h1 {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(2.3rem, 4vw, 3.4rem);
+      font-weight: 800; color: #fff; line-height: 1.12; margin-bottom: 1.25rem;
+    }
+    .sc-hero h1 span { color: #47a996; }
+    .sc-hero p { color: #94A3B8; font-size: 1.08rem; line-height: 1.8; margin: 0 auto 1.75rem; max-width: 620px; }
+    .sc-hero-trust { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    .sc-hero-trust span { color: #cbd5e1; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px; }
+    .sc-hero-trust i { color: #47a996; }
+
+    /* ---------- BODY GRID ---------- */
+    .sc-body { background: #F0F4FA; padding: 80px 0 100px; }
+    .sc-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 2.5rem; align-items: start; }
+
+    /* ---------- LEFT INFO RAIL ---------- */
+    .sc-aside { position: relative; }
+    .sc-aside-card {
+      background: #0A1628; border-radius: 16px; padding: 38px 34px; color: #fff;
+      position: relative; overflow: hidden;
+    }
+    .sc-aside-card::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 90% 0%, rgba(71,169,150,0.16) 0%, transparent 55%);
+    }
+    .sc-aside-card > * { position: relative; z-index: 1; }
+    .sc-aside-card h2 {
+      font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 800;
+      color: #fff; margin-bottom: 0.75rem; line-height: 1.25;
+    }
+    .sc-aside-card h2 span { color: #47a996; }
+    .sc-aside-lead { color: #94A3B8; font-size: 0.95rem; line-height: 1.75; margin-bottom: 2rem; }
+    .sc-steps { list-style: none; padding: 0; margin: 0 0 2rem; }
+    .sc-step { display: flex; gap: 14px; padding: 0 0 1.4rem; position: relative; }
+    .sc-step:last-child { padding-bottom: 0; }
+    .sc-step-num {
+      flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(71,169,150,0.15); border: 1px solid rgba(71,169,150,0.4);
+      color: #47a996; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sc-step h4 { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem; }
+    .sc-step p { color: #94A3B8; font-size: 0.85rem; line-height: 1.6; }
+    .sc-contacts { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+    .sc-contact { display: flex; align-items: flex-start; gap: 13px; color: #cbd5e1; font-size: 0.9rem; line-height: 1.5; }
+    .sc-contact i { color: #47a996; margin-top: 3px; width: 18px; text-align: center; flex-shrink: 0; }
+    .sc-contact a { color: #cbd5e1; text-decoration: none; transition: color 0.2s; }
+    .sc-contact a:hover { color: #47a996; }
+
+    /* ---------- FORM CARD ---------- */
+    .sc-form-card {
+      background: #fff; border-radius: 16px; padding: 40px 40px 36px;
+      box-shadow: 0 18px 50px rgba(10,22,40,0.10); border: 1px solid #E8EEF6;
+    }
+    .sc-form-head { margin-bottom: 1.75rem; }
+    .sc-form-head h2 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 800; color: #0A1628; margin-bottom: 0.4rem; }
+    .sc-form-head p { color: #64748B; font-size: 0.92rem; line-height: 1.6; }
+
+    .sc-section-label {
+      display: flex; align-items: center; gap: 10px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: #496bad; margin: 2rem 0 1rem;
+    }
+    .sc-section-label::after { content: ''; flex: 1; height: 1px; background: #E8EEF6; }
+    .sc-section-label:first-of-type { margin-top: 0; }
+
+    .sc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; margin-bottom: 1.1rem; }
+    .sc-field { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.1rem; }
+    .sc-row .sc-field { margin-bottom: 0; }
+    .sc-field label { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: #475569; }
+    .sc-field label .req { color: #e05656; }
+    .sc-field .opt { color: #94A3B8; font-weight: 400; text-transform: none; letter-spacing: 0; }
+    .sc-field input, .sc-field select, .sc-field textarea {
+      background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 9px; color: #1e293b;
+      font-family: 'Inter', 'Segoe UI', sans-serif; font-size: 0.95rem; padding: 0.8rem 1rem;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; width: 100%; box-sizing: border-box;
+    }
+    .sc-field input::placeholder, .sc-field textarea::placeholder { color: #9aa7b8; }
+    .sc-field input:focus, .sc-field select:focus, .sc-field textarea:focus {
+      border-color: #47a996; background: #fff; box-shadow: 0 0 0 3px rgba(71,169,150,0.13);
+    }
+    .sc-field select { appearance: none; -webkit-appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23496bad' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 1rem center; }
+    .sc-field textarea { resize: vertical; min-height: 110px; }
+
+    /* ---------- PRODUCT MULTI-SELECT ---------- */
+    .sc-prod-hint { font-size: 0.85rem; color: #64748B; margin-bottom: 1rem; }
+    .sc-prod-hint b { color: #47a996; }
+    .sc-products { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+    .sc-prod { position: relative; cursor: pointer; display: block; }
+    .sc-prod input { position: absolute; opacity: 0; pointer-events: none; }
+    .sc-prod-box {
+      display: flex; align-items: center; gap: 11px; padding: 13px 15px;
+      border: 1.5px solid #E2E8F0; border-radius: 10px; background: #F8FAFC;
+      font-size: 0.9rem; font-weight: 600; color: #334155; transition: all 0.2s; height: 100%;
+    }
+    .sc-prod-ic { width: 30px; height: 30px; border-radius: 8px; background: #eef2f8; color: #496bad;
+      display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s; }
+    .sc-prod-box .sc-check { margin-left: auto; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid #cbd5e1;
+      display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.65rem; transition: all 0.2s; flex-shrink: 0; }
+    .sc-prod:hover .sc-prod-box { border-color: #47a996; background: #fff; }
+    .sc-prod input:checked + .sc-prod-box { border-color: #47a996; background: rgba(71,169,150,0.07); color: #0A1628; }
+    .sc-prod input:checked + .sc-prod-box .sc-prod-ic { background: #47a996; color: #fff; }
+    .sc-prod input:checked + .sc-prod-box .sc-check { background: #47a996; border-color: #47a996; }
+    .sc-prod input:focus-visible + .sc-prod-box { box-shadow: 0 0 0 3px rgba(71,169,150,0.18); }
+
+    /* ---------- RADIO PILLS ---------- */
+    .sc-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .sc-pill { position: relative; cursor: pointer; }
+    .sc-pill input { position: absolute; opacity: 0; pointer-events: none; }
+    .sc-pill span {
+      display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 50px;
+      border: 1.5px solid #E2E8F0; background: #F8FAFC; font-size: 0.85rem; font-weight: 600; color: #475569; transition: all 0.2s;
+    }
+    .sc-pill:hover span { border-color: #496bad; }
+    .sc-pill input:checked + span { border-color: #496bad; background: rgba(73,107,173,0.08); color: #496bad; }
+
+    /* ---------- CONSENT + SUBMIT ---------- */
+    .sc-consent { display: flex; align-items: flex-start; gap: 11px; margin: 1.75rem 0 1.5rem; font-size: 0.82rem; color: #64748B; line-height: 1.6; }
+    .sc-consent input { margin-top: 3px; width: 17px; height: 17px; accent-color: #47a996; flex-shrink: 0; }
+    .sc-consent a { color: #496bad; }
+    .sc-submit {
+      width: 100%; padding: 1.05rem; background: #47a996; color: #fff; border: none; border-radius: 10px;
+      font-family: 'Montserrat', sans-serif; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase; cursor: pointer; transition: background 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .sc-submit:hover { background: #3d9485; transform: translateY(-2px); }
+    .sc-submit:disabled { opacity: 0.8; cursor: default; transform: none; }
+    .sc-form-foot { text-align: center; font-size: 0.8rem; color: #94A3B8; margin-top: 1rem; }
+
+    /* success */
+    .sc-success { display: none; text-align: center; padding: 2rem 1rem; }
+    .sc-success.show { display: block; animation: scFade 0.5s ease; }
+    @keyframes scFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .sc-success-ic { width: 70px; height: 70px; border-radius: 50%; background: rgba(71,169,150,0.12); color: #47a996;
+      display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1.25rem; }
+    .sc-success h3 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 800; color: #0A1628; margin-bottom: 0.6rem; }
+    .sc-success p { color: #64748B; font-size: 0.95rem; line-height: 1.7; max-width: 420px; margin: 0 auto; }
+    .sc-success .sc-summary { margin-top: 1.25rem; font-size: 0.85rem; color: #475569; background: #F0F4FA; border-radius: 10px; padding: 14px 18px; display: inline-block; }
+    .sc-success .sc-summary b { color: #0A1628; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1024px) {
+      .sc-hero { padding-top: 110px; }
+      .sc-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .sc-aside-card { padding: 32px 28px; }
+    }
+    @media (max-width: 768px) {
+      .sc-hero { padding-top: 90px; }
+      .sc-form-card { padding: 28px 22px; }
+      .sc-row { grid-template-columns: 1fr; gap: 1.1rem; }
+      .sc-products { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Sticky Nav -->
+
+  <!-- ===================== NAV ===================== -->
   <header id="header">
     <div class="container nav-container">
       <a href="index.html" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
-      
       <ul class="nav-menu">
         <li class="nav-item">
-          <a href="#">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <a href="about.html">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
           <ul class="dropdown-menu">
-            <li><a href="about.html">Firm Overview</a></li>
-            <li><a href="team.html">Leadership Team</a></li>
-            <li><a href="philosophy.html">Investment Philosophy</a></li>
+            <li><a href="about.html#firm-overview">Firm Overview</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#">Investment Solutions <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
+          <a href="pms.html">Investment Solutions <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
           <ul class="dropdown-menu">
             <li><a href="pms.html">Portfolio Management Services</a></li>
             <li><a href="aif.html">Alternative Investment Funds</a></li>
-            <li><a href="offshore.html">Offshore Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
             <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
           </ul>
         </li>
@@ -36,41 +220,209 @@
         <li class="nav-item"><a href="insights.html">Insights</a></li>
         <li class="nav-item"><a href="resources.html">Resources</a></li>
       </ul>
-
       <div class="nav-actions">
         <a href="#" class="login-link">Investor Login</a>
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
-
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
-      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
   </header>
 
   <main>
-    <!-- Hero (Dark) -->
-    <section class="hero bg-dark">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="sc-hero">
       <div class="container">
-        <div class="hero-content reveal">
-          <h1>Generational Wealth.<br><span>Institutional Precision.</span></h1>
-          <p>SPVH AMC delivers specialized alternative and portfolio management solutions designed specifically for family offices and institutional investors. Absolute returns driven by uncompromised research.</p>
-          <a href="about.html" class="btn btn-outline-light" style="margin-top: 1rem;">Discover Our Framework</a>
+        <div class="sc-hero-inner">
+          <div class="sc-eyebrow">Get in Touch</div>
+          <h1>Let's Build Your <span>Wealth Strategy.</span></h1>
+          <p>Tell us which solutions you're interested in and our investment team will reach out within 24 hours to schedule a confidential, no-obligation consultation.</p>
+          <div class="sc-hero-trust">
+            <span><i class="fas fa-shield-halved"></i> SEBI Registered</span>
+            <span><i class="fas fa-lock"></i> Strictly Confidential</span>
+            <span><i class="fas fa-clock"></i> 24-Hour Response</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Stats Counters -->
-<main>
-  <section class='hero bg-dark' style='min-height: 40vh; height: 40vh;'>
-    <div class='container'>
-      <div class='hero-content reveal'>
-        <h1 style='font-size: 3rem;'>CONTACT</h1>
+    <!-- ===================== BODY ===================== -->
+    <section class="sc-body">
+      <div class="container">
+        <div class="sc-grid">
+
+          <!-- LEFT: info rail -->
+          <aside class="sc-aside reveal-left">
+            <div class="sc-aside-card">
+              <h2>Speak With Our <span>Investment Team.</span></h2>
+              <p class="sc-aside-lead">Whether you're exploring a single strategy or building a multi-product allocation, we'll match you with the right specialist.</p>
+
+              <ul class="sc-steps">
+                <li class="sc-step">
+                  <div class="sc-step-num">1</div>
+                  <div><h4>Share Your Interest</h4><p>Select the product(s) you'd like to discuss and tell us a little about your goals.</p></div>
+                </li>
+                <li class="sc-step">
+                  <div class="sc-step-num">2</div>
+                  <div><h4>We Match a Specialist</h4><p>Your enquiry is routed to the relevant PMS, AIF, or global-funds expert.</p></div>
+                </li>
+                <li class="sc-step">
+                  <div class="sc-step-num">3</div>
+                  <div><h4>Confidential Consultation</h4><p>We reach out within 24 hours to schedule a call at your convenience.</p></div>
+                </li>
+              </ul>
+
+              <div class="sc-contacts">
+                <div class="sc-contact"><i class="fas fa-map-marker-alt"></i><span>Registered Office, Mumbai &mdash; 400051</span></div>
+                <div class="sc-contact"><i class="fas fa-phone-alt"></i><a href="tel:+912240000000">+91 22 4000 0000</a></div>
+                <div class="sc-contact"><i class="fas fa-envelope"></i><a href="mailto:info@spvhamc.com">info@spvhamc.com</a></div>
+                <div class="sc-contact"><i class="fas fa-clock"></i><span>Mon&ndash;Fri, 9:30 AM &ndash; 6:30 PM IST</span></div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- RIGHT: form -->
+          <div class="sc-form-card reveal-right">
+
+            <form class="sc-form" id="scForm" novalidate>
+              <div class="sc-form-head">
+                <h2>Schedule a Consultation</h2>
+                <p>Fields marked <span style="color:#e05656;">*</span> are required. Your details are kept strictly confidential.</p>
+              </div>
+
+              <!-- Your details -->
+              <div class="sc-section-label">Your Details</div>
+              <div class="sc-row">
+                <div class="sc-field">
+                  <label for="sc-name">Full Name <span class="req">*</span></label>
+                  <input type="text" id="sc-name" name="name" placeholder="e.g. Rajesh Mehta" required>
+                </div>
+                <div class="sc-field">
+                  <label for="sc-email">Email Address <span class="req">*</span></label>
+                  <input type="email" id="sc-email" name="email" placeholder="you@example.com" required>
+                </div>
+              </div>
+              <div class="sc-row">
+                <div class="sc-field">
+                  <label for="sc-phone">Phone / WhatsApp <span class="req">*</span></label>
+                  <input type="tel" id="sc-phone" name="phone" placeholder="+91 98XXXXXXXX" required>
+                </div>
+                <div class="sc-field">
+                  <label for="sc-company">Company / Family Office <span class="opt">(optional)</span></label>
+                  <input type="text" id="sc-company" name="company" placeholder="Organisation name">
+                </div>
+              </div>
+              <div class="sc-row">
+                <div class="sc-field">
+                  <label for="sc-investor">Investor Type <span class="req">*</span></label>
+                  <select id="sc-investor" name="investor_type" required>
+                    <option value="" disabled selected>Select investor type</option>
+                    <option>Individual / HNI</option>
+                    <option>Ultra-HNI (UHNI)</option>
+                    <option>Family Office</option>
+                    <option>Institutional Investor</option>
+                    <option>NRI / Overseas Investor</option>
+                    <option>Corporate Treasury</option>
+                    <option>Financial Advisor / Distributor</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="sc-field">
+                  <label for="sc-ticket">Investment Ticket <span class="opt">(optional)</span></label>
+                  <select id="sc-ticket" name="ticket_size">
+                    <option value="" disabled selected>Select range</option>
+                    <option>Below &#8377;50 Lakhs</option>
+                    <option>&#8377;50 Lakhs &ndash; &#8377;1 Crore</option>
+                    <option>&#8377;1 Crore &ndash; &#8377;5 Crore</option>
+                    <option>&#8377;5 Crore &ndash; &#8377;25 Crore</option>
+                    <option>&#8377;25 Crore+</option>
+                    <option>USD-denominated (Offshore)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Product interest -->
+              <div class="sc-section-label">Which Solution(s) Are You Interested In?</div>
+              <p class="sc-prod-hint">Select <b>one or more</b> &mdash; this helps us route you to the right specialist. <span id="scCount">0 selected</span></p>
+              <div class="sc-products">
+                <label class="sc-prod">
+                  <input type="checkbox" name="products" value="Portfolio Management Services">
+                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-chart-pie"></i></span> Portfolio Management Services <span class="sc-check"><i class="fas fa-check"></i></span></span>
+                </label>
+                <label class="sc-prod">
+                  <input type="checkbox" name="products" value="Alternative Investment Funds">
+                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-layer-group"></i></span> Alternative Investment Funds <span class="sc-check"><i class="fas fa-check"></i></span></span>
+                </label>
+                <label class="sc-prod">
+                  <input type="checkbox" name="products" value="Offshore & Global Funds">
+                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-globe"></i></span> Offshore &amp; Global Funds <span class="sc-check"><i class="fas fa-check"></i></span></span>
+                </label>
+                <label class="sc-prod">
+                  <input type="checkbox" name="products" value="Investment Advisory & Research">
+                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-lightbulb"></i></span> Investment Advisory &amp; Research <span class="sc-check"><i class="fas fa-check"></i></span></span>
+                </label>
+                <label class="sc-prod">
+                  <input type="checkbox" name="products" value="Value Discovery Fund">
+                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-gem"></i></span> Value Discovery Fund <span class="sc-check"><i class="fas fa-check"></i></span></span>
+                </label>
+                <label class="sc-prod">
+                  <input type="checkbox" name="products" value="India Alpha Fund">
+                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-arrow-down-to-bracket"></i></span> India Alpha Fund (GIFT City) <span class="sc-check"><i class="fas fa-check"></i></span></span>
+                </label>
+                <label class="sc-prod">
+                  <input type="checkbox" name="products" value="Emerging World Fund">
+                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-earth-asia"></i></span> Emerging World Fund (GIFT City) <span class="sc-check"><i class="fas fa-check"></i></span></span>
+                </label>
+                <label class="sc-prod">
+                  <input type="checkbox" name="products" value="Family Office Solutions">
+                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-users-gear"></i></span> Family Office Solutions <span class="sc-check"><i class="fas fa-check"></i></span></span>
+                </label>
+                <label class="sc-prod" style="grid-column:1 / -1;">
+                  <input type="checkbox" name="products" value="General / Not sure yet">
+                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-circle-question"></i></span> General enquiry / Not sure yet &mdash; help me decide <span class="sc-check"><i class="fas fa-check"></i></span></span>
+                </label>
+              </div>
+
+              <!-- Preferences -->
+              <div class="sc-section-label">How Should We Reach You?</div>
+              <div class="sc-pills">
+                <label class="sc-pill"><input type="radio" name="contact_method" value="Phone call" checked><span><i class="fas fa-phone-alt"></i> Phone call</span></label>
+                <label class="sc-pill"><input type="radio" name="contact_method" value="WhatsApp"><span><i class="fab fa-whatsapp"></i> WhatsApp</span></label>
+                <label class="sc-pill"><input type="radio" name="contact_method" value="Email"><span><i class="fas fa-envelope"></i> Email</span></label>
+                <label class="sc-pill"><input type="radio" name="contact_method" value="Video call"><span><i class="fas fa-video"></i> Video call</span></label>
+              </div>
+
+              <div class="sc-field" style="margin-top:1.5rem;">
+                <label for="sc-message">Your Message <span class="opt">(optional)</span></label>
+                <textarea id="sc-message" name="message" placeholder="Tell us about your goals, timeline, or any specific questions…"></textarea>
+              </div>
+
+              <!-- Consent -->
+              <label class="sc-consent">
+                <input type="checkbox" id="sc-consent" required>
+                <span>I agree to be contacted by SPVH AMC regarding my enquiry and accept the <a href="#">Privacy Policy</a>. This is not an offer or solicitation to invest.</span>
+              </label>
+
+              <button type="submit" class="sc-submit"><i class="fas fa-paper-plane"></i> Request My Consultation</button>
+              <p class="sc-form-foot"><i class="fas fa-lock" style="color:#47a996;"></i> &nbsp;Your information is encrypted and never shared with third parties.</p>
+            </form>
+
+            <!-- success state -->
+            <div class="sc-success" id="scSuccess">
+              <div class="sc-success-ic"><i class="fas fa-check"></i></div>
+              <h3>Thank You &mdash; Request Received.</h3>
+              <p>Our investment team will reach out within 24 hours to schedule your confidential consultation.</p>
+              <div class="sc-summary" id="scSummary"></div>
+            </div>
+
+          </div>
+
+        </div>
       </div>
-    </div>
-  </section>
-  <section class='section-padding' style='min-height: 50vh;'><div class='container'><h2 style='text-align:center;'>CONTACT Module Under Construction</h2></div></section>
-</main>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
   <footer class="footer-new">
     <div class="container">
       <div class="footer-top-grid">
@@ -124,9 +476,54 @@
       </div>
     </div>
   </footer>
+
   <script src="script.js"></script>
+  <script>
+  (function(){
+    const form    = document.getElementById('scForm');
+    const success = document.getElementById('scSuccess');
+    const summary = document.getElementById('scSummary');
+    const countEl = document.getElementById('scCount');
+    const boxes   = form.querySelectorAll('input[name="products"]');
+
+    // live "N selected" counter
+    function updateCount(){
+      const n = form.querySelectorAll('input[name="products"]:checked').length;
+      countEl.textContent = n + (n === 1 ? ' selected' : ' selected');
+      countEl.style.color = n > 0 ? '#47a996' : '';
+      countEl.style.fontWeight = n > 0 ? '700' : '';
+    }
+    boxes.forEach(b => b.addEventListener('change', updateCount));
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      // require at least one product
+      const selected = Array.from(form.querySelectorAll('input[name="products"]:checked')).map(c => c.value);
+      if (selected.length === 0){
+        countEl.textContent = 'please select at least one';
+        countEl.style.color = '#e05656';
+        countEl.style.fontWeight = '700';
+        form.querySelector('.sc-products').scrollIntoView({behavior:'smooth', block:'center'});
+        return;
+      }
+      if (!form.checkValidity()){ form.reportValidity(); return; }
+
+      const btn = form.querySelector('.sc-submit');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+
+      // NOTE: wire to a real backend/email endpoint here.
+      setTimeout(function(){
+        const name = (document.getElementById('sc-name').value || 'there').trim();
+        summary.innerHTML = '<b>' + name + '</b>, we\'ve noted your interest in:<br>' +
+          selected.map(s => '&bull; ' + s).join('<br>');
+        form.style.display = 'none';
+        success.classList.add('show');
+        success.scrollIntoView({behavior:'smooth', block:'center'});
+      }, 1100);
+    });
+  })();
+  </script>
 </body>
 </html>
-
-
-
