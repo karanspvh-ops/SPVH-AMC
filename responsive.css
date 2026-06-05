@@ -807,3 +807,30 @@ img, svg, video, canvas, iframe { max-width: 100%; height: auto; }
   .hm-sol-card, .hm-why-card, .fd-field, .fd-adv-card,
   .aifx-card, .sc-prod, .sc-opt, .dash-kpi { min-width: 0; }
 }
+
+/* =====================================================
+   MACBOOK / LAPTOP RANGE NAV FIT  (1201px – 1536px)
+   13"–15" MacBooks & similar Windows laptops render the
+   full desktop nav at ~1280–1512px CSS width, where the
+   logo + menu + actions can crowd. Gently scale the logo,
+   text and spacing so the panel stays clean & well-spaced
+   (matching the intended desktop look). No colour changes.
+   ===================================================== */
+@media (min-width: 1201px) and (max-width: 1536px) {
+  header { width: 96%; }
+  .nav-container { padding: 0 2.5rem !important; }
+  .logo img { height: 84px; }
+  .nav-menu { gap: 1.4rem; }
+  .nav-item > a { font-size: 0.95rem; }
+  .login-link { font-size: 0.85rem; padding: 0 1.1rem; }
+  .nav-actions .btn-primary { font-size: 0.85rem; }
+}
+
+/* Tighter sub-tier for 13" MacBooks / 1280–1366px laptops */
+@media (min-width: 1201px) and (max-width: 1366px) {
+  .nav-container { padding: 0 2rem !important; }
+  .logo img { height: 78px; }
+  .nav-menu { gap: 1.1rem; }
+  .nav-item > a { font-size: 0.9rem; }
+  .nav-item > a i { font-size: 0.55rem !important; }
+}
