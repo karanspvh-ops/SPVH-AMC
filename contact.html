@@ -354,43 +354,46 @@
               <!-- Product interest -->
               <div class="sc-section-label">Which Solution(s) Are You Interested In?</div>
               <p class="sc-prod-hint">Select <b>one or more</b> &mdash; this helps us route you to the right specialist. <span id="scCount">0 selected</span></p>
-              <div class="sc-products">
-                <label class="sc-prod">
-                  <input type="checkbox" name="products" value="Portfolio Management Services">
-                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-chart-pie"></i></span> Portfolio Management Services <span class="sc-check"><i class="fas fa-check"></i></span></span>
-                </label>
-                <label class="sc-prod">
-                  <input type="checkbox" name="products" value="Alternative Investment Funds">
-                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-layer-group"></i></span> Alternative Investment Funds <span class="sc-check"><i class="fas fa-check"></i></span></span>
-                </label>
-                <label class="sc-prod">
-                  <input type="checkbox" name="products" value="Offshore & Global Funds">
-                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-globe"></i></span> Offshore &amp; Global Funds <span class="sc-check"><i class="fas fa-check"></i></span></span>
-                </label>
-                <label class="sc-prod">
-                  <input type="checkbox" name="products" value="Investment Advisory & Research">
-                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-lightbulb"></i></span> Investment Advisory &amp; Research <span class="sc-check"><i class="fas fa-check"></i></span></span>
-                </label>
-                <label class="sc-prod">
-                  <input type="checkbox" name="products" value="Value Discovery Fund">
-                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-gem"></i></span> Value Discovery Fund <span class="sc-check"><i class="fas fa-check"></i></span></span>
-                </label>
-                <label class="sc-prod">
-                  <input type="checkbox" name="products" value="India Alpha Fund">
-                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-arrow-down-to-bracket"></i></span> India Alpha Fund (GIFT City) <span class="sc-check"><i class="fas fa-check"></i></span></span>
-                </label>
-                <label class="sc-prod">
-                  <input type="checkbox" name="products" value="Emerging World Fund">
-                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-earth-asia"></i></span> Emerging World Fund (GIFT City) <span class="sc-check"><i class="fas fa-check"></i></span></span>
-                </label>
-                <label class="sc-prod">
-                  <input type="checkbox" name="products" value="Family Office Solutions">
-                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-users-gear"></i></span> Family Office Solutions <span class="sc-check"><i class="fas fa-check"></i></span></span>
-                </label>
-                <label class="sc-prod" style="grid-column:1 / -1;">
-                  <input type="checkbox" name="products" value="General / Not sure yet">
-                  <span class="sc-prod-box"><span class="sc-prod-ic"><i class="fas fa-circle-question"></i></span> General enquiry / Not sure yet &mdash; help me decide <span class="sc-check"><i class="fas fa-check"></i></span></span>
-                </label>
+              <!-- Category 1 · PMS -->
+              <div class="sc-cat pms">
+                <div class="sc-cat-head"><span class="sc-cat-ic"><i class="fas fa-chart-pie"></i></span> Portfolio Management Services</div>
+                <div class="sc-cat-opts">
+                  <label class="sc-opt"><input type="checkbox" name="products" value="PMS — SPVH Growth Portfolio"><span class="sc-opt-box">SPVH Growth Portfolio <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt"><input type="checkbox" name="products" value="PMS — SPVH Value &amp; Special Situations"><span class="sc-opt-box">SPVH Value &amp; Special Situations <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt"><input type="checkbox" name="products" value="PMS — SPVH All Weather Portfolio"><span class="sc-opt-box">SPVH All Weather Portfolio <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt more"><input type="checkbox" name="products" value="PMS — More / Other"><span class="sc-opt-box"><i class="fas fa-ellipsis"></i> More in PMS <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                </div>
+              </div>
+
+              <!-- Category 2 · AIF -->
+              <div class="sc-cat aif">
+                <div class="sc-cat-head"><span class="sc-cat-ic"><i class="fas fa-layer-group"></i></span> Alternative Investment Funds</div>
+                <div class="sc-cat-opts">
+                  <label class="sc-opt"><input type="checkbox" name="products" value="AIF — SPVH Value Discovery Fund"><span class="sc-opt-box">SPVH Value Discovery Fund <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt"><input type="checkbox" name="products" value="AIF — SPVH Alpha Fund"><span class="sc-opt-box">SPVH Alpha Fund <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt more"><input type="checkbox" name="products" value="AIF — More / Other"><span class="sc-opt-box"><i class="fas fa-ellipsis"></i> More in AIF <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                </div>
+              </div>
+
+              <!-- Category 3 · Offshore & Global -->
+              <div class="sc-cat off">
+                <div class="sc-cat-head"><span class="sc-cat-ic"><i class="fas fa-globe"></i></span> Offshore &amp; Global Funds</div>
+                <div class="sc-cat-opts">
+                  <label class="sc-opt"><input type="checkbox" name="products" value="Offshore — SPVH India Alpha Fund"><span class="sc-opt-box">SPVH India Alpha Fund <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt"><input type="checkbox" name="products" value="Offshore — SPVH Emerging World Fund"><span class="sc-opt-box">SPVH Emerging World Fund <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt more"><input type="checkbox" name="products" value="Offshore — More / Other"><span class="sc-opt-box"><i class="fas fa-ellipsis"></i> More in Offshore <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                </div>
+              </div>
+
+              <!-- Category 4 · Investment Advisory & Research -->
+              <div class="sc-cat adv">
+                <div class="sc-cat-head"><span class="sc-cat-ic"><i class="fas fa-lightbulb"></i></span> Investment Advisory &amp; Research</div>
+                <div class="sc-cat-opts">
+                  <label class="sc-opt"><input type="checkbox" name="products" value="Advisory — Equity Advisory"><span class="sc-opt-box">Equity Advisory <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt"><input type="checkbox" name="products" value="Advisory — Research Subscription"><span class="sc-opt-box">Research Subscription <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt"><input type="checkbox" name="products" value="Advisory — Family Office Advisory"><span class="sc-opt-box">Family Office Advisory <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                  <label class="sc-opt more"><input type="checkbox" name="products" value="Advisory — More / Other"><span class="sc-opt-box"><i class="fas fa-ellipsis"></i> More in Investment Advisory <span class="sc-check"><i class="fas fa-check"></i></span></span></label>
+                </div>
               </div>
 
               <!-- Preferences -->
