@@ -1474,6 +1474,18 @@
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
+
+    /* Leadership cards — click to expand full bio */
+    document.querySelectorAll('.ab-leader-card.has-bio').forEach(card => {
+      const toggle = card.querySelector('.ab-leader-toggle');
+      card.addEventListener('click', e => {
+        if (e.target.closest('.ab-leader-social')) return; // let LinkedIn link work
+        const open = card.classList.toggle('expanded');
+        if (toggle && toggle.firstChild) {
+          toggle.firstChild.nodeValue = open ? 'Show Less ' : 'Read Full Bio ';
+        }
+      });
+    });
   </script>
 </body>
 </html>
