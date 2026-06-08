@@ -328,6 +328,12 @@
 
     /* ---------- RESPONSIVE ---------- */
     @media (max-width: 1200px) { .hm-hero { padding-top: 120px; } }
+    /* MacBook Air / laptop range: give the "Who We Are" text more room
+       and shrink the image to the balanced proportion, improving text
+       size & readability on tighter screens. Layout/design unchanged. */
+    @media (min-width: 1025px) and (max-width: 1536px) {
+      .hm-about-grid { grid-template-columns: 1.25fr 0.75fr; gap: 3rem; }
+    }
     @media (max-width: 1024px) {
       .hm-hero { padding-top: 110px; }
       .hm-hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
