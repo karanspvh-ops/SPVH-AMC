@@ -502,6 +502,21 @@
     }
     .ab-leader-social:hover { background: #496bad; color: #fff; }
 
+    /* Expandable full bio (click card to expand) */
+    .ab-leader-card.has-bio { cursor: pointer; }
+    .ab-leader-card.has-bio:hover .ab-leader-photo i { color: rgba(71,169,150,0.8); }
+    .ab-leader-full { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.55s ease, opacity 0.4s ease; }
+    .ab-leader-full p { font-size: 0.87rem; color: #475569; line-height: 1.7; margin-bottom: 0.9rem; }
+    .ab-leader-full p:last-child { margin-bottom: 0; }
+    .ab-leader-card.expanded .ab-leader-full { max-height: 1600px; opacity: 1; margin-bottom: 1rem; }
+    .ab-leader-toggle {
+      background: none; border: none; cursor: pointer; color: #47a996;
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.82rem;
+      padding: 0; margin-bottom: 1rem; display: inline-flex; align-items: center; gap: 7px;
+    }
+    .ab-leader-toggle i { transition: transform 0.3s; font-size: 0.68rem; }
+    .ab-leader-card.expanded .ab-leader-toggle i { transform: rotate(180deg); }
+
     /* ---------- ADVISORY BOARD ---------- */
     .ab-advisory { background: #F0F4FA; padding: 100px 0; }
     .ab-advisory-grid {
