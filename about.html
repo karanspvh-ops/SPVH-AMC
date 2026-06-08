@@ -1532,15 +1532,21 @@
     (function(){
       const overlay = document.getElementById('leaderModal');
       if (!overlay) return;
-      const nameEl  = document.getElementById('abModalName');
-      const role1El = document.getElementById('abModalRole1');
-      const role2El = document.getElementById('abModalRole2');
-      const bodyEl  = document.getElementById('abModalBody');
+      const nameEl   = document.getElementById('abModalName');
+      const role1El  = document.getElementById('abModalRole1');
+      const role2El  = document.getElementById('abModalRole2');
+      const bodyEl   = document.getElementById('abModalBody');
+      const avatarEl = overlay.querySelector('.ab-modal-avatar');
 
       function openLeader(card){
         nameEl.textContent  = card.dataset.name  || '';
         role1El.textContent = card.dataset.role1 || '';
         role2El.textContent = card.dataset.role2 || '';
+        if (avatarEl) {
+          avatarEl.innerHTML = card.dataset.photo
+            ? '<img src="' + card.dataset.photo + '" alt="' + (card.dataset.name || '') + '">'
+            : '<i class="fas fa-user-tie"></i>';
+        }
         const full = card.querySelector('.ab-leader-full');
         bodyEl.innerHTML = full ? full.innerHTML : '';
         overlay.classList.add('open');
