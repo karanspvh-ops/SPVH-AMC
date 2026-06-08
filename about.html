@@ -1526,17 +1526,39 @@
       });
     });
 
-    /* Leadership cards — click to expand full bio */
-    document.querySelectorAll('.ab-leader-card.has-bio').forEach(card => {
-      const toggle = card.querySelector('.ab-leader-toggle');
-      card.addEventListener('click', e => {
-        if (e.target.closest('.ab-leader-social')) return; // let LinkedIn link work
-        const open = card.classList.toggle('expanded');
-        if (toggle && toggle.firstChild) {
-          toggle.firstChild.nodeValue = open ? 'Show Less ' : 'Read Full Bio ';
-        }
+    /* Leadership cards — click to open full bio in a modal window */
+    (function(){
+      const overlay = document.getElementById('leaderModal');
+      if (!overlay) return;
+      const nameEl  = document.getElementById('abModalName');
+      const role1El = document.getElementById('abModalRole1');
+      const role2El = document.getElementById('abModalRole2');
+      const bodyEl  = document.getElementById('abModalBody');
+
+      function openLeader(card){
+        nameEl.textContent  = card.dataset.name  || '';
+        role1El.textContent = card.dataset.role1 || '';
+        role2El.textContent = card.dataset.role2 || '';
+        const full = card.querySelector('.ab-leader-full');
+        bodyEl.innerHTML = full ? full.innerHTML : '';
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLeader(){
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.ab-leader-card.has-bio').forEach(card => {
+        card.addEventListener('click', e => {
+          if (e.target.closest('.ab-leader-social')) return; // let LinkedIn link work
+          openLeader(card);
+        });
       });
-    });
+      overlay.querySelector('.ab-modal-close').addEventListener('click', closeLeader);
+      overlay.addEventListener('click', e => { if (e.target === overlay) closeLeader(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeLeader(); });
+    })();
   </script>
 </body>
 </html>
