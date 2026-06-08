@@ -502,20 +502,55 @@
     }
     .ab-leader-social:hover { background: #496bad; color: #fff; }
 
-    /* Expandable full bio (click card to expand) */
+    /* Click card to open full bio in a modal window */
     .ab-leader-card.has-bio { cursor: pointer; }
     .ab-leader-card.has-bio:hover .ab-leader-photo i { color: rgba(71,169,150,0.8); }
-    .ab-leader-full { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.55s ease, opacity 0.4s ease; }
-    .ab-leader-full p { font-size: 0.87rem; color: #475569; line-height: 1.7; margin-bottom: 0.9rem; }
-    .ab-leader-full p:last-child { margin-bottom: 0; }
-    .ab-leader-card.expanded .ab-leader-full { max-height: 1600px; opacity: 1; margin-bottom: 1rem; }
+    .ab-leader-full { display: none; }  /* source content for the modal */
     .ab-leader-toggle {
       background: none; border: none; cursor: pointer; color: #47a996;
       font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.82rem;
       padding: 0; margin-bottom: 1rem; display: inline-flex; align-items: center; gap: 7px;
     }
-    .ab-leader-toggle i { transition: transform 0.3s; font-size: 0.68rem; }
-    .ab-leader-card.expanded .ab-leader-toggle i { transform: rotate(180deg); }
+    .ab-leader-toggle i { font-size: 0.7rem; transition: transform 0.25s; }
+    .ab-leader-card.has-bio:hover .ab-leader-toggle i { transform: translateX(3px); }
+
+    /* ---- Leader Bio Modal ---- */
+    .ab-modal-overlay {
+      position: fixed; inset: 0; z-index: 9500; display: flex; align-items: center; justify-content: center;
+      padding: 1.25rem; background: rgba(7,15,30,0.72);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .ab-modal-overlay.open { opacity: 1; visibility: visible; }
+    .ab-modal {
+      background: #fff; border-radius: 16px; width: 100%; max-width: 640px; max-height: 88vh; overflow-y: auto;
+      padding: 38px 40px 34px; position: relative; box-shadow: 0 30px 80px rgba(7,15,30,0.45);
+      transform: translateY(20px) scale(0.97); transition: transform 0.35s cubic-bezier(.22,.68,0,1.2);
+    }
+    .ab-modal-overlay.open .ab-modal { transform: translateY(0) scale(1); }
+    .ab-modal-close {
+      position: absolute; top: 16px; right: 18px; width: 36px; height: 36px; border-radius: 50%;
+      border: none; background: #F0F4FA; color: #475569; font-size: 1.2rem; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .ab-modal-close:hover { background: #496bad; color: #fff; }
+    .ab-modal-head { display: flex; align-items: center; gap: 18px; margin-bottom: 1.25rem; padding-right: 40px; }
+    .ab-modal-avatar {
+      flex-shrink: 0; width: 64px; height: 64px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(71,169,150,0.15), rgba(73,107,173,0.15));
+      display: flex; align-items: center; justify-content: center; color: #47a996; font-size: 1.6rem;
+    }
+    .ab-modal-name { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 800; color: #0A1628; line-height: 1.15; margin: 0 0 0.35rem; }
+    .ab-modal-role { font-family: 'Montserrat', sans-serif; font-size: 0.86rem; font-weight: 700; color: #47a996; letter-spacing: 0.3px; line-height: 1.45; }
+    .ab-modal-org { font-size: 0.86rem; color: #64748B; font-weight: 600; }
+    .ab-modal-body { border-top: 1px solid #E8EEF4; padding-top: 1.25rem; }
+    .ab-modal-body p { font-size: 0.92rem; color: #475569; line-height: 1.75; margin-bottom: 1rem; }
+    .ab-modal-body p:last-child { margin-bottom: 0; }
+    @media (max-width: 540px) {
+      .ab-modal { padding: 30px 22px 26px; }
+      .ab-modal-head { flex-direction: column; align-items: flex-start; gap: 12px; padding-right: 30px; }
+      .ab-modal-name { font-size: 1.3rem; }
+    }
 
     /* ---------- ADVISORY BOARD ---------- */
     .ab-advisory { background: #F0F4FA; padding: 100px 0; }
