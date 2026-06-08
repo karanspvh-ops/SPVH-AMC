@@ -578,12 +578,17 @@
     .ab-reg-item i { color: #47a996; }
     .ab-reg-text { font-size: 0.8rem; color: #475569; font-weight: 600; }
     /* Keep all 5 compliance badges on a single line on desktop & laptops
-       (incl. MacBook Air) — compact sizing so they fit the container width.
+       (incl. MacBook Air) at their ORIGINAL size — widen this strip's row
+       so they fit, instead of shrinking the badges/text.
        Below 1024px the badges wrap/stack as before. */
     @media (min-width: 1025px) {
-      .ab-reg-inner { flex-wrap: nowrap; gap: 0.6rem; }
-      .ab-reg-item { padding: 10px 13px; gap: 7px; }
-      .ab-reg-text { font-size: 0.7rem; line-height: 1.35; }
+      .ab-reg .container { max-width: 1440px; padding-left: 1.5rem; padding-right: 1.5rem; }
+      .ab-reg-inner { flex-wrap: nowrap; gap: 1rem; }
+    }
+    /* 13" MacBooks / ~1280px: trim only spacing (not font) to keep one line */
+    @media (min-width: 1025px) and (max-width: 1366px) {
+      .ab-reg-inner { gap: 0.55rem; }
+      .ab-reg-item { padding: 11px 14px; }
     }
 
     /* ---------- CTA ---------- */
