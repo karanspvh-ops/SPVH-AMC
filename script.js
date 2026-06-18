@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  document.documentElement.classList.add('js-ready');
   const header = document.getElementById('header');
   
   // Sticky Header Transition

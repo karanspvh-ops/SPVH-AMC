@@ -3,11 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SPVH Asset Management Company — SEBI-registered PMS, AIF & offshore fund manager for UHNIs, family offices and institutional investors. Research-driven, conviction-led wealth management.">
+  <meta property="og:title" content="SPVH AMC | Institutional Wealth Management">
+  <meta property="og:description" content="SEBI-registered fund manager offering PMS, AIF & global strategies built exclusively for discerning investors who think in decades.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://karanspvh-ops.github.io/">
+  <link rel="icon" type="image/png" href="assets/images/SPVH%20Round%20Logo.png">
   <title>SPVH AMC | Institutional Wealth Management</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <style>
     /* ============================================================
        HOME / LANDING — FULL REBUILD  (prefix: .hm-*)
@@ -20,7 +26,7 @@
     .hm-hero {
       position: relative; overflow: hidden;
       min-height: 100vh; display: flex; flex-direction: column;
-      padding-top: 150px; background: #070f1e;
+      padding-top: 150px; background: #0A1628;
     }
     /* cinematic background image — slow Ken Burns zoom */
     .hm-hero-media {
@@ -100,16 +106,18 @@
       display: inline-flex; align-items: center; gap: 8px;
       background: #47a996; color: #fff; padding: 15px 30px; border-radius: 4px;
       font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem;
-      letter-spacing: 0.5px; text-decoration: none; transition: all 0.3s;
+      letter-spacing: 0.5px; text-decoration: none; transition: background 0.3s ease, transform 0.2s ease;
     }
     .hm-btn-primary:hover { background: #3d9688; color: #fff; transform: translateY(-2px); }
+    .hm-btn-primary:active { transform: scale(0.97); }
     .hm-btn-ghost {
       display: inline-flex; align-items: center; gap: 8px;
       background: transparent; color: #fff; padding: 15px 30px; border-radius: 4px;
       border: 1.5px solid rgba(255,255,255,0.25); font-family: 'Montserrat', sans-serif;
-      font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.3s;
+      font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: border-color 0.3s ease, color 0.3s ease;
     }
     .hm-btn-ghost:hover { border-color: #47a996; color: #47a996; }
+    .hm-btn-ghost:active { transform: scale(0.97); }
     .hm-hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
       background: rgba(71,169,150,0.1); border: 1px solid rgba(71,169,150,0.22);
@@ -129,7 +137,7 @@
     }
     .hm-panel-val span { color: #47a996; }
     .hm-panel-lbl { font-size: 0.85rem; color: #cbd5e1; font-weight: 600; margin-bottom: 2px; }
-    .hm-panel-note { font-size: 0.72rem; color: #64748B; }
+    .hm-panel-note { font-size: 0.72rem; color: #475569; }
     /* docked ticker */
     .hm-hero-ticker { position: relative; z-index: 2; }
 
@@ -145,7 +153,7 @@
       font-weight: 800; color: #0A1628; line-height: 1.2; margin-bottom: 1rem;
     }
     .hm-heading span { color: #496bad; }
-    .hm-sub { color: #64748B; font-size: 1rem; line-height: 1.8; }
+    .hm-sub { color: #475569; font-size: 1rem; line-height: 1.8; }
     .hm-section { padding: 100px 0; }
     .hm-section.dark .hm-heading { color: #fff; }
     .hm-section.dark .hm-sub { color: #94A3B8; }
@@ -167,7 +175,7 @@
       font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 2.6vw, 2.3rem);
       font-weight: 800; color: #496bad; line-height: 1; margin-bottom: 0.5rem;
     }
-    .hm-metric-lbl { font-size: 0.82rem; color: #64748B; font-weight: 500; line-height: 1.4; }
+    .hm-metric-lbl { font-size: 0.82rem; color: #475569; font-weight: 500; line-height: 1.4; }
 
     /* ---------- ABOUT / OVERVIEW ---------- */
     .hm-about { background: #F0F4FA; }
@@ -186,7 +194,7 @@
     }
     .hm-about-float img { width: 40px; height: 40px; border-radius: 8px; box-shadow: none; }
     .hm-float-title { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #0A1628; font-size: 0.95rem; display: block; }
-    .hm-float-sub { font-size: 0.75rem; color: #64748B; }
+    .hm-float-sub { font-size: 0.75rem; color: #475569; }
 
     /* ---------- SOLUTIONS CARDS ---------- */
     .hm-sol { background: #fff; }
@@ -197,16 +205,7 @@
       transition: transform 0.35s, box-shadow 0.35s, border-color 0.35s;
       display: flex; flex-direction: column;
     }
-    .hm-sol-card::before {
-      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
-      transform: scaleY(0); transform-origin: top; transition: transform 0.35s;
-    }
-    .hm-sol-card:nth-child(1)::before { background: #47a996; }
-    .hm-sol-card:nth-child(2)::before { background: #496bad; }
-    .hm-sol-card:nth-child(3)::before { background: #C9A84C; }
-    .hm-sol-card:nth-child(4)::before { background: #47a996; }
-    .hm-sol-card:hover { transform: translateY(-6px); box-shadow: 0 18px 44px rgba(73,107,173,0.13); border-color: transparent; }
-    .hm-sol-card:hover::before { transform: scaleY(1); }
+    .hm-sol-card:hover { transform: translateY(-4px); box-shadow: 0 18px 44px rgba(73,107,173,0.13); border-color: rgba(71,169,150,0.3); }
     .hm-sol-icon {
       width: 56px; height: 56px; border-radius: 12px; display: flex;
       align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 1.3rem;
@@ -236,7 +235,7 @@
     .hm-why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; position: relative; z-index: 1; }
     .hm-why-card {
       background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px; padding: 32px 30px; transition: all 0.35s;
+      border-radius: 14px; padding: 32px 30px; transition: background 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
     }
     .hm-why-card:hover { background: rgba(255,255,255,0.07); transform: translateY(-5px); border-color: rgba(71,169,150,0.3); }
     .hm-why-icon {
@@ -392,9 +391,9 @@
         <a href="contact.html" class="btn btn-primary">Schedule Consultation</a>
       </div>
 
-      <div class="hamburger">
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
         <i class="fas fa-bars"></i>
-      </div>
+      </button>
     </div>
   </header>
 
@@ -494,7 +493,6 @@
       <div class="container">
         <div class="hm-about-grid">
           <div class="reveal-left">
-            <span class="hm-label">Who We Are</span>
             <h2 class="hm-heading">Built on Research.<br><span>Driven by Conviction.</span></h2>
             <div class="hm-about-rule"></div>
             <p class="hm-about-body">SPVH Asset Management Company is the investment arm of the SPVH Group &mdash; a multi-generational holding company with diversified interests across sectors. We bring institutional-grade investment discipline to family offices, HNIs, and ultra-high-net-worth investors across India.</p>
@@ -508,7 +506,7 @@
           </div>
           <div class="reveal-right">
             <div class="hm-about-visual">
-              <img src="assets/images/ChatGPT%20Image%20May%2012,%202026,%2004_19_30%20PM.png" alt="SPVH Group Headquarters">
+              <img src="assets/images/spvh-headquarters.png" alt="SPVH Group Headquarters">
               <div class="hm-about-float">
                 <img src="assets/images/SPVH%20Round%20Logo.png" alt="SPVH Logo Icon">
                 <div>
@@ -528,7 +526,6 @@
     <section class="hm-section hm-sol">
       <div class="container">
         <div class="hm-head">
-          <span class="hm-label">What We Offer</span>
           <h2 class="hm-heading">Solutions Designed for <span>Serious Investors.</span></h2>
           <p class="hm-sub">Four institutional-grade mandates, one research engine — each structured to a distinct risk-return objective.</p>
         </div>
@@ -579,8 +576,7 @@
     <section class="hm-section dark hm-why">
       <div class="container">
         <div class="hm-head">
-          <span class="hm-label">Why SPVH AMC</span>
-          <h2 class="hm-heading">An Edge Built on <span style="color:#47a996;">Discipline &amp; Alignment.</span></h2>
+          <h2 class="hm-heading">An Edge Built on <span>Discipline &amp; Alignment.</span></h2>
           <p class="hm-sub">Six reasons India's most discerning investors trust SPVH AMC with their generational capital.</p>
         </div>
 
@@ -625,31 +621,26 @@
     <section class="hm-section hm-phil">
       <div class="container">
         <div class="hm-head">
-          <span class="hm-label">How We Think</span>
           <h2 class="hm-heading">A Philosophy Built for <span>Wealth That Lasts.</span></h2>
         </div>
 
         <div class="hm-phil-grid">
           <div class="hm-phil-card reveal">
-            <div class="hm-phil-num">01</div>
             <i class="fas fa-search hm-phil-icon"></i>
             <h3>Research First</h3>
             <p>Every decision is grounded in deep fundamental analysis &mdash; bottom-up stock picking combined with top-down macro awareness. No noise, only conviction.</p>
           </div>
           <div class="hm-phil-card reveal" style="animation-delay:0.1s;">
-            <div class="hm-phil-num">02</div>
             <i class="fas fa-arrow-trend-up hm-phil-icon"></i>
             <h3>Absolute Return Mindset</h3>
             <p>We measure success against capital preservation and real returns &mdash; not benchmark hugging. The goal is to grow and protect wealth in all conditions.</p>
           </div>
           <div class="hm-phil-card reveal" style="animation-delay:0.2s;">
-            <div class="hm-phil-num">03</div>
             <i class="fas fa-gem hm-phil-icon"></i>
             <h3>Concentrated Conviction</h3>
             <p>We run high-conviction, focused portfolios. Meaningful wealth is built through selective positioning &mdash; not over-diversification that dilutes returns.</p>
           </div>
           <div class="hm-phil-card reveal" style="animation-delay:0.3s;">
-            <div class="hm-phil-num">04</div>
             <i class="fas fa-infinity hm-phil-icon"></i>
             <h3>Long-Term Compounding</h3>
             <p>Patience is our edge. We invest with a 3&ndash;5 year horizon, allowing compounding to work undisturbed by short-term volatility and noise.</p>
@@ -691,7 +682,7 @@
       .chart-canvas-wrap { position: relative; height: 300px; }
       .dash-donut-wrap { position: relative; height: 170px; margin-bottom: 1rem; }
       .sector-rows { list-style: none; padding: 0; margin: 0; }
-      .sector-rows li { display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0; border-bottom: 1px solid #F0F4FA; font-size: 0.75rem; color: #64748B; }
+      .sector-rows li { display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0; border-bottom: 1px solid #F0F4FA; font-size: 0.75rem; color: #475569; }
       .sector-rows li:last-child { border-bottom: none; }
       .sr-left { display: flex; align-items: center; gap: 0.45rem; }
       .sr-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
@@ -701,7 +692,7 @@
       .dash-comp-table thead tr { background: #F8FAFC; border-bottom: 2px solid #E2E8F0; }
       .dash-comp-table th { padding: 0.9rem 1rem; text-align: center; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); font-family: 'Montserrat', sans-serif; font-weight: 700; white-space: nowrap; }
       .dash-comp-table th:first-child { text-align: left; min-width: 210px; }
-      .dash-comp-table td { padding: 0.9rem 1rem; text-align: center; font-size: 0.9rem; color: #64748B; border-bottom: 1px solid #F0F4FA; white-space: nowrap; font-family: 'Montserrat', sans-serif; }
+      .dash-comp-table td { padding: 0.9rem 1rem; text-align: center; font-size: 0.9rem; color: #475569; border-bottom: 1px solid #F0F4FA; white-space: nowrap; font-family: 'Montserrat', sans-serif; }
       .dash-comp-table td:first-child { text-align: left; }
       .dash-comp-table tbody tr:last-child td { border-bottom: none; }
       .dash-comp-table tbody tr:hover { background: #F8FAFC; }
@@ -713,13 +704,13 @@
       .ctr-row-spvh td { border-bottom: 1px solid rgba(71,169,150,0.1) !important; }
       .ctr-row-spvh:hover { background: rgba(71,169,150,0.08) !important; }
       .cv-spvh-pos { color: var(--secondary); font-weight: 800; font-size: 0.9rem; }
-      .cv-n50  { color: #64748B; font-weight: 600; font-size: 0.9rem; }
+      .cv-n50  { color: #475569; font-weight: 600; font-size: 0.9rem; }
       .cv-mid  { color: #475569; font-weight: 600; font-size: 0.9rem; }
       .cv-inception { font-size: 0.78rem; color: #94A3B8; display: block; margin-top: 0.15rem; font-family: 'Montserrat', sans-serif; }
       .ctr-row-alpha { background: rgba(73,107,173,0.04); }
       .ctr-row-alpha td { border-bottom: 1px solid rgba(73,107,173,0.08) !important; color: var(--primary) !important; font-weight: 700; }
       .ctr-row-alpha:hover { background: rgba(73,107,173,0.07) !important; }
-      .dash-footer-bar { background: #fff; border: 1px solid #E2E8F0; border-left: 4px solid var(--secondary); border-radius: 8px; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: 0 1px 6px rgba(73,107,173,0.06); }
+      .dash-footer-bar { background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: 0 1px 6px rgba(73,107,173,0.06); }
       .dash-footer-bar p { font-size: 0.84rem; color: #94A3B8; margin: 0; font-family: 'Montserrat', sans-serif; }
       .dash-full-link { font-size: 0.92rem; color: var(--primary); font-family: 'Montserrat', sans-serif; font-weight: 700; text-decoration: none; letter-spacing: 0.05em; white-space: nowrap; transition: color 0.2s; }
       .dash-full-link:hover { color: var(--secondary); }
@@ -824,11 +815,11 @@
               <canvas id="dashDonutChart"></canvas>
             </div>
             <ul class="sector-rows">
-              <li><span class="sr-left"><span class="sr-dot" style="background:#6366F1;"></span>BFSI — Wealth</span><span class="sr-pct">33.6%</span></li>
-              <li><span class="sr-left"><span class="sr-dot" style="background:#F97316;"></span>Metals &amp; Tubes</span><span class="sr-pct">18.8%</span></li>
-              <li><span class="sr-left"><span class="sr-dot" style="background:#EAB308;"></span>Energy Transition</span><span class="sr-pct">17.5%</span></li>
-              <li><span class="sr-left"><span class="sr-dot" style="background:#14B8A6;"></span>Tactical Banks</span><span class="sr-pct">16.7%</span></li>
-              <li><span class="sr-left"><span class="sr-dot" style="background:#EC4899;"></span>Healthcare</span><span class="sr-pct">13.4%</span></li>
+              <li><span class="sr-left"><span class="sr-dot" style="background:#496bad;"></span>BFSI — Wealth</span><span class="sr-pct">33.6%</span></li>
+              <li><span class="sr-left"><span class="sr-dot" style="background:#47a996;"></span>Metals &amp; Tubes</span><span class="sr-pct">18.8%</span></li>
+              <li><span class="sr-left"><span class="sr-dot" style="background:#2c4a7c;"></span>Energy Transition</span><span class="sr-pct">17.5%</span></li>
+              <li><span class="sr-left"><span class="sr-dot" style="background:#35876f;"></span>Tactical Banks</span><span class="sr-pct">16.7%</span></li>
+              <li><span class="sr-left"><span class="sr-dot" style="background:#7a9fd4;"></span>Healthcare</span><span class="sr-pct">13.4%</span></li>
             </ul>
           </div>
         </div>
@@ -962,8 +953,8 @@
     <!-- Dashboard Charts Script -->
     <script>
     (function(){
-      Chart.defaults.color = '#64748B';
-      Chart.defaults.font.family = "'Inter','Segoe UI',sans-serif";
+      Chart.defaults.color = '#475569';
+      Chart.defaults.font.family = "'Montserrat','Helvetica',sans-serif";
 
       const gCtx = document.getElementById('dashGrowthChart').getContext('2d');
       const gradP = gCtx.createLinearGradient(0,0,0,300);
@@ -997,7 +988,7 @@
       new Chart(dCtx,{
         type:'doughnut',
         data:{ labels:['BFSI — Wealth','Metals & Tubes','Energy Transition','Tactical Banks','Healthcare'],
-          datasets:[{ data:[33.6,18.8,17.5,16.7,13.4], backgroundColor:['#6366F1','#F97316','#EAB308','#14B8A6','#EC4899'], borderColor:'#fff', borderWidth:3, hoverOffset:6 }] },
+          datasets:[{ data:[33.6,18.8,17.5,16.7,13.4], backgroundColor:['#496bad','#47a996','#2c4a7c','#35876f','#7a9fd4'], borderColor:'#fff', borderWidth:3, hoverOffset:6 }] },
         options:{ responsive:true, maintainAspectRatio:false, cutout:'70%',
           plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#fff', borderColor:'#E2E8F0', borderWidth:1, titleColor:'#0A1628', bodyColor:'#475569', callbacks:{label: ctx=>` ${ctx.label}: ${ctx.parsed}%`} } } }
       });
@@ -1010,8 +1001,7 @@
     <section class="hm-section hm-proc">
       <div class="container">
         <div class="hm-head">
-          <span class="hm-label">How We Partner</span>
-          <h2 class="hm-heading">A Disciplined Path from <span style="color:#47a996;">First Call to Compounding.</span></h2>
+          <h2 class="hm-heading">A Disciplined Path from <span>First Call to Compounding.</span></h2>
           <p class="hm-sub">A transparent, four-step onboarding journey designed around your objectives.</p>
         </div>
 
@@ -1046,7 +1036,6 @@
     <section class="hm-section hm-ins">
       <div class="container">
         <div class="hm-head">
-          <span class="hm-label">Insights &amp; Research</span>
           <h2 class="hm-heading">Sharp Thinking on <span>Markets &amp; Capital.</span></h2>
         </div>
 
@@ -1104,15 +1093,14 @@
       <div class="container">
 
         <div class="hm-head">
-          <span class="hm-label">What Our Investors Say</span>
-          <h2 class="hm-heading" style="color:#fff;">Trust Built Over <span style="color:#47a996;">Years of Delivering Returns.</span></h2>
+          <h2 class="hm-heading" style="color:#fff;">Trust Built Over <span>Years of Delivering Returns.</span></h2>
         </div>
 
-        <div class="carousel-wrapper reveal">
-          <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+        <div class="carousel-wrapper reveal" role="region" aria-roledescription="carousel" aria-label="Client testimonials">
+          <button class="carousel-btn prev-btn" aria-label="Previous testimonial"><i class="fas fa-chevron-left"></i></button>
 
           <div class="carousel-track-container">
-            <div class="carousel-track" id="testimonialTrack">
+            <div class="carousel-track" id="testimonialTrack" aria-live="polite">
 
               <div class="testi-card">
                 <div class="testi-card-inner">
@@ -1165,7 +1153,7 @@
             </div>
           </div>
 
-          <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+          <button class="carousel-btn next-btn" aria-label="Next testimonial"><i class="fas fa-chevron-right"></i></button>
         </div>
 
         <div class="carousel-dots" id="carouselDots"></div>
@@ -1181,7 +1169,6 @@
       <div class="container">
 
         <div class="hm-head">
-          <span class="hm-label">Recognition &amp; Trust</span>
           <h2 class="hm-heading">Recognised by <span>Industry Leaders.</span></h2>
         </div>
 
@@ -1333,7 +1320,7 @@
   <style>
     .consult-overlay { position: fixed; inset: 0; background: rgba(6, 12, 26, 0.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 9000; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
     .consult-overlay.open { opacity: 1; visibility: visible; }
-    .consult-modal { background: #111827; border-radius: 16px; width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; padding: 2.5rem 2.5rem 2rem; position: relative; box-shadow: 0 32px 80px rgba(0,0,0,0.6); transform: translateY(24px) scale(0.97); transition: transform 0.35s cubic-bezier(.22,.68,0,1.2); scrollbar-width: thin; scrollbar-color: #374151 transparent; }
+    .consult-modal { background: #111827; border-radius: 16px; width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; padding: 2.5rem 2.5rem 2rem; position: relative; box-shadow: 0 32px 80px rgba(0,0,0,0.6); transform: translateY(24px) scale(0.97); transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1); scrollbar-width: thin; scrollbar-color: #374151 transparent; }
     .consult-overlay.open .consult-modal { transform: translateY(0) scale(1); }
     .consult-close { position: absolute; top: 1.1rem; right: 1.25rem; background: rgba(255,255,255,0.08); border: none; color: #9CA3AF; width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, color 0.2s; line-height: 1; }
     .consult-close:hover { background: rgba(255,255,255,0.16); color: #fff; }
