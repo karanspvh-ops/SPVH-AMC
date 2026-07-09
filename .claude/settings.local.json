@@ -43,7 +43,10 @@
       "Bash(grep -oE \"\\(SPVH[^<]{2,45}Fund\\)\" aif.html)",
       "Bash(find assets *)",
       "Bash(find \"C:/Users/karan/OneDrive/Desktop/Project/Website Design/SPVH AMC/assets\" -iname \"*sujay*\")",
-      "Bash(awk '{print $5, $NF}')"
+      "Bash(awk '{print $5, $NF}')",
+      "Bash(cat .claude/launch.json)",
+      "Bash(ls -la CNAME netlify.toml vercel.json _config.yml .htaccess)",
+      "Bash(cat package.json)"
     ]
   },
   "hooks": {
