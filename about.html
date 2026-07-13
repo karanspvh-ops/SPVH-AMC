@@ -485,20 +485,22 @@
       object-fit: cover; object-position: top center;
     }
 
-    /* Subtle gradient veil over photo */
+    /* Gradient veil — fades naturally into text zone */
     .ab-leader-card::before {
       content: ''; position: absolute; inset: 0; z-index: 1;
-      background: linear-gradient(to bottom, transparent 35%, rgba(6,14,30,0.55) 65%, rgba(6,14,30,0.82) 100%);
+      background: linear-gradient(to bottom,
+        transparent 0%,
+        transparent 40%,
+        rgba(6,14,30,0.30) 58%,
+        rgba(6,14,30,0.72) 75%,
+        rgba(6,14,30,0.88) 100%);
     }
 
-    /* Frosted glass overlay at bottom */
+    /* Text overlay — no hard box, just sits on the gradient */
     .ab-leader-overlay {
       position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
-      padding: 22px 22px 20px;
-      background: rgba(8, 18, 38, 0.55);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 28px 22px 20px;
+      background: transparent;
     }
     .ab-leader-name {
       font-family: 'Montserrat', sans-serif; font-size: 1.05rem;
