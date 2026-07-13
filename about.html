@@ -466,54 +466,70 @@
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3.5rem;
     }
     .ab-leader-card {
-      background: #fff; border-radius: 14px;
-      border: 1px solid #E2E8F0;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-      overflow: hidden; transition: all 0.35s;
+      position: relative; border-radius: 16px; overflow: hidden;
+      height: 420px; cursor: default;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+      transition: transform 0.35s, box-shadow 0.35s;
     }
-    .ab-leader-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
+    .ab-leader-card:hover { transform: translateY(-6px); box-shadow: 0 24px 56px rgba(0,0,0,0.18); }
+
+    /* Full-bleed image / background */
     .ab-leader-photo {
-      height: 200px; background: linear-gradient(135deg, #0A1628, #1a3560);
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #0A1628 0%, #1a3560 60%, #0d2444 100%);
       display: flex; align-items: center; justify-content: center;
-      position: relative; overflow: hidden;
     }
-    .ab-leader-photo::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-      height: 40%; background: linear-gradient(to top, rgba(10,22,40,0.5), transparent);
+    .ab-leader-photo i { font-size: 4rem; color: rgba(71,169,150,0.35); }
+    .ab-leader-photo img.ab-leader-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: top center;
     }
-    .ab-leader-photo i { font-size: 3.5rem; color: rgba(71,169,150,0.5); position: relative; z-index: 1; }
-    .ab-leader-photo img.ab-leader-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-    .ab-leader-body { padding: 28px 26px; }
+
+    /* Subtle gradient veil over photo */
+    .ab-leader-card::before {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to bottom, transparent 35%, rgba(6,14,30,0.55) 65%, rgba(6,14,30,0.82) 100%);
+    }
+
+    /* Frosted glass overlay at bottom */
+    .ab-leader-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+      padding: 22px 22px 20px;
+      background: rgba(8, 18, 38, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
     .ab-leader-name {
-      font-family: 'Montserrat', sans-serif; font-size: 1.1rem;
-      font-weight: 800; color: #1A202C; margin-bottom: 4px;
+      font-family: 'Montserrat', sans-serif; font-size: 1.05rem;
+      font-weight: 800; color: #fff; margin-bottom: 3px; letter-spacing: 0.01em;
     }
     .ab-leader-role {
-      font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;
-      text-transform: uppercase; color: #47a996; margin-bottom: 1rem;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1.1px;
+      text-transform: uppercase; color: #47a996; margin-bottom: 14px; line-height: 1.5;
     }
-    .ab-leader-rule { height: 1px; background: #E8EEF4; margin-bottom: 1rem; }
-    .ab-leader-bio { font-size: 0.87rem; color: #475569; line-height: 1.7; margin-bottom: 1rem; }
-    .ab-leader-edu { font-size: 0.8rem; color: #94A3B8; margin-bottom: 1rem; }
+    .ab-leader-actions {
+      display: flex; align-items: center; gap: 8px;
+    }
     .ab-leader-social {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 34px; height: 34px; border-radius: 50%;
-      background: #F0F4FA; color: #496bad; font-size: 0.85rem;
-      text-decoration: none; transition: all 0.3s;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.10); color: #fff; font-size: 0.8rem;
+      text-decoration: none; border: 1px solid rgba(255,255,255,0.18);
+      transition: all 0.25s;
     }
-    .ab-leader-social:hover { background: #496bad; color: #fff; }
+    .ab-leader-social:hover { background: #496bad; border-color: #496bad; }
+    .ab-leader-social.mail:hover { background: #47a996; border-color: #47a996; }
 
-    /* Click card to open full bio in a modal window */
+    /* Click-to-bio hint */
     .ab-leader-card.has-bio { cursor: pointer; }
-    .ab-leader-card.has-bio:hover .ab-leader-photo i { color: rgba(71,169,150,0.8); }
-    .ab-leader-full { display: none; }  /* source content for the modal */
-    .ab-leader-toggle {
-      background: none; border: none; cursor: pointer; color: #47a996;
-      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.82rem;
-      padding: 0; margin-bottom: 1rem; display: inline-flex; align-items: center; gap: 7px;
+    .ab-leader-bio-hint {
+      font-size: 0.7rem; color: rgba(255,255,255,0.45); letter-spacing: 0.5px;
+      margin-left: auto; display: flex; align-items: center; gap: 5px;
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
     }
-    .ab-leader-toggle i { font-size: 0.7rem; transition: transform 0.25s; }
-    .ab-leader-card.has-bio:hover .ab-leader-toggle i { transform: translateX(3px); }
+    .ab-leader-card.has-bio:hover .ab-leader-bio-hint { color: #47a996; }
+    .ab-leader-full { display: none; }
 
     /* ---- Leader Bio Modal ---- */
     .ab-modal-overlay {
