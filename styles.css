@@ -1560,6 +1560,23 @@ footer { padding: 5rem 0 2rem; }
   gap: 1.5rem;
 }
 
+.footer-regulatory-notice {
+  padding: 16px 0 4px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.footer-regulatory-notice p {
+  font-family: 'Helvetica', sans-serif;
+  color: #6B7280;
+  font-size: 11px;
+  line-height: 1.7;
+  font-style: italic;
+}
+.footer-regulatory-notice sup {
+  font-size: 9px;
+  color: #9CA3AF;
+  margin-right: 2px;
+}
+
 .footer-copyright {
   font-family: 'Helvetica', sans-serif;
   color: #9CA3AF;
