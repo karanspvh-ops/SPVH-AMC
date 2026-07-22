@@ -9,314 +9,287 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ── Performance Page Scoped Styles ─────────────────────────── */
+    /* ── Performance Page ─────────────────────────────────── */
     :root {
-      --perf-gold:   #C9A84C;
-      --perf-dark:   #0A0F1E;
-      --perf-mid:    #111827;
-      --perf-card:   #161D2F;
-      --perf-border: rgba(201,168,76,0.18);
-      --perf-text:   #CBD5E1;
-      --perf-green:  #22C55E;
-      --perf-red:    #EF4444;
+      --pr-blue:  #496bad;
+      --pr-teal:  #47a996;
+      --pr-navy:  #0A1628;
+      --pr-gold:  #C9A84C;
+      --pr-light: #F0F4FA;
+      --pr-green: #16A34A;
+      --pr-red:   #DC2626;
     }
 
-    /* Hero */
-    .perf-hero {
-      background: linear-gradient(135deg, var(--perf-dark) 0%, #0E1A38 100%);
-      padding: 170px 0 3.5rem;
+    /* ── Hero ──────────────────────────────────────────────── */
+    .pr-hero {
+      background: linear-gradient(135deg, #0A1628 0%, #0d2244 60%, #112850 100%);
+      padding: 170px 0 5rem;
       position: relative;
       overflow: hidden;
     }
-    .perf-hero::before {
+    .pr-hero::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(201,168,76,0.06) 0%, transparent 70%);
+      background: radial-gradient(ellipse 55% 70% at 75% 50%, rgba(73,107,173,0.12) 0%, transparent 70%);
     }
-    .perf-hero-inner { position: relative; z-index: 1; }
-    .perf-eyebrow {
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--perf-gold);
-      margin-bottom: 0.75rem;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
+    .pr-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(71,169,150,0.3), transparent);
     }
-    .perf-hero h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      color: #fff;
-      line-height: 1.15;
+    .pr-hero-inner { position: relative; z-index: 1; }
+    .pr-eyebrow {
+      font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: #47a996; font-family: 'Montserrat', sans-serif; font-weight: 700;
       margin-bottom: 1rem;
     }
-    .perf-hero h1 span { color: var(--perf-gold); }
-    .perf-hero p {
-      color: var(--perf-text);
-      max-width: 560px;
+    .pr-hero h1 {
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      color: #fff; line-height: 1.15; margin-bottom: 1rem;
+      font-family: 'Montserrat', sans-serif; font-weight: 800;
+    }
+    .pr-hero h1 span { color: #47a996; }
+    .pr-hero-sub {
+      color: rgba(255,255,255,0.65); max-width: 540px;
+      font-size: 0.95rem; line-height: 1.7; margin-bottom: 2.5rem;
+    }
+    .pr-hero-chips { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .pr-chip {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.4rem 1rem; border-radius: 100px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.75rem; color: rgba(255,255,255,0.8);
+      font-family: 'Montserrat', sans-serif; font-weight: 500;
+    }
+    .pr-chip i { color: #47a996; font-size: 0.7rem; }
+
+    /* ── KPI Strip ──────────────────────────────────────────── */
+    .pr-kpi-strip {
+      background: #fff;
+      border-bottom: 1px solid #E2E8F0;
+      box-shadow: 0 4px 24px rgba(10,22,40,0.06);
+    }
+    .pr-kpi-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .pr-kpi {
+      padding: 2.25rem 2rem;
+      border-right: 1px solid #E8EEF4;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .pr-kpi:last-child { border-right: none; }
+    .pr-kpi:hover { background: #F8FAFC; }
+    .pr-kpi-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 0.85rem;
       font-size: 1rem;
-      line-height: 1.7;
     }
+    .pr-kpi-icon.blue { background: rgba(73,107,173,0.1); color: #496bad; }
+    .pr-kpi-icon.teal { background: rgba(71,169,150,0.1); color: #47a996; }
+    .pr-kpi-icon.gold { background: rgba(201,168,76,0.1); color: #C9A84C; }
+    .pr-kpi-icon.green { background: rgba(22,163,74,0.1); color: #16A34A; }
+    .pr-kpi-val {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 800; color: #0A1628; line-height: 1; margin-bottom: 0.4rem;
+    }
+    .pr-kpi-label {
+      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: #64748B; font-family: 'Montserrat', sans-serif; font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .pr-kpi-sub { font-size: 0.75rem; color: #94A3B8; }
+    .pr-kpi-sub.good { color: #16A34A; font-weight: 600; }
 
-    /* Stat Strip */
-    .stat-strip {
-      background: var(--perf-mid);
-      border-top: 1px solid var(--perf-border);
-      border-bottom: 1px solid var(--perf-border);
-      padding: 2.5rem 0;
-    }
-    .stat-strip-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-    }
-    .stat-cell {
-      padding: 0 2rem;
-      border-right: 1px solid var(--perf-border);
-      text-align: center;
-    }
-    .stat-cell:last-child { border-right: none; }
-    .stat-label {
-      font-size: 0.68rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--perf-text);
-      font-family: 'Montserrat', sans-serif;
+    /* ── Shared Section ─────────────────────────────────────── */
+    .pr-section { padding: 5rem 0; background: #fff; }
+    .pr-section.alt { background: var(--pr-light); }
+    .pr-label {
+      font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: #47a996; font-family: 'Montserrat', sans-serif; font-weight: 700;
       margin-bottom: 0.5rem;
     }
-    .stat-val {
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 700;
-      color: var(--perf-gold);
-      font-family: 'Montserrat', sans-serif;
-      line-height: 1;
+    .pr-title {
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-family: 'Montserrat', sans-serif; font-weight: 800;
+      color: #0A1628; margin-bottom: 0.5rem;
     }
-    .stat-sub {
-      font-size: 0.75rem;
-      color: var(--perf-text);
-      margin-top: 0.35rem;
-    }
-    .badge-green { color: var(--perf-green); font-weight: 600; }
-
-    /* Sections */
-    .perf-section {
-      background: var(--perf-dark);
-      padding: 4rem 0;
-    }
-    .perf-section.alt { background: var(--perf-mid); }
-    .section-label {
-      font-size: 0.68rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--perf-gold);
-      font-family: 'Montserrat', sans-serif;
-      margin-bottom: 0.5rem;
-    }
-    .section-title {
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-    .section-desc {
-      color: var(--perf-text);
-      font-size: 0.9rem;
-      max-width: 600px;
-      line-height: 1.6;
-      margin-bottom: 2.5rem;
+    .pr-title span { color: #496bad; }
+    .pr-desc {
+      font-size: 0.93rem; color: #64748B; line-height: 1.7;
+      max-width: 580px; margin-bottom: 2.5rem;
     }
 
-    /* Chart Card */
-    .chart-card {
-      background: var(--perf-card);
-      border: 1px solid var(--perf-border);
-      border-radius: 12px;
+    /* ── Chart Card ─────────────────────────────────────────── */
+    .pr-card {
+      background: #fff; border-radius: 16px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 24px rgba(10,22,40,0.06);
       padding: 2rem;
     }
-    .chart-legend {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
+    .pr-section.alt .pr-card { box-shadow: 0 4px 24px rgba(10,22,40,0.08); }
+    .pr-card-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;
     }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.82rem;
-      color: var(--perf-text);
+    .pr-card-title {
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 0.9rem; color: #0A1628; margin-bottom: 0.25rem;
+    }
+    .pr-card-sub { font-size: 0.75rem; color: #94A3B8; }
+    .pr-legend { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: center; }
+    .pr-leg-item {
+      display: flex; align-items: center; gap: 0.45rem;
+      font-size: 0.78rem; color: #475569;
       font-family: 'Montserrat', sans-serif;
     }
-    .legend-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
+    .pr-leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .pr-leg-dash {
+      width: 18px; height: 2px;
+      background: repeating-linear-gradient(to right, #94A3B8 0, #94A3B8 4px, transparent 4px, transparent 8px);
     }
-    .chart-wrapper { position: relative; height: 380px; }
-    .chart-note {
-      margin-top: 1rem;
-      font-size: 0.72rem;
-      color: #64748B;
-      font-style: italic;
+    .pr-chart-wrap { position: relative; height: 340px; }
+    .pr-chart-note {
+      margin-top: 1rem; font-size: 0.71rem; color: #94A3B8; font-style: italic;
+      border-top: 1px solid #F0F4FA; padding-top: 0.75rem;
     }
 
-    /* Two-col layout for chart + donut */
-    .perf-two-col {
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 1.5rem;
-      align-items: start;
-    }
-    .donut-card {
-      background: var(--perf-card);
-      border: 1px solid var(--perf-border);
-      border-radius: 12px;
-      padding: 2rem;
-    }
-    .donut-title {
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--perf-gold);
-      font-family: 'Montserrat', sans-serif;
-      margin-bottom: 1.25rem;
-    }
-    .donut-wrapper { position: relative; height: 220px; margin-bottom: 1.5rem; }
-    .donut-legend-list { list-style: none; padding: 0; margin: 0; }
-    .donut-legend-list li {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.45rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      font-size: 0.8rem;
-      color: var(--perf-text);
-    }
-    .donut-legend-list li:last-child { border-bottom: none; }
-    .dl-left { display: flex; align-items: center; gap: 0.5rem; }
-    .dl-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-    .dl-pct { font-weight: 600; color: #fff; font-family: 'Montserrat', sans-serif; }
-
-    /* Filter Tabs */
-    .sector-tabs {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-    }
-    .sector-tab {
-      padding: 0.45rem 1.1rem;
-      border-radius: 20px;
-      border: 1px solid var(--perf-border);
-      background: transparent;
-      color: var(--perf-text);
-      font-size: 0.78rem;
-      font-family: 'Montserrat', sans-serif;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .sector-tab:hover,
-    .sector-tab.active {
-      background: var(--perf-gold);
-      border-color: var(--perf-gold);
-      color: #000;
-      font-weight: 600;
+    /* ── Two-col ─────────────────────────────────────────────── */
+    .pr-two-col {
+      display: grid; grid-template-columns: 1fr 360px;
+      gap: 1.5rem; align-items: start;
     }
 
-    /* Holdings Table */
-    .holdings-table-wrap {
-      overflow-x: auto;
-      border-radius: 12px;
-      border: 1px solid var(--perf-border);
+    /* ── Donut Card ─────────────────────────────────────────── */
+    .pr-donut-wrap { position: relative; height: 210px; margin-bottom: 1.5rem; }
+    .pr-donut-list { list-style: none; padding: 0; margin: 0; }
+    .pr-donut-list li {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.5rem 0; border-bottom: 1px solid #F0F4FA;
+      font-size: 0.8rem; color: #475569;
     }
-    .holdings-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.84rem;
-    }
-    .holdings-table thead {
-      background: #0E1830;
-    }
-    .holdings-table th {
-      padding: 1rem 1.25rem;
-      text-align: left;
-      color: var(--perf-gold);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      border-bottom: 1px solid var(--perf-border);
-    }
-    .holdings-table th.num { text-align: right; }
-    .holdings-table td {
-      padding: 0.9rem 1.25rem;
-      color: var(--perf-text);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-    .holdings-table td.num { text-align: right; }
-    .holdings-table tbody tr { transition: background 0.15s; }
-    .holdings-table tbody tr:hover { background: rgba(201,168,76,0.04); }
-    .holdings-table tbody tr:last-child td { border-bottom: none; }
-    .stock-name { color: #fff; font-weight: 600; }
-    .sector-badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.65rem;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .badge-bfsi    { background: rgba(99,102,241,0.2); color: #818CF8; }
-    .badge-banks   { background: rgba(20,184,166,0.2); color: #2DD4BF; }
-    .badge-energy  { background: rgba(234,179,8,0.2);  color: #EAB308; }
-    .badge-health  { background: rgba(236,72,153,0.2); color: #F472B6; }
-    .badge-metals  { background: rgba(249,115,22,0.2); color: #FB923C; }
-    .ret-positive { color: var(--perf-green); font-weight: 600; }
-    .ret-negative { color: var(--perf-red);   font-weight: 600; }
-    .val-col { color: #fff; font-weight: 600; font-family: 'Montserrat', sans-serif; }
-    .table-footer-row td {
-      background: rgba(201,168,76,0.06) !important;
-      color: var(--perf-gold) !important;
-      font-weight: 700;
-      font-family: 'Montserrat', sans-serif;
-      border-top: 1px solid var(--perf-border) !important;
+    .pr-donut-list li:last-child { border-bottom: none; }
+    .pr-dl-left { display: flex; align-items: center; gap: 0.5rem; }
+    .pr-dl-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+    .pr-dl-pct {
+      font-weight: 700; color: #0A1628;
+      font-family: 'Montserrat', sans-serif; font-size: 0.82rem;
     }
 
-    /* Disclaimer */
-    .perf-disclaimer {
-      background: #080D1A;
-      padding: 2rem 0;
-      border-top: 1px solid var(--perf-border);
+    /* ── Filter Tabs ─────────────────────────────────────────── */
+    .pr-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .pr-tab {
+      padding: 0.45rem 1.1rem; border-radius: 100px;
+      border: 1px solid #E2E8F0; background: #fff;
+      color: #475569; font-size: 0.78rem;
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
     }
-    .perf-disclaimer p {
-      font-size: 0.72rem;
-      color: #475569;
-      line-height: 1.7;
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
+    .pr-tab:hover { border-color: #496bad; color: #496bad; }
+    .pr-tab.active { background: #496bad; border-color: #496bad; color: #fff; }
+
+    /* ── Holdings Table ─────────────────────────────────────── */
+    .pr-table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid #E2E8F0; }
+    .pr-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .pr-table thead { background: #F8FAFC; }
+    .pr-table th {
+      padding: 0.9rem 1.25rem; text-align: left;
+      color: #496bad; font-family: 'Montserrat', sans-serif;
+      font-size: 0.67rem; letter-spacing: 0.1em; text-transform: uppercase;
+      border-bottom: 1px solid #E2E8F0; white-space: nowrap; font-weight: 700;
+    }
+    .pr-table th.num { text-align: right; }
+    .pr-table td {
+      padding: 0.85rem 1.25rem; color: #475569;
+      border-bottom: 1px solid #F0F4FA;
+      vertical-align: middle; white-space: nowrap;
+    }
+    .pr-table td.num { text-align: right; }
+    .pr-table tbody tr { transition: background 0.15s; }
+    .pr-table tbody tr:hover { background: #F8FAFC; }
+    .pr-table tbody tr:last-child td { border-bottom: none; }
+    .pr-stock { color: #0A1628; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+    .pr-sector-badge {
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px;
+      font-size: 0.65rem; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .sb-bfsi   { background: rgba(73,107,173,0.1);  color: #496bad; }
+    .sb-banks  { background: rgba(71,169,150,0.1);  color: #47a996; }
+    .sb-energy { background: rgba(234,179,8,0.12);  color: #B45309; }
+    .sb-health { background: rgba(236,72,153,0.1);  color: #BE185D; }
+    .sb-metals { background: rgba(249,115,22,0.1);  color: #C2410C; }
+    .pr-pos { color: #16A34A; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+    .pr-neg { color: #DC2626; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+    .pr-val { color: #0A1628; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+    .pr-table tfoot td {
+      background: linear-gradient(to right, rgba(73,107,173,0.06), rgba(71,169,150,0.04));
+      color: #0A1628 !important; font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      border-top: 2px solid #E2E8F0 !important;
+      border-bottom: none !important;
+    }
+    .pr-table tfoot .pr-pos { color: #16A34A !important; }
+    .pr-num-light { color: #94A3B8; font-size: 0.7rem; font-weight: 400; display: block; }
+
+    /* ── CTA Banner ─────────────────────────────────────────── */
+    .pr-cta {
+      background: linear-gradient(135deg, #0A1628 0%, #0d2244 100%);
+      padding: 5rem 0; text-align: center; position: relative; overflow: hidden;
+    }
+    .pr-cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(71,169,150,0.08) 0%, transparent 70%);
+    }
+    .pr-cta-inner { position: relative; z-index: 1; }
+    .pr-cta h2 {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 800; color: #fff; margin-bottom: 0.75rem;
+    }
+    .pr-cta h2 span { color: #47a996; }
+    .pr-cta p { color: rgba(255,255,255,0.65); font-size: 0.95rem; margin-bottom: 2rem; }
+    .pr-cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .pr-btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; border-radius: 100px;
+      background: #47a996; color: #fff;
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem;
+      text-decoration: none; transition: all 0.25s;
+    }
+    .pr-btn-primary:hover { background: #3d9083; transform: translateY(-2px); }
+    .pr-btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.25); color: #fff;
+      font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; transition: all 0.25s;
+    }
+    .pr-btn-ghost:hover { background: rgba(255,255,255,0.08); }
+
+    /* ── Disclaimer ─────────────────────────────────────────── */
+    .pr-disclaimer { background: #F8FAFC; padding: 2rem 0; border-top: 1px solid #E2E8F0; }
+    .pr-disclaimer p {
+      font-size: 0.71rem; color: #94A3B8; line-height: 1.75;
+      max-width: 880px; margin: 0 auto; text-align: center;
     }
 
-    /* Responsive */
+    /* ── Responsive ─────────────────────────────────────────── */
     @media (max-width: 1024px) {
-      .perf-two-col { grid-template-columns: 1fr; }
-      .donut-wrapper { height: 260px; }
+      .pr-two-col { grid-template-columns: 1fr; }
+      .pr-donut-wrap { height: 240px; }
     }
     @media (max-width: 768px) {
-      .stat-strip-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 0; }
-      .stat-cell { border-right: none; border-bottom: 1px solid var(--perf-border); padding: 0 1rem; }
-      .stat-cell:nth-child(2n) { border-right: none; }
-      .stat-cell:nth-last-child(-n+2) { border-bottom: none; }
-      .chart-wrapper { height: 280px; }
+      .pr-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .pr-kpi { border-bottom: 1px solid #E8EEF4; }
+      .pr-kpi:nth-child(2n) { border-right: none; }
+      .pr-chart-wrap { height: 260px; }
     }
     @media (max-width: 480px) {
-      .stat-strip-grid { grid-template-columns: 1fr 1fr; }
-      .perf-hero { padding: 160px 0 2.5rem; }
+      .pr-hero { padding-top: 140px; }
+      .pr-kpi-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -359,95 +332,92 @@
   <main>
 
     <!-- ── Hero ──────────────────────────────────────────────── -->
-    <section class="perf-hero">
-      <div class="container perf-hero-inner">
-        <p class="perf-eyebrow">Track Record &amp; Performance</p>
-        <h1>Institutional Discipline.<br><span>Measurable Alpha.</span></h1>
-        <p>19-Stock Midcap Institutional Model Portfolio · May 2022 – May 2026 · ₹100 Crore Deployment</p>
+    <section class="pr-hero">
+      <div class="container pr-hero-inner reveal">
+        <p class="pr-eyebrow">Track Record &amp; Performance</p>
+        <h1>Numbers That<br><span>Speak for Themselves.</span></h1>
+        <p class="pr-hero-sub">19-Stock Midcap Institutional Model Portfolio · May 2022 – May 2026 · ₹100 Crore Deployment. Unaudited illustrative performance for informational purposes.</p>
+        <div class="pr-hero-chips">
+          <span class="pr-chip"><i class="fas fa-shield-halved"></i> SEBI-Registered Fund Manager</span>
+          <span class="pr-chip"><i class="fas fa-chart-line"></i> 33.6% CAGR</span>
+          <span class="pr-chip"><i class="fas fa-calendar-alt"></i> May 2022 – May 2026</span>
+          <span class="pr-chip"><i class="fas fa-rupee-sign"></i> ₹100 Cr Deployment</span>
+        </div>
       </div>
     </section>
 
-    <!-- ── Stat Strip ─────────────────────────────────────────── -->
-    <section class="stat-strip">
+    <!-- ── KPI Strip ─────────────────────────────────────────── -->
+    <section class="pr-kpi-strip">
       <div class="container">
-        <div class="stat-strip-grid">
-          <div class="stat-cell">
-            <p class="stat-label">Portfolio CAGR</p>
-            <p class="stat-val">33.6%</p>
-            <p class="stat-sub badge-green">vs Nifty 50 ~11.4% CAGR</p>
+        <div class="pr-kpi-grid">
+          <div class="pr-kpi reveal">
+            <div class="pr-kpi-icon blue"><i class="fas fa-chart-line"></i></div>
+            <p class="pr-kpi-label">Portfolio CAGR</p>
+            <p class="pr-kpi-val">33.6%</p>
+            <p class="pr-kpi-sub good">vs Nifty TRI ~11.4%</p>
           </div>
-          <div class="stat-cell">
-            <p class="stat-label">Absolute Return</p>
-            <p class="stat-val">218.7%</p>
-            <p class="stat-sub">May 2022 → May 2026</p>
+          <div class="pr-kpi reveal">
+            <div class="pr-kpi-icon teal"><i class="fas fa-arrow-trend-up"></i></div>
+            <p class="pr-kpi-label">Absolute Return</p>
+            <p class="pr-kpi-val">218.7%</p>
+            <p class="pr-kpi-sub">May 2022 → May 2026</p>
           </div>
-          <div class="stat-cell">
-            <p class="stat-label">AUM Growth</p>
-            <p class="stat-val">₹318.7 Cr</p>
-            <p class="stat-sub">From ₹100 Crore deployed</p>
+          <div class="pr-kpi reveal">
+            <div class="pr-kpi-icon gold"><i class="fas fa-coins"></i></div>
+            <p class="pr-kpi-label">Portfolio Value</p>
+            <p class="pr-kpi-val">₹318.7 Cr</p>
+            <p class="pr-kpi-sub">From ₹100 Cr deployed</p>
           </div>
-          <div class="stat-cell">
-            <p class="stat-label">Alpha Generated</p>
-            <p class="stat-val">+22.2%</p>
-            <p class="stat-sub">CAGR outperformance vs benchmark</p>
+          <div class="pr-kpi reveal">
+            <div class="pr-kpi-icon green"><i class="fas fa-star"></i></div>
+            <p class="pr-kpi-label">Alpha Generated</p>
+            <p class="pr-kpi-val">+22.2%</p>
+            <p class="pr-kpi-sub">CAGR outperformance vs benchmark</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ── Growth Chart + Sector Donut ──────────────────────────── -->
-    <section class="perf-section">
+    <!-- ── Growth Chart + Sector Donut ──────────────────────── -->
+    <section class="pr-section alt">
       <div class="container">
-        <p class="section-label">Portfolio vs Benchmark</p>
-        <h2 class="section-title">4-Year Growth Trajectory</h2>
-        <p class="section-desc">Indexed to ₹100 at inception (May 2022). Portfolio compounded at 33.6% CAGR vs Nifty 50's ~11.4% CAGR over the same period.</p>
+        <div class="reveal" style="max-width:600px; margin-bottom:2.5rem;">
+          <p class="pr-label">Portfolio vs Benchmark</p>
+          <h2 class="pr-title">4-Year <span>Growth Trajectory</span></h2>
+          <p class="pr-desc">Indexed to ₹100 at inception (May 2022). Portfolio compounded at 33.6% CAGR vs Nifty TRI's ~11.4% CAGR over the same period.</p>
+        </div>
 
-        <div class="perf-two-col">
+        <div class="pr-two-col reveal">
           <!-- Line Chart -->
-          <div class="chart-card">
-            <div class="chart-legend">
-              <div class="legend-item">
-                <span class="legend-dot" style="background:#C9A84C;"></span>
-                SPVH Model Portfolio (₹ Cr)
+          <div class="pr-card">
+            <div class="pr-card-header">
+              <div>
+                <p class="pr-card-title">Portfolio Growth vs Nifty TRI Index</p>
+                <p class="pr-card-sub">Indexed to ₹100 at May 2022 · ₹ Crore</p>
               </div>
-              <div class="legend-item">
-                <span class="legend-dot" style="background:#64748B;"></span>
-                Nifty 50 (Indexed)
+              <div class="pr-legend">
+                <span class="pr-leg-item"><span class="pr-leg-dot" style="background:#47a996;"></span>SPVH Portfolio</span>
+                <span class="pr-leg-item"><span class="pr-leg-dash"></span>Nifty TRI</span>
               </div>
             </div>
-            <div class="chart-wrapper">
+            <div class="pr-chart-wrap">
               <canvas id="growthChart"></canvas>
             </div>
-            <p class="chart-note">* Nifty 50 values indexed to ₹100 at May 2022 for comparison. Intermediate portfolio values are illustrative interpolations based on documented May 2022 and May 2026 endpoints. Past performance is not indicative of future results.</p>
+            <p class="pr-chart-note">* Nifty TRI values indexed to ₹100 at May 2022 for comparison. Intermediate portfolio values are illustrative interpolations based on documented endpoints. Past performance is not indicative of future results.</p>
           </div>
 
           <!-- Sector Donut -->
-          <div class="donut-card">
-            <p class="donut-title">Current Sector Allocation (May 2026)</p>
-            <div class="donut-wrapper">
+          <div class="pr-card">
+            <p class="pr-card-title" style="margin-bottom:1.25rem;">Sector Allocation <span style="color:#47a996;">· May 2026</span></p>
+            <div class="pr-donut-wrap">
               <canvas id="sectorDonut"></canvas>
             </div>
-            <ul class="donut-legend-list">
-              <li>
-                <span class="dl-left"><span class="dl-dot" style="background:#6366F1;"></span>BFSI — Wealth Mgmt</span>
-                <span class="dl-pct">33.6%</span>
-              </li>
-              <li>
-                <span class="dl-left"><span class="dl-dot" style="background:#14B8A6;"></span>Tactical Banks</span>
-                <span class="dl-pct">16.7%</span>
-              </li>
-              <li>
-                <span class="dl-left"><span class="dl-dot" style="background:#EAB308;"></span>Energy Transition</span>
-                <span class="dl-pct">17.5%</span>
-              </li>
-              <li>
-                <span class="dl-left"><span class="dl-dot" style="background:#EC4899;"></span>Healthcare &amp; Diagnostics</span>
-                <span class="dl-pct">13.4%</span>
-              </li>
-              <li>
-                <span class="dl-left"><span class="dl-dot" style="background:#F97316;"></span>Metals &amp; Tubes</span>
-                <span class="dl-pct">18.8%</span>
-              </li>
+            <ul class="pr-donut-list">
+              <li><span class="pr-dl-left"><span class="pr-dl-dot" style="background:#496bad;"></span>BFSI — Wealth Mgmt</span><span class="pr-dl-pct">33.6%</span></li>
+              <li><span class="pr-dl-left"><span class="pr-dl-dot" style="background:#47a996;"></span>Metals &amp; Tubes</span><span class="pr-dl-pct">18.8%</span></li>
+              <li><span class="pr-dl-left"><span class="pr-dl-dot" style="background:#C9A84C;"></span>Energy Transition</span><span class="pr-dl-pct">17.5%</span></li>
+              <li><span class="pr-dl-left"><span class="pr-dl-dot" style="background:#64748B;"></span>Tactical Banks</span><span class="pr-dl-pct">16.7%</span></li>
+              <li><span class="pr-dl-left"><span class="pr-dl-dot" style="background:#94A3B8;"></span>Healthcare &amp; Diagnostics</span><span class="pr-dl-pct">13.4%</span></li>
             </ul>
           </div>
         </div>
@@ -455,230 +425,220 @@
     </section>
 
     <!-- ── Holdings Table ─────────────────────────────────────── -->
-    <section class="perf-section alt">
+    <section class="pr-section">
       <div class="container">
-        <p class="section-label">Portfolio Holdings</p>
-        <h2 class="section-title">19-Stock Model Portfolio</h2>
-        <p class="section-desc">Equal-weight deployment of ~₹5.26 Crore per stock at inception (May 2022). All entries within ₹3,500 Cr – ₹15,000 Cr market-cap band.</p>
-
-        <!-- Sector Filter Tabs -->
-        <div class="sector-tabs">
-          <button class="sector-tab active" data-filter="all">All Holdings</button>
-          <button class="sector-tab" data-filter="bfsi">BFSI — Wealth</button>
-          <button class="sector-tab" data-filter="banks">Tactical Banks</button>
-          <button class="sector-tab" data-filter="energy">Energy Transition</button>
-          <button class="sector-tab" data-filter="health">Healthcare</button>
-          <button class="sector-tab" data-filter="metals">Metals &amp; Tubes</button>
+        <div class="reveal" style="max-width:600px; margin-bottom:2rem;">
+          <p class="pr-label">Portfolio Holdings</p>
+          <h2 class="pr-title">19-Stock <span>Model Portfolio</span></h2>
+          <p class="pr-desc">Equal-weight deployment of ~₹5.26 Crore per stock at inception (May 2022). All entries within ₹3,500 Cr – ₹15,000 Cr market-cap band.</p>
         </div>
 
-        <div class="holdings-table-wrap">
-          <table class="holdings-table">
+        <div class="pr-tabs reveal">
+          <button class="pr-tab active" data-filter="all">All Holdings</button>
+          <button class="pr-tab" data-filter="bfsi">BFSI — Wealth</button>
+          <button class="pr-tab" data-filter="banks">Tactical Banks</button>
+          <button class="pr-tab" data-filter="energy">Energy Transition</button>
+          <button class="pr-tab" data-filter="health">Healthcare</button>
+          <button class="pr-tab" data-filter="metals">Metals &amp; Tubes</button>
+        </div>
+
+        <div class="pr-table-wrap reveal">
+          <table class="pr-table">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Stock</th>
                 <th>Sector</th>
-                <th class="num">Entry Price<br><span style="font-weight:400;color:#64748B;">May '22</span></th>
-                <th class="num">Current Price<br><span style="font-weight:400;color:#64748B;">May '26</span></th>
+                <th class="num">Entry Price<span class="pr-num-light">May '22</span></th>
+                <th class="num">Current Price<span class="pr-num-light">May '26</span></th>
                 <th class="num">Return</th>
                 <th class="num">Current Value</th>
               </tr>
             </thead>
             <tbody id="holdingsBody">
-              <!-- BFSI Wealth -->
               <tr data-sector="bfsi">
-                <td style="color:#64748B;">01</td>
-                <td class="stock-name">Anand Rathi Wealth</td>
-                <td><span class="sector-badge badge-bfsi">BFSI — Wealth</span></td>
-                <td class="num">₹323</td>
-                <td class="num">₹3,566</td>
-                <td class="num ret-positive">+1,003.7%</td>
-                <td class="num val-col">₹58.07 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">01</td>
+                <td class="pr-stock">Anand Rathi Wealth</td>
+                <td><span class="pr-sector-badge sb-bfsi">BFSI — Wealth</span></td>
+                <td class="num">₹323</td><td class="num">₹3,566</td>
+                <td class="num pr-pos">+1,003.7%</td>
+                <td class="num pr-val">₹58.07 Cr</td>
               </tr>
               <tr data-sector="bfsi">
-                <td style="color:#64748B;">02</td>
-                <td class="stock-name">360 ONE WAM</td>
-                <td><span class="sector-badge badge-bfsi">BFSI — Wealth</span></td>
-                <td class="num">₹350</td>
-                <td class="num">₹1,098</td>
-                <td class="num ret-positive">+213.7%</td>
-                <td class="num val-col">₹16.46 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">02</td>
+                <td class="pr-stock">360 ONE WAM</td>
+                <td><span class="pr-sector-badge sb-bfsi">BFSI — Wealth</span></td>
+                <td class="num">₹350</td><td class="num">₹1,098</td>
+                <td class="num pr-pos">+213.7%</td>
+                <td class="num pr-val">₹16.46 Cr</td>
               </tr>
               <tr data-sector="bfsi">
-                <td style="color:#64748B;">03</td>
-                <td class="stock-name">CDSL</td>
-                <td><span class="sector-badge badge-bfsi">BFSI — Wealth</span></td>
-                <td class="num">₹606</td>
-                <td class="num">₹1,208</td>
-                <td class="num ret-positive">+99.3%</td>
-                <td class="num val-col">₹10.46 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">03</td>
+                <td class="pr-stock">CDSL</td>
+                <td><span class="pr-sector-badge sb-bfsi">BFSI — Wealth</span></td>
+                <td class="num">₹606</td><td class="num">₹1,208</td>
+                <td class="num pr-pos">+99.3%</td>
+                <td class="num pr-val">₹10.46 Cr</td>
               </tr>
               <tr data-sector="bfsi">
-                <td style="color:#64748B;">04</td>
-                <td class="stock-name">Motilal Oswal Financial</td>
-                <td><span class="sector-badge badge-bfsi">BFSI — Wealth</span></td>
-                <td class="num">₹200</td>
-                <td class="num">₹843</td>
-                <td class="num ret-positive">+321.5%</td>
-                <td class="num val-col">₹22.14 Cr</td>
-              </tr>
-              <!-- Tactical Banks -->
-              <tr data-sector="banks">
-                <td style="color:#64748B;">05</td>
-                <td class="stock-name">Karur Vysya Bank</td>
-                <td><span class="sector-badge badge-banks">Tactical Banks</span></td>
-                <td class="num">₹45</td>
-                <td class="num">₹286</td>
-                <td class="num ret-positive">+535.6%</td>
-                <td class="num val-col">₹33.40 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">04</td>
+                <td class="pr-stock">Motilal Oswal Financial</td>
+                <td><span class="pr-sector-badge sb-bfsi">BFSI — Wealth</span></td>
+                <td class="num">₹200</td><td class="num">₹843</td>
+                <td class="num pr-pos">+321.5%</td>
+                <td class="num pr-val">₹22.14 Cr</td>
               </tr>
               <tr data-sector="banks">
-                <td style="color:#64748B;">06</td>
-                <td class="stock-name">City Union Bank</td>
-                <td><span class="sector-badge badge-banks">Tactical Banks</span></td>
-                <td class="num">₹130</td>
-                <td class="num">₹160</td>
-                <td class="num ret-positive">+23.1%</td>
-                <td class="num val-col">₹6.46 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">05</td>
+                <td class="pr-stock">Karur Vysya Bank</td>
+                <td><span class="pr-sector-badge sb-banks">Tactical Banks</span></td>
+                <td class="num">₹45</td><td class="num">₹286</td>
+                <td class="num pr-pos">+535.6%</td>
+                <td class="num pr-val">₹33.40 Cr</td>
               </tr>
               <tr data-sector="banks">
-                <td style="color:#64748B;">07</td>
-                <td class="stock-name">Equitas Small Finance Bank</td>
-                <td><span class="sector-badge badge-banks">Tactical Banks</span></td>
-                <td class="num">₹40</td>
-                <td class="num">₹100</td>
-                <td class="num ret-positive">+150.0%</td>
-                <td class="num val-col">₹13.15 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">06</td>
+                <td class="pr-stock">City Union Bank</td>
+                <td><span class="pr-sector-badge sb-banks">Tactical Banks</span></td>
+                <td class="num">₹130</td><td class="num">₹160</td>
+                <td class="num pr-pos">+23.1%</td>
+                <td class="num pr-val">₹6.46 Cr</td>
               </tr>
-              <!-- Energy -->
-              <tr data-sector="energy">
-                <td style="color:#64748B;">08</td>
-                <td class="stock-name">Borosil Renewables</td>
-                <td><span class="sector-badge badge-energy">Energy Transition</span></td>
-                <td class="num">₹723</td>
-                <td class="num">₹515</td>
-                <td class="num ret-negative">−28.8%</td>
-                <td class="num val-col">₹3.73 Cr</td>
+              <tr data-sector="banks">
+                <td style="color:#CBD5E1;font-size:0.78rem;">07</td>
+                <td class="pr-stock">Equitas Small Finance Bank</td>
+                <td><span class="pr-sector-badge sb-banks">Tactical Banks</span></td>
+                <td class="num">₹40</td><td class="num">₹100</td>
+                <td class="num pr-pos">+150.0%</td>
+                <td class="num pr-val">₹13.15 Cr</td>
               </tr>
               <tr data-sector="energy">
-                <td style="color:#64748B;">09</td>
-                <td class="stock-name">Praj Industries</td>
-                <td><span class="sector-badge badge-energy">Energy Transition</span></td>
-                <td class="num">₹350</td>
-                <td class="num">₹500</td>
-                <td class="num ret-positive">+42.9%</td>
-                <td class="num val-col">₹7.46 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">08</td>
+                <td class="pr-stock">Borosil Renewables</td>
+                <td><span class="pr-sector-badge sb-energy">Energy Transition</span></td>
+                <td class="num">₹723</td><td class="num">₹515</td>
+                <td class="num pr-neg">−28.8%</td>
+                <td class="num pr-val">₹3.73 Cr</td>
               </tr>
               <tr data-sector="energy">
-                <td style="color:#64748B;">10</td>
-                <td class="stock-name">Sterling &amp; Wilson</td>
-                <td><span class="sector-badge badge-energy">Energy Transition</span></td>
-                <td class="num">₹250</td>
-                <td class="num">₹600</td>
-                <td class="num ret-positive">+140.0%</td>
-                <td class="num val-col">₹12.62 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">09</td>
+                <td class="pr-stock">Praj Industries</td>
+                <td><span class="pr-sector-badge sb-energy">Energy Transition</span></td>
+                <td class="num">₹350</td><td class="num">₹500</td>
+                <td class="num pr-pos">+42.9%</td>
+                <td class="num pr-val">₹7.46 Cr</td>
               </tr>
               <tr data-sector="energy">
-                <td style="color:#64748B;">11</td>
-                <td class="stock-name">Inox Wind</td>
-                <td><span class="sector-badge badge-energy">Energy Transition</span></td>
-                <td class="num">₹25</td>
-                <td class="num">₹150</td>
-                <td class="num ret-positive">+500.0%</td>
-                <td class="num val-col">₹31.56 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">10</td>
+                <td class="pr-stock">Sterling &amp; Wilson</td>
+                <td><span class="pr-sector-badge sb-energy">Energy Transition</span></td>
+                <td class="num">₹250</td><td class="num">₹600</td>
+                <td class="num pr-pos">+140.0%</td>
+                <td class="num pr-val">₹12.62 Cr</td>
               </tr>
-              <!-- Healthcare -->
-              <tr data-sector="health">
-                <td style="color:#64748B;">12</td>
-                <td class="stock-name">KIMS Hospitals</td>
-                <td><span class="sector-badge badge-health">Healthcare</span></td>
-                <td class="num">₹266</td>
-                <td class="num">₹748</td>
-                <td class="num ret-positive">+181.2%</td>
-                <td class="num val-col">₹14.78 Cr</td>
+              <tr data-sector="energy">
+                <td style="color:#CBD5E1;font-size:0.78rem;">11</td>
+                <td class="pr-stock">Inox Wind</td>
+                <td><span class="pr-sector-badge sb-energy">Energy Transition</span></td>
+                <td class="num">₹25</td><td class="num">₹150</td>
+                <td class="num pr-pos">+500.0%</td>
+                <td class="num pr-val">₹31.56 Cr</td>
               </tr>
               <tr data-sector="health">
-                <td style="color:#64748B;">13</td>
-                <td class="stock-name">Narayana Health</td>
-                <td><span class="sector-badge badge-health">Healthcare</span></td>
-                <td class="num">₹650</td>
-                <td class="num">₹1,200</td>
-                <td class="num ret-positive">+84.6%</td>
-                <td class="num val-col">₹9.67 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">12</td>
+                <td class="pr-stock">KIMS Hospitals</td>
+                <td><span class="pr-sector-badge sb-health">Healthcare</span></td>
+                <td class="num">₹266</td><td class="num">₹748</td>
+                <td class="num pr-pos">+181.2%</td>
+                <td class="num pr-val">₹14.78 Cr</td>
               </tr>
               <tr data-sector="health">
-                <td style="color:#64748B;">14</td>
-                <td class="stock-name">Aster DM Healthcare</td>
-                <td><span class="sector-badge badge-health">Healthcare</span></td>
-                <td class="num">₹180</td>
-                <td class="num">₹400</td>
-                <td class="num ret-positive">+122.2%</td>
-                <td class="num val-col">₹11.67 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">13</td>
+                <td class="pr-stock">Narayana Health</td>
+                <td><span class="pr-sector-badge sb-health">Healthcare</span></td>
+                <td class="num">₹650</td><td class="num">₹1,200</td>
+                <td class="num pr-pos">+84.6%</td>
+                <td class="num pr-val">₹9.67 Cr</td>
               </tr>
               <tr data-sector="health">
-                <td style="color:#64748B;">15</td>
-                <td class="stock-name">Metropolis Healthcare</td>
-                <td><span class="sector-badge badge-health">Healthcare</span></td>
-                <td class="num">₹1,600</td>
-                <td class="num">₹2,000</td>
-                <td class="num ret-positive">+25.0%</td>
-                <td class="num val-col">₹6.57 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">14</td>
+                <td class="pr-stock">Aster DM Healthcare</td>
+                <td><span class="pr-sector-badge sb-health">Healthcare</span></td>
+                <td class="num">₹180</td><td class="num">₹400</td>
+                <td class="num pr-pos">+122.2%</td>
+                <td class="num pr-val">₹11.67 Cr</td>
               </tr>
-              <!-- Metals -->
-              <tr data-sector="metals">
-                <td style="color:#64748B;">16</td>
-                <td class="stock-name">Jindal Stainless</td>
-                <td><span class="sector-badge badge-metals">Metals &amp; Tubes</span></td>
-                <td class="num">₹166</td>
-                <td class="num">₹738</td>
-                <td class="num ret-positive">+344.6%</td>
-                <td class="num val-col">₹23.35 Cr</td>
+              <tr data-sector="health">
+                <td style="color:#CBD5E1;font-size:0.78rem;">15</td>
+                <td class="pr-stock">Metropolis Healthcare</td>
+                <td><span class="pr-sector-badge sb-health">Healthcare</span></td>
+                <td class="num">₹1,600</td><td class="num">₹2,000</td>
+                <td class="num pr-pos">+25.0%</td>
+                <td class="num pr-val">₹6.57 Cr</td>
               </tr>
               <tr data-sector="metals">
-                <td style="color:#64748B;">17</td>
-                <td class="stock-name">Ratnamani Metals</td>
-                <td><span class="sector-badge badge-metals">Metals &amp; Tubes</span></td>
-                <td class="num">₹1,200</td>
-                <td class="num">₹3,500</td>
-                <td class="num ret-positive">+191.7%</td>
-                <td class="num val-col">₹15.30 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">16</td>
+                <td class="pr-stock">Jindal Stainless</td>
+                <td><span class="pr-sector-badge sb-metals">Metals &amp; Tubes</span></td>
+                <td class="num">₹166</td><td class="num">₹738</td>
+                <td class="num pr-pos">+344.6%</td>
+                <td class="num pr-val">₹23.35 Cr</td>
               </tr>
               <tr data-sector="metals">
-                <td style="color:#64748B;">18</td>
-                <td class="stock-name">Shyam Metalics</td>
-                <td><span class="sector-badge badge-metals">Metals &amp; Tubes</span></td>
-                <td class="num">₹300</td>
-                <td class="num">₹650</td>
-                <td class="num ret-positive">+116.7%</td>
-                <td class="num val-col">₹11.36 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">17</td>
+                <td class="pr-stock">Ratnamani Metals</td>
+                <td><span class="pr-sector-badge sb-metals">Metals &amp; Tubes</span></td>
+                <td class="num">₹1,200</td><td class="num">₹3,500</td>
+                <td class="num pr-pos">+191.7%</td>
+                <td class="num pr-val">₹15.30 Cr</td>
               </tr>
               <tr data-sector="metals">
-                <td style="color:#64748B;">19</td>
-                <td class="stock-name">Maharashtra Seamless</td>
-                <td><span class="sector-badge badge-metals">Metals &amp; Tubes</span></td>
-                <td class="num">₹300</td>
-                <td class="num">₹600</td>
-                <td class="num ret-positive">+100.0%</td>
-                <td class="num val-col">₹10.52 Cr</td>
+                <td style="color:#CBD5E1;font-size:0.78rem;">18</td>
+                <td class="pr-stock">Shyam Metalics</td>
+                <td><span class="pr-sector-badge sb-metals">Metals &amp; Tubes</span></td>
+                <td class="num">₹300</td><td class="num">₹650</td>
+                <td class="num pr-pos">+116.7%</td>
+                <td class="num pr-val">₹11.36 Cr</td>
               </tr>
-              <!-- Total row -->
-              <tr class="table-footer-row">
-                <td colspan="3"><strong>PORTFOLIO TOTAL</strong></td>
-                <td class="num"><strong>₹100.00 Cr</strong></td>
-                <td class="num">—</td>
-                <td class="num"><strong>+218.7%</strong></td>
-                <td class="num"><strong>₹318.73 Cr</strong></td>
+              <tr data-sector="metals">
+                <td style="color:#CBD5E1;font-size:0.78rem;">19</td>
+                <td class="pr-stock">Maharashtra Seamless</td>
+                <td><span class="pr-sector-badge sb-metals">Metals &amp; Tubes</span></td>
+                <td class="num">₹300</td><td class="num">₹600</td>
+                <td class="num pr-pos">+100.0%</td>
+                <td class="num pr-val">₹10.52 Cr</td>
               </tr>
             </tbody>
+            <tfoot>
+              <tr id="totalRow">
+                <td colspan="3"><strong>PORTFOLIO TOTAL</strong></td>
+                <td class="num"><strong>₹100.00 Cr</strong></td>
+                <td class="num" style="color:#94A3B8;">—</td>
+                <td class="num pr-pos"><strong>+218.7%</strong></td>
+                <td class="num"><strong>₹318.73 Cr</strong></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
     </section>
 
+    <!-- ── CTA ───────────────────────────────────────────────── -->
+    <section class="pr-cta">
+      <div class="container pr-cta-inner reveal">
+        <h2>Ready to Invest With <span>Conviction?</span></h2>
+        <p>Speak with our team to understand how SPVH's research-driven approach can work for your portfolio.</p>
+        <div class="pr-cta-btns">
+          <a href="contact.html" class="pr-btn-primary"><i class="fas fa-calendar-alt"></i> Schedule Consultation</a>
+          <a href="pms.html" class="pr-btn-ghost"><i class="fas fa-layer-group"></i> Explore Our Strategies</a>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Disclaimer ─────────────────────────────────────────── -->
-    <div class="perf-disclaimer">
+    <div class="pr-disclaimer">
       <div class="container">
-        <p>This model portfolio is presented for illustrative and informational purposes only. It does not constitute an offer to sell or a solicitation to buy any security or investment product. Past performance is not indicative of future results. Investments in securities markets are subject to market risks. SPVH Asset Management Company is registered with SEBI as a Portfolio Manager (Registration No. INP000000000). Please read all related documents carefully before investing.</p>
+        <p>This model portfolio is presented for illustrative and informational purposes only. It does not constitute an offer to sell or a solicitation to buy any security or investment product. Past performance is not indicative of future results. Investments in securities markets are subject to market risks. SPVH Asset Management Company is registered with SEBI as a Portfolio Manager. Please read all related documents carefully before investing.</p>
       </div>
     </div>
 
@@ -745,23 +705,21 @@
   <script src="script.js"></script>
   <script>
   (function () {
-    /* ── Chart.js defaults ───────────────────────────── */
     Chart.defaults.color = '#94A3B8';
-    Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+    Chart.defaults.font.family = "'Montserrat','Helvetica',sans-serif";
 
-    /* ── Growth Line Chart ───────────────────────────── */
-    const growthCtx = document.getElementById('growthChart').getContext('2d');
+    /* ── Growth Line Chart ─────────────────────────── */
+    const gCtx = document.getElementById('growthChart').getContext('2d');
 
-    // Gradient fill for portfolio line
-    const gradPort = growthCtx.createLinearGradient(0, 0, 0, 380);
-    gradPort.addColorStop(0,   'rgba(201,168,76,0.25)');
-    gradPort.addColorStop(1,   'rgba(201,168,76,0)');
+    const gradPort = gCtx.createLinearGradient(0, 0, 0, 340);
+    gradPort.addColorStop(0, 'rgba(71,169,150,0.18)');
+    gradPort.addColorStop(1, 'rgba(71,169,150,0.02)');
 
-    const gradNifty = growthCtx.createLinearGradient(0, 0, 0, 380);
-    gradNifty.addColorStop(0, 'rgba(100,116,139,0.15)');
-    gradNifty.addColorStop(1, 'rgba(100,116,139,0)');
+    const gradNifty = gCtx.createLinearGradient(0, 0, 0, 340);
+    gradNifty.addColorStop(0, 'rgba(148,163,184,0.10)');
+    gradNifty.addColorStop(1, 'rgba(148,163,184,0.01)');
 
-    new Chart(growthCtx, {
+    new Chart(gCtx, {
       type: 'line',
       data: {
         labels: ['May 2022', 'May 2023', 'May 2024', 'May 2025', 'May 2026'],
@@ -769,11 +727,11 @@
           {
             label: 'SPVH Model Portfolio (₹ Cr)',
             data: [100, 148, 205, 260, 318.73],
-            borderColor: '#C9A84C',
+            borderColor: '#47a996',
             backgroundColor: gradPort,
             borderWidth: 2.5,
-            pointBackgroundColor: '#C9A84C',
-            pointBorderColor: '#0A0F1E',
+            pointBackgroundColor: '#47a996',
+            pointBorderColor: '#fff',
             pointBorderWidth: 2,
             pointRadius: 5,
             pointHoverRadius: 7,
@@ -781,14 +739,14 @@
             tension: 0.4
           },
           {
-            label: 'Nifty 50 (Indexed to ₹100)',
+            label: 'Nifty TRI (Indexed to ₹100)',
             data: [100, 112.3, 136.4, 145.9, 154.5],
-            borderColor: '#64748B',
+            borderColor: '#94A3B8',
             backgroundColor: gradNifty,
             borderWidth: 2,
             borderDash: [6, 4],
-            pointBackgroundColor: '#64748B',
-            pointBorderColor: '#0A0F1E',
+            pointBackgroundColor: '#94A3B8',
+            pointBorderColor: '#fff',
             pointBorderWidth: 2,
             pointRadius: 4,
             pointHoverRadius: 6,
@@ -804,72 +762,65 @@
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#161D2F',
-            borderColor: 'rgba(201,168,76,0.3)',
+            backgroundColor: '#fff',
+            borderColor: '#E2E8F0',
             borderWidth: 1,
             padding: 12,
+            titleColor: '#0A1628',
+            bodyColor: '#475569',
             callbacks: {
               label: ctx => {
                 const v = ctx.parsed.y;
                 return ctx.datasetIndex === 0
-                  ? ` Portfolio: ₹${v.toFixed(2)} Cr  (+${((v-100)).toFixed(1)}%)`
-                  : ` Nifty 50: ${v.toFixed(1)}  (+${((v-100)).toFixed(1)}%)`;
+                  ? ` Portfolio: ₹${v.toFixed(2)} Cr  (+${(v - 100).toFixed(1)}%)`
+                  : ` Nifty TRI: ${v.toFixed(1)}  (+${(v - 100).toFixed(1)}%)`;
               }
             }
           }
         },
         scales: {
-          x: {
-            grid: { color: 'rgba(255,255,255,0.04)' },
-            ticks: { font: { size: 12 } }
-          },
-          y: {
-            grid: { color: 'rgba(255,255,255,0.06)' },
-            ticks: {
-              font: { size: 12 },
-              callback: v => '₹' + v
-            },
-            min: 80
-          }
+          x: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 11 }, color: '#94A3B8' } },
+          y: { grid: { color: '#F1F5F9' }, min: 80, ticks: { font: { size: 11 }, color: '#94A3B8', callback: v => '₹' + v } }
         }
       }
     });
 
-    /* ── Sector Donut ─────────────────────────────────── */
-    const donutCtx = document.getElementById('sectorDonut').getContext('2d');
-    new Chart(donutCtx, {
+    /* ── Sector Donut ──────────────────────────────── */
+    const dCtx = document.getElementById('sectorDonut').getContext('2d');
+    new Chart(dCtx, {
       type: 'doughnut',
       data: {
-        labels: ['BFSI — Wealth', 'Tactical Banks', 'Energy Transition', 'Healthcare', 'Metals & Tubes'],
+        labels: ['BFSI — Wealth', 'Metals & Tubes', 'Energy Transition', 'Tactical Banks', 'Healthcare'],
         datasets: [{
-          data: [33.6, 16.7, 17.5, 13.4, 18.8],
-          backgroundColor: ['#6366F1','#14B8A6','#EAB308','#EC4899','#F97316'],
-          borderColor: '#161D2F',
+          data: [33.6, 18.8, 17.5, 16.7, 13.4],
+          backgroundColor: ['#496bad', '#47a996', '#C9A84C', '#64748B', '#94A3B8'],
+          borderColor: '#fff',
           borderWidth: 3,
-          hoverOffset: 8
+          hoverOffset: 6
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '68%',
+        cutout: '70%',
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#161D2F',
-            borderColor: 'rgba(201,168,76,0.3)',
+            backgroundColor: '#fff',
+            borderColor: '#E2E8F0',
             borderWidth: 1,
-            callbacks: {
-              label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
-            }
+            titleColor: '#0A1628',
+            bodyColor: '#475569',
+            callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` }
           }
         }
       }
     });
 
-    /* ── Sector Filter Tabs ───────────────────────────── */
-    const tabs = document.querySelectorAll('.sector-tab');
+    /* ── Sector Filter Tabs ────────────────────────── */
+    const tabs = document.querySelectorAll('.pr-tab');
     const rows = document.querySelectorAll('#holdingsBody tr[data-sector]');
+    const totalRow = document.getElementById('totalRow');
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
@@ -879,9 +830,7 @@
         rows.forEach(row => {
           row.style.display = (filter === 'all' || row.dataset.sector === filter) ? '' : 'none';
         });
-        // Always show the total footer row
-        const footer = document.querySelector('.table-footer-row');
-        if (footer) footer.style.display = filter === 'all' ? '' : 'none';
+        if (totalRow) totalRow.style.display = filter === 'all' ? '' : 'none';
       });
     });
   })();
