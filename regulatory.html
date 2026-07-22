@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPVH AMC | Regulatory Information</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ── Legal Page Styles (prefix: .lg-*) ─────────────────── */
+    .lg-hero {
+      background: linear-gradient(135deg, #0A1628 0%, #0d2244 60%, #112850 100%);
+      padding: 170px 0 4rem;
+      position: relative; overflow: hidden;
+    }
+    .lg-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 55% 70% at 75% 50%, rgba(73,107,173,0.12) 0%, transparent 70%);
+    }
+    .lg-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(71,169,150,0.3), transparent);
+    }
+    .lg-hero-inner { position: relative; z-index: 1; }
+    .lg-eyebrow {
+      font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: #47a996; font-family: 'Montserrat', sans-serif; font-weight: 700;
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;
+    }
+    .lg-eyebrow::before { content: ''; width: 30px; height: 2px; background: #47a996; }
+    .lg-hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: #fff; line-height: 1.15; margin-bottom: 1rem;
+      font-family: 'Montserrat', sans-serif; font-weight: 800;
+    }
+    .lg-hero-sub {
+      color: rgba(255,255,255,0.6); max-width: 540px;
+      font-size: 0.95rem; line-height: 1.7;
+    }
+
+    .lg-body { padding: 5rem 0; background: #F0F4FA; }
+    .lg-content {
+      max-width: 820px; margin: 0 auto;
+      background: #fff; border-radius: 16px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 24px rgba(10,22,40,0.06);
+      padding: 3rem 3.5rem;
+    }
+    .lg-content h2 {
+      font-family: 'Montserrat', sans-serif; font-weight: 800;
+      font-size: 1.15rem; color: #0A1628; margin: 2.5rem 0 0.75rem;
+      padding-bottom: 0.5rem; border-bottom: 2px solid #F0F4FA;
+    }
+    .lg-content h2:first-child { margin-top: 0; }
+    .lg-content h2 i {
+      color: #47a996; margin-right: 0.5rem; font-size: 0.9rem;
+    }
+    .lg-content p, .lg-content li {
+      font-size: 0.9rem; color: #475569; line-height: 1.85;
+    }
+    .lg-content ul, .lg-content ol {
+      padding-left: 1.25rem; margin: 0.75rem 0;
+    }
+    .lg-content li { margin-bottom: 0.4rem; }
+    .lg-content li::marker { color: #47a996; }
+    .lg-content strong { color: #0A1628; }
+    .lg-last-updated {
+      margin-top: 2.5rem; padding-top: 1.5rem;
+      border-top: 1px solid #E2E8F0;
+      font-size: 0.78rem; color: #94A3B8; font-style: italic;
+    }
+
+    .lg-reg-card {
+      background: #F8FAFC; border-radius: 12px;
+      border: 1px solid #E2E8F0; padding: 1.5rem 1.75rem;
+      margin: 1rem 0;
+    }
+    .lg-reg-card h3 {
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 0.95rem; color: #0A1628; margin-bottom: 0.5rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .lg-reg-card h3 i { color: #496bad; font-size: 0.85rem; }
+    .lg-reg-card p { margin-bottom: 0.4rem; }
+    .lg-reg-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 0.72rem; font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.05em;
+    }
+    .lg-reg-badge.pending {
+      background: rgba(201,168,76,0.12); color: #B8960F;
+      border: 1px solid rgba(201,168,76,0.25);
+    }
+    .lg-reg-badge.pending i { color: #C9A84C; }
+
+    @media (max-width: 768px) {
+      .lg-content { padding: 2rem 1.5rem; border-radius: 12px; }
+      .lg-reg-card { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav class="nav-new">
+    <div class="nav-pill">
+      <a href="index.html" class="nav-logo-img">
+        <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC Logo" style="height:50px;width:auto;display:block;">
+      </a>
+      <ul class="nav-links">
+        <li class="has-dropdown">
+          <a href="#">About Us</a>
+          <ul class="nav-dropdown">
+            <li><a href="about.html">Firm Overview</a></li>
+            <li><a href="team.html">Leadership Team</a></li>
+            <li><a href="philosophy.html">Investment Philosophy</a></li>
+          </ul>
+        </li>
+        <li class="has-dropdown">
+          <a href="#">Investment Solutions</a>
+          <ul class="nav-dropdown">
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="insights.html">Insights</a></li>
+        <li><a href="resources.html">Resources</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="#" class="nav-login">Investor Login</a>
+        <a href="contact.html" class="nav-cta">Schedule Consultation</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ── Hero ──────────────────────────────────────────────── -->
+    <section class="lg-hero">
+      <div class="container lg-hero-inner">
+        <div class="lg-eyebrow">Compliance</div>
+        <h1>Regulatory Information</h1>
+        <p class="lg-hero-sub">Transparency in our regulatory standing, corporate governance, and compliance framework.</p>
+      </div>
+    </section>
+
+    <!-- ── Content ──────────────────────────────────────────── -->
+    <section class="lg-body">
+      <div class="container">
+        <div class="lg-content reveal">
+
+          <h2><i class="fas fa-building"></i> Corporate Identity</h2>
+          <div class="lg-reg-card">
+            <h3><i class="fas fa-id-card"></i> Company Details</h3>
+            <p><strong>Legal Entity:</strong> SPVH AMC Private Limited</p>
+            <p><strong>CIN:</strong> U67110MH2022PTC381574</p>
+            <p><strong>Registered Office:</strong> Mumbai, Maharashtra — 400051</p>
+            <p><strong>Nature of Business:</strong> Investment management, portfolio management services, alternative investment fund management, and investment advisory services.</p>
+          </div>
+
+          <h2><i class="fas fa-shield-halved"></i> SEBI Registration Status</h2>
+          <p>SPVH AMC is currently in the process of obtaining the following registrations from the Securities and Exchange Board of India (SEBI):</p>
+
+          <div class="lg-reg-card">
+            <h3><i class="fas fa-briefcase"></i> Portfolio Management Services (PMS)</h3>
+            <p>Registration under SEBI (Portfolio Managers) Regulations, 2020 for providing discretionary, non-discretionary, and advisory portfolio management services to qualified investors.</p>
+            <p><span class="lg-reg-badge pending"><i class="fas fa-clock"></i> Registration in Progress</span></p>
+          </div>
+
+          <div class="lg-reg-card">
+            <h3><i class="fas fa-layer-group"></i> Alternative Investment Fund — Category II</h3>
+            <p>Registration under SEBI (Alternative Investment Funds) Regulations, 2012 for operating Category II AIFs that invest in unlisted securities, listed equities, debt instruments, and other permissible asset classes without leverage.</p>
+            <p><span class="lg-reg-badge pending"><i class="fas fa-clock"></i> Registration in Progress</span></p>
+          </div>
+
+          <div class="lg-reg-card">
+            <h3><i class="fas fa-layer-group"></i> Alternative Investment Fund — Category III</h3>
+            <p>Registration under SEBI (Alternative Investment Funds) Regulations, 2012 for operating Category III AIFs that employ diverse or complex trading strategies, including the use of leverage through investment in listed or unlisted derivatives.</p>
+            <p><span class="lg-reg-badge pending"><i class="fas fa-clock"></i> Registration in Progress</span></p>
+          </div>
+
+          <div class="lg-reg-card">
+            <h3><i class="fas fa-magnifying-glass-chart"></i> Research Analyst (RA)</h3>
+            <p>Registration under SEBI (Research Analysts) Regulations, 2014 for publishing research reports and providing research recommendations on securities.</p>
+            <p><span class="lg-reg-badge pending"><i class="fas fa-clock"></i> Registration in Progress</span></p>
+          </div>
+
+          <div class="lg-reg-card">
+            <h3><i class="fas fa-user-tie"></i> Investment Adviser (IA)</h3>
+            <p>Registration under SEBI (Investment Advisers) Regulations, 2013 for providing personalised investment advice to clients for a fee.</p>
+            <p><span class="lg-reg-badge pending"><i class="fas fa-clock"></i> Registration in Progress</span></p>
+          </div>
+
+          <div class="lg-reg-card">
+            <h3><i class="fas fa-globe"></i> GIFT City IFSC — Offshore Fund Structures</h3>
+            <p>Application for registration with the International Financial Services Centres Authority (IFSCA) at GIFT City, Gujarat, for setting up and managing offshore fund structures under the IFSCA (Fund Management) Regulations, 2022.</p>
+            <p><span class="lg-reg-badge pending"><i class="fas fa-clock"></i> Registration in Progress</span></p>
+          </div>
+
+          <h2><i class="fas fa-scale-balanced"></i> Regulatory Framework</h2>
+          <p>SPVH AMC operates within the regulatory framework established by the following authorities and legislation:</p>
+          <ul>
+            <li><strong>Securities and Exchange Board of India (SEBI)</strong> — Primary regulator for securities markets, portfolio managers, AIFs, research analysts, and investment advisers.</li>
+            <li><strong>International Financial Services Centres Authority (IFSCA)</strong> — Regulator for financial products and services within GIFT City IFSC.</li>
+            <li><strong>Companies Act, 2013</strong> — Governing corporate structure, compliance, and governance requirements.</li>
+            <li><strong>Prevention of Money Laundering Act, 2002 (PMLA)</strong> — AML/KYC compliance obligations.</li>
+            <li><strong>Income Tax Act, 1961</strong> — Tax compliance and reporting obligations for investors and the company.</li>
+            <li><strong>Foreign Exchange Management Act, 1999 (FEMA)</strong> — Regulations governing cross-border investments and offshore fund operations.</li>
+          </ul>
+
+          <h2><i class="fas fa-users-rectangle"></i> Governance &amp; Compliance</h2>
+          <p>SPVH AMC is committed to maintaining the highest standards of corporate governance and regulatory compliance:</p>
+          <ul>
+            <li><strong>Board Oversight:</strong> The Board of Directors provides strategic direction and oversight of all business activities, ensuring alignment with regulatory requirements and fiduciary obligations.</li>
+            <li><strong>Compliance Function:</strong> A dedicated compliance team monitors adherence to all applicable regulations, internal policies, and industry best practices.</li>
+            <li><strong>Risk Management:</strong> Comprehensive risk management frameworks are in place covering market risk, operational risk, credit risk, and compliance risk.</li>
+            <li><strong>KYC &amp; AML:</strong> Robust Know Your Client and Anti-Money Laundering procedures are implemented in accordance with SEBI, RBI, and PMLA requirements.</li>
+            <li><strong>Conflict of Interest:</strong> Policies and procedures are established to identify, manage, and disclose potential conflicts of interest.</li>
+          </ul>
+
+          <h2><i class="fas fa-file-contract"></i> Investor Obligations</h2>
+          <p>Investors engaging with SPVH AMC's products and services are advised to:</p>
+          <ul>
+            <li>Read all scheme-related documents, including the Private Placement Memorandum (PPM), Contribution Agreement, and Disclosure Document, carefully before investing.</li>
+            <li>Complete all KYC formalities and provide accurate information as required under applicable regulations.</li>
+            <li>Understand the risks associated with investments in securities markets, including the possibility of loss of capital.</li>
+            <li>Seek independent professional advice from qualified financial advisers, tax consultants, and legal counsel.</li>
+            <li>Report any grievances or complaints through the designated channels provided by SPVH AMC.</li>
+          </ul>
+
+          <h2><i class="fas fa-comment-dots"></i> Investor Grievance Redressal</h2>
+          <p>SPVH AMC is committed to addressing investor grievances promptly and fairly. Investors may lodge complaints through the following channels:</p>
+          <p>
+            <strong>Compliance Officer</strong><br>
+            SPVH AMC Private Limited<br>
+            Registered Office Address, Mumbai — 400051<br>
+            Email: <a href="mailto:compliance@spvhamc.com" style="color:#496bad;">compliance@spvhamc.com</a><br>
+            Phone: +91 22 4000 0000
+          </p>
+          <p>Investors may also lodge complaints on the SEBI Complaints Redress System (SCORES) portal at <strong>scores.sebi.gov.in</strong> for resolution of grievances against SEBI-registered intermediaries.</p>
+
+          <h2><i class="fas fa-circle-exclamation"></i> Important Notice</h2>
+          <p>Until such time as the requisite regulatory registrations are obtained, SPVH AMC shall not solicit, accept, or manage client funds or provide investment advice in any capacity that requires regulatory authorisation. All services referenced on this website are subject to the receipt of applicable regulatory approvals from SEBI and/or IFSCA, as applicable.</p>
+
+          <p class="lg-last-updated">Last updated: July 2026</p>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer-new">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-col-brand reveal" style="animation-delay:0s;">
+          <a href="index.html" class="footer-logo-img" style="display:inline-block;margin-bottom:1.25rem;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height:73px;width:auto;display:block;">
+          </a>
+          <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col-links reveal" style="animation-delay:0.1s;">
+          <h4 class="footer-heading">COMPANY</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html#leadership">Leadership Team</a></li>
+            <li><a href="about.html#philosophy">Investment Philosophy</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-links reveal" style="animation-delay:0.2s;">
+          <h4 class="footer-heading">OUR SOLUTIONS</h4>
+          <ul>
+            <li><a href="pms.html">Portfolio Management Services</a></li>
+            <li><a href="aif.html">Alternative Investment Funds</a></li>
+            <li><a href="offshore.html">Offshore &amp; Global Funds</a></li>
+            <li><a href="investment-advisory-research.html">Investment Advisory &amp; Research</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-contact reveal" style="animation-delay:0.3s;">
+          <h4 class="footer-heading">GET IN TOUCH</h4>
+          <div class="contact-line"><i class="fas fa-map-marker-alt"></i><span>Registered Office Address, Mumbai &mdash; 400051</span></div>
+          <div class="contact-line"><i class="fas fa-phone-alt"></i><span>+91 22 4000 0000</span></div>
+          <div class="contact-line"><i class="fas fa-envelope"></i><span>info@spvhamc.com</span></div>
+          <a href="contact.html" class="footer-cta-link">Schedule Consultation &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="container">
+      <div class="footer-regulatory-notice reveal" style="animation-delay:0.3s;">
+        <p><sup>*</sup> SPVH Asset Management Company is currently undergoing regulatory filing with SEBI for the procurement of licenses pertaining to investment intermediation, including Research Analyst (RA), Investment Adviser (IA), Portfolio Management Services (PMS), and Offshore Fund structures regulated under the GIFT City International Financial Services Centre (IFSC) framework. Services referenced on this website are subject to the receipt of applicable regulatory approvals.</p>
+      </div>
+      <div class="footer-bottom-bar reveal" style="animation-delay:0.4s;">
+        <div class="footer-copyright">&copy; 2026 SPVH Asset Management Company (SPVH AMC Private Limited | CIN: U67110MH2022PTC381574). All Rights Reserved.</div>
+        <div class="footer-legal-links">
+          <a href="privacy-policy.html">Privacy Policy</a><span class="dot">&middot;</span>
+          <a href="disclaimer.html">Disclaimer</a><span class="dot">&middot;</span>
+          <a href="regulatory.html">Regulatory Information</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
