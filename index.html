@@ -836,7 +836,7 @@
                   <span style="width:10px;height:10px;border-radius:50%;background:#47a996;display:inline-block;"></span>SPVH Portfolio
                 </span>
                 <span style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#64748B;font-family:'Montserrat',sans-serif;">
-                  <span style="width:10px;height:10px;border-radius:50%;background:#94A3B8;display:inline-block;"></span>Nifty 50
+                  <span style="width:10px;height:10px;border-radius:50%;background:#94A3B8;display:inline-block;"></span>Nifty TRI
                 </span>
                 <span style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:#64748B;font-family:'Montserrat',sans-serif;">
                   <span style="width:10px;height:10px;border-radius:50%;background:#475569;display:inline-block;"></span>Nifty Midcap 150
@@ -882,7 +882,7 @@
                       <div class="ctr-strategy">
                         <span class="ctr-dot" style="background:#94A3B8;"></span>
                         <div>
-                          <span class="ctr-name" style="color:#475569;">Nifty 50</span>
+                          <span class="ctr-name" style="color:#475569;">Nifty TRI</span>
                           <span class="ctr-sub">Large Cap Benchmark</span>
                         </div>
                       </div>
@@ -918,7 +918,7 @@
                       <div class="ctr-strategy">
                         <span class="ctr-dot" style="border:2px dashed #496bad;background:transparent;"></span>
                         <div>
-                          <span class="ctr-name" style="color:#496bad;">Alpha vs Nifty 50</span>
+                          <span class="ctr-name" style="color:#496bad;">Alpha vs Nifty TRI</span>
                           <span class="ctr-sub">Outperformance</span>
                         </div>
                       </div>
@@ -969,7 +969,7 @@
           labels:['May 2022','May 2023','May 2024','May 2025','May 2026'],
           datasets:[
             { label:'SPVH Portfolio', data:[100,148,205,260,318.73], borderColor:'#47a996', backgroundColor:gradP, borderWidth:2.5, pointBackgroundColor:'#47a996', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:5, pointHoverRadius:7, fill:true, tension:0.4 },
-            { label:'Nifty 50', data:[100,112.3,136.4,145.9,154.5], borderColor:'#94A3B8', backgroundColor:gradN, borderWidth:2, borderDash:[6,4], pointBackgroundColor:'#94A3B8', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:4, pointHoverRadius:6, fill:true, tension:0.4 }
+            { label:'Nifty TRI', data:[100,112.3,136.4,145.9,154.5], borderColor:'#94A3B8', backgroundColor:gradN, borderWidth:2, borderDash:[6,4], pointBackgroundColor:'#94A3B8', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:4, pointHoverRadius:6, fill:true, tension:0.4 }
           ]
         },
         options:{
@@ -977,7 +977,7 @@
           plugins:{
             legend:{display:false},
             tooltip:{ backgroundColor:'#fff', borderColor:'#E2E8F0', borderWidth:1, padding:12, titleColor:'#0A1628', bodyColor:'#475569',
-              callbacks:{ label: ctx => { const v = ctx.parsed.y; const gain = (v-100).toFixed(1); return ctx.datasetIndex===0 ? ` Portfolio: ₹${v.toFixed(2)} Cr  (+${gain}%)` : ` Nifty 50: ${v.toFixed(1)}  (+${gain}%)`; } } }
+              callbacks:{ label: ctx => { const v = ctx.parsed.y; const gain = (v-100).toFixed(1); return ctx.datasetIndex===0 ? ` Portfolio: ₹${v.toFixed(2)} Cr  (+${gain}%)` : ` Nifty TRI: ${v.toFixed(1)}  (+${gain}%)`; } } }
           },
           scales:{ x:{ grid:{color:'#F1F5F9'}, ticks:{font:{size:11},color:'#94A3B8'} }, y:{ grid:{color:'#F1F5F9'}, min:80, ticks:{font:{size:11},color:'#94A3B8',callback:v=>'₹'+v} } }
         }
