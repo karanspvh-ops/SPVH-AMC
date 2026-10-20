@@ -9,48 +9,54 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.id = 'disclaimerOverlay';
     overlay.innerHTML = '' +
       '<div class="disc-banner" id="discBanner">' +
-        '<div class="disc-header">' +
-          '<div class="disc-icon"><i class="fas fa-shield-halved"></i></div>' +
-          '<span class="disc-title">Important Notice</span>' +
+        '<div class="disc-inner">' +
+          '<div class="disc-content">' +
+            '<div class="disc-header">' +
+              '<div class="disc-icon"><i class="fas fa-shield-halved"></i></div>' +
+              '<span class="disc-title">Important Notice</span>' +
+            '</div>' +
+            '<ul class="disc-list">' +
+              '<li>The content on this website is for <strong>informational purposes only</strong> and does not constitute investment advice, an offer to sell, or a solicitation to buy any securities or investment products.</li>' +
+              '<li><strong>Past performance is not indicative of future results.</strong> Investments in securities markets are subject to market risks. Please read all related documents carefully before investing.</li>' +
+              '<li>SPVH AMC Private Limited is currently <strong>undergoing regulatory filing with SEBI</strong> for the procurement of licenses pertaining to investment intermediation, including RA, IA, PMS, and offshore fund structures regulated under GIFT City IFSC.</li>' +
+              '<li>Any model portfolio or track record data presented on this website is for <strong>illustrative purposes only</strong> and does not represent actual client accounts.</li>' +
+            '</ul>' +
+            '<p class="disc-consent">By proceeding, you confirm that you have read and understood this disclaimer and agree to the terms and conditions governing the use of this website.</p>' +
+          '</div>' +
+          '<div class="disc-sidebar">' +
+            '<button class="disc-accept" id="discAccept">I Understand &amp; Agree</button>' +
+            '<button class="disc-decline" id="discDecline">Decline</button>' +
+            '<p class="disc-links"><a href="privacy-policy">Privacy Policy</a> · <a href="disclaimer">Disclaimer</a> · <a href="regulatory">Regulatory</a></p>' +
+          '</div>' +
         '</div>' +
-        '<ul class="disc-list">' +
-          '<li>The content on this website is for <strong>informational purposes only</strong> and does not constitute investment advice, an offer to sell, or a solicitation to buy any securities or investment products.</li>' +
-          '<li><strong>Past performance is not indicative of future results.</strong> Investments in securities markets are subject to market risks. Please read all related documents carefully before investing.</li>' +
-          '<li>SPVH AMC Private Limited is currently <strong>undergoing regulatory filing with SEBI</strong> for the procurement of licenses pertaining to investment intermediation, including RA, IA, PMS, and offshore fund structures regulated under GIFT City IFSC.</li>' +
-          '<li>Any model portfolio or track record data presented on this website is for <strong>illustrative purposes only</strong> and does not represent actual client accounts.</li>' +
-        '</ul>' +
-        '<p class="disc-consent">By proceeding, you confirm that you have read and understood this disclaimer and agree to the terms and conditions governing the use of this website.</p>' +
-        '<div class="disc-actions">' +
-          '<button class="disc-accept" id="discAccept">I Understand &amp; Agree</button>' +
-          '<button class="disc-decline" id="discDecline">Decline</button>' +
-        '</div>' +
-        '<p class="disc-links">Read our full <a href="privacy-policy">Privacy Policy</a> · <a href="disclaimer">Disclaimer</a> · <a href="regulatory">Regulatory Information</a></p>' +
       '</div>';
 
     var style = document.createElement('style');
     style.textContent = '' +
-      '#disclaimerOverlay{position:fixed;inset:0;z-index:99999;background:rgba(6,14,30,0.55);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity 0.35s ease;}' +
+      '#disclaimerOverlay{position:fixed;inset:0;z-index:99999;background:rgba(6,14,30,0.55);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:stretch;opacity:0;transition:opacity 0.35s ease;}' +
       '#disclaimerOverlay.active{opacity:1;}' +
-      '.disc-banner{background:#fff;border-radius:18px 18px 0 0;max-width:640px;width:100%;padding:1.75rem 2rem 1.5rem;box-shadow:0 -12px 50px rgba(0,0,0,0.25);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);}' +
+      '.disc-banner{background:#fff;width:100%;padding:1.5rem 0 1.25rem;box-shadow:0 -12px 50px rgba(0,0,0,0.25);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);border-top:3px solid #47a996;}' +
       '#disclaimerOverlay.active .disc-banner{transform:translateY(0);}' +
-      '.disc-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}' +
-      '.disc-icon{width:34px;height:34px;border-radius:8px;background:#EEF2F8;display:flex;align-items:center;justify-content:center;color:#496bad;font-size:0.9rem;}' +
-      '.disc-title{font-family:"Montserrat",sans-serif;font-size:1rem;font-weight:700;color:#0A1628;}' +
-      '.disc-list{padding-left:1.15rem;margin:0 0 0.75rem;}' +
-      '.disc-list li{font-size:0.78rem;color:#475569;line-height:1.75;margin-bottom:0.35rem;}' +
+      '.disc-inner{max-width:1100px;margin:0 auto;padding:0 2.5rem;display:flex;gap:2rem;align-items:flex-start;}' +
+      '.disc-content{flex:1;min-width:0;}' +
+      '.disc-header{display:flex;align-items:center;gap:10px;margin-bottom:0.75rem;}' +
+      '.disc-icon{width:30px;height:30px;border-radius:7px;background:#EEF2F8;display:flex;align-items:center;justify-content:center;color:#496bad;font-size:0.85rem;flex-shrink:0;}' +
+      '.disc-title{font-family:"Montserrat",sans-serif;font-size:0.92rem;font-weight:700;color:#0A1628;}' +
+      '.disc-list{padding-left:1.15rem;margin:0 0 0.5rem;columns:2;column-gap:2rem;}' +
+      '.disc-list li{font-size:0.73rem;color:#475569;line-height:1.65;margin-bottom:0.3rem;break-inside:avoid;}' +
       '.disc-list li strong{color:#0A1628;font-weight:600;}' +
-      '.disc-consent{font-size:0.72rem;color:#94A3B8;line-height:1.65;margin:0 0 1.25rem;font-style:italic;}' +
-      '.disc-actions{display:flex;gap:10px;margin-bottom:0.75rem;}' +
-      '.disc-accept{flex:1;background:#0A1628;color:#fff;border:none;padding:12px 0;border-radius:8px;font-family:"Montserrat",sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:background 0.2s;}' +
+      '.disc-consent{font-size:0.68rem;color:#94A3B8;line-height:1.55;margin:0;font-style:italic;}' +
+      '.disc-sidebar{display:flex;flex-direction:column;align-items:stretch;gap:8px;flex-shrink:0;width:200px;padding-top:0.5rem;}' +
+      '.disc-accept{background:#0A1628;color:#fff;border:none;padding:12px 0;border-radius:8px;font-family:"Montserrat",sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s;width:100%;text-align:center;}' +
       '.disc-accept:hover{background:#1a3560;}' +
-      '.disc-decline{background:#F0F4FA;color:#64748B;border:none;padding:12px 22px;border-radius:8px;font-family:"Montserrat",sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:background 0.2s;}' +
+      '.disc-decline{background:#F0F4FA;color:#64748B;border:none;padding:10px 0;border-radius:8px;font-family:"Montserrat",sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:background 0.2s;width:100%;text-align:center;}' +
       '.disc-decline:hover{background:#E2E8F0;}' +
-      '.disc-links{font-size:0.65rem;color:#94A3B8;text-align:center;margin:0;}' +
+      '.disc-links{font-size:0.62rem;color:#94A3B8;text-align:center;margin:0;}' +
       '.disc-links a{color:#496bad;text-decoration:none;}' +
       '.disc-links a:hover{text-decoration:underline;}' +
       '@keyframes discShake{0%,100%{transform:translateX(0)}15%{transform:translateX(-8px)}30%{transform:translateX(7px)}45%{transform:translateX(-5px)}60%{transform:translateX(4px)}75%{transform:translateX(-2px)}}' +
       '.disc-shake{animation:discShake 0.5s ease-in-out;}' +
-      '@media(max-width:640px){.disc-banner{padding:1.5rem 1.25rem 1.25rem;border-radius:14px 14px 0 0;}.disc-list li{font-size:0.73rem;}.disc-actions{flex-direction:column;}.disc-accept,.disc-decline{width:100%;}}';
+      '@media(max-width:768px){.disc-inner{flex-direction:column;gap:1rem;padding:0 1.25rem;}.disc-list{columns:1;}.disc-sidebar{width:100%;flex-direction:row;gap:10px;}.disc-accept,.disc-decline{flex:1;}}';
 
     document.head.appendChild(style);
     document.body.appendChild(overlay);
