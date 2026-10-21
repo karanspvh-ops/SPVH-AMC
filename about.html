@@ -16,7 +16,8 @@
   <title>SPVH AMC | About Us — Our Story, Philosophy &amp; Leadership</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="responsive.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
   <style>
     /* ============================================================
        ABOUT US PAGE — FULL REBUILD  (prefix: .ab-*)
@@ -733,13 +734,14 @@
       .ab-hero-tab { flex: 0 0 50%; }
     }
   </style>
+  <style>.fa,.fas,.far,.fal,.fad,.fab{font-display:swap}</style>
 </head>
 <body>
 
   <!-- Nav -->
   <header id="header">
     <div class="container nav-container">
-      <a href="/" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
+      <a href="/" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo" width="143" height="50"></a>
       <ul class="nav-menu">
         <li class="nav-item">
           <a href="about">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
@@ -1265,7 +1267,7 @@
 
           <!-- Sujay Prakash -->
           <div class="ab-leader-card has-bio" data-name="Sujay Prakash" data-role1="Managing Director &amp; CEO" data-role2="SPVH Asset Management" data-photo="assets/images/Sujay-1024.webp">
-            <div class="ab-leader-photo"><img class="ab-leader-img" src="assets/images/Sujay-1024.webp" alt="Sujay Prakash"></div>
+            <div class="ab-leader-photo"><img class="ab-leader-img" src="assets/images/Sujay-1024.webp" alt="Sujay Prakash" width="1024" height="1022" loading="lazy"></div>
             <div class="ab-leader-full">
               <p>Sujay is an entrepreneur, serial investor, innovator, and thinker based in Mumbai. He is actively involved in developing cutting-edge innovations and unconventional sustainable business opportunities focused on social impact, educational development, technological advancement, environmental sustainability, and economic contribution.</p>
               <p>As the Promoter and UBO of SPVH Group, he oversees a diversified business presence across Fund Management, Finance &amp; Capital Markets, Technology, Automotive, Real Estate, Media and Entertainment, Hospitality, and more. Under his leadership, the Group maintains an operational presence in India, Singapore, and the UAE.</p>
@@ -1285,7 +1287,7 @@
 
           <!-- Jimit Majithia -->
           <div class="ab-leader-card has-bio" data-name="Jimit Majithia" data-role1="Partner — SPVH Value Discovery Fund" data-role2="SPVH Asset Management" data-photo="assets/images/Jimit-2-1024.webp">
-            <div class="ab-leader-photo"><img class="ab-leader-img" src="assets/images/Jimit-2-1024.webp" alt="Jimit Majithia"></div>
+            <div class="ab-leader-photo"><img class="ab-leader-img" src="assets/images/Jimit-2-1024.webp" alt="Jimit Majithia" width="1024" height="1084" loading="lazy"></div>
             <div class="ab-leader-full">
               <p>Jimit Majithia is a seasoned finance professional with extensive experience across capital markets, investment platforms, and alternative assets, with primary engagement alongside UHNIs, family offices, and institutional participants.</p>
               <p>He possesses deep exposure to public markets, private capital, structured investments, PMS and AIF structures, and real assets. His expertise seamlessly integrates investment research, financial analysis, due diligence coordination, and investment structuring within governed and regulated frameworks.</p>
@@ -1305,7 +1307,7 @@
 
           <!-- Karan Nagda -->
           <div class="ab-leader-card has-bio" data-name="Karan Nagda" data-role1="Director — Finance &amp; Compliance" data-role2="SPVH Asset Management" data-photo="assets/images/Karan-updated.png">
-            <div class="ab-leader-photo"><img class="ab-leader-img" src="assets/images/Karan-updated.png" alt="Karan Nagda"></div>
+            <div class="ab-leader-photo"><img class="ab-leader-img" src="assets/images/Karan-updated.png" alt="Karan Nagda" width="1102" height="1428" loading="lazy"></div>
             <div class="ab-leader-full">
               <p>Karan Nagda is a seasoned investment professional who serves as a strategic force in capital markets and equity structuring. Drawing upon extensive expertise in trading, portfolio management, and market liquidity execution, he brings a highly disciplined and analytical approach to capital deployment. His work focuses on navigating complex market environments to unlock long-term enterprise value.</p>
               <p>Karan's specialized skill set encompasses comprehensive IPO advisory for both SME and mainboard listings. Throughout the lifecycle of a business, he provides steadfast guidance on pre-IPO readiness, strategic valuation positioning, and precise investor alignment.</p>
@@ -1529,7 +1531,7 @@
       <div class="footer-top-grid">
         <div class="footer-col-brand reveal" style="animation-delay:0s;">
           <a href="/" class="footer-logo-img" style="display:inline-block;margin-bottom:1.25rem;">
-            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height:73px;width:auto;display:block;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" width="210" height="73" style="height:73px;width:auto;display:block;">
           </a>
           <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
           <div class="footer-socials">

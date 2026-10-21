@@ -16,7 +16,8 @@
   <title>SPVH AMC | Offshore &amp; Global Funds</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="responsive.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
   <style>
     /* ============================================================
        OFFSHORE PAGE — FULL DESIGN
@@ -510,13 +511,14 @@
       .off-cta-btns  { flex-direction: column; align-items: center; }
     }
   </style>
+  <style>.fa,.fas,.far,.fal,.fad,.fab{font-display:swap}</style>
 </head>
 <body>
 
   <!-- ===================== NAV ===================== -->
   <header id="header">
     <div class="container nav-container">
-      <a href="/" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
+      <a href="/" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo" width="143" height="50"></a>
       <ul class="nav-menu">
         <li class="nav-item">
           <a href="about">About Us <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></a>
@@ -1046,7 +1048,7 @@
       <div class="footer-top-grid">
         <div class="footer-col-brand reveal" style="animation-delay:0s;">
           <a href="/" class="footer-logo-img" style="display:inline-block;margin-bottom:1.25rem;">
-            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height:73px;width:auto;display:block;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" width="210" height="73" style="height:73px;width:auto;display:block;">
           </a>
           <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
           <div class="footer-socials">

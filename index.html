@@ -41,8 +41,9 @@
   </script>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="responsive.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <style>
     /* ============================================================
        HOME / LANDING — FULL REBUILD  (prefix: .hm-*)
@@ -384,13 +385,14 @@
       .hm-hero-actions { flex-direction: column; align-items: flex-start; }
     }
   </style>
+  <style>.fa,.fas,.far,.fal,.fad,.fab{font-display:swap}</style>
 </head>
 <body>
 
   <!-- Sticky Nav -->
   <header id="header">
     <div class="container nav-container">
-      <a href="/" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo"></a>
+      <a href="/" class="logo"><img src="assets/images/SPVH%20logo-01%20-%20Copy2.png" alt="SPVH AMC Logo" width="143" height="50"></a>
 
       <ul class="nav-menu">
         <li class="nav-item">
@@ -534,9 +536,9 @@
           </div>
           <div class="reveal-right">
             <div class="hm-about-visual">
-              <img src="assets/images/spvh-headquarters.png" alt="SPVH Group Headquarters">
+              <img src="assets/images/spvh-headquarters.png" alt="SPVH Group Headquarters" width="1536" height="1024" loading="lazy">
               <div class="hm-about-float">
-                <img src="assets/images/SPVH%20Round%20Logo.png" alt="SPVH Logo Icon">
+                <img src="assets/images/SPVH%20Round%20Logo.png" alt="SPVH Logo Icon" width="1293" height="1334" loading="lazy">
                 <div>
                   <span class="hm-float-title">SPVH Group</span>
                   <span class="hm-float-sub">Est. 2020</span>
@@ -1291,7 +1293,7 @@
       <div class="footer-top-grid">
         <div class="footer-col-brand reveal" style="animation-delay:0s;">
           <a href="/" class="footer-logo-img" style="display:inline-block;margin-bottom:1.25rem;">
-            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" style="height:73px;width:auto;display:block;">
+            <img src="assets/images/SPVH LOGO WHITE_2.png" alt="SPVH AMC" width="210" height="73" style="height:73px;width:auto;display:block;">
           </a>
           <p class="footer-tagline">Institutional discipline. Generational thinking. Built for India's most discerning investors.</p>
           <div class="footer-socials">
