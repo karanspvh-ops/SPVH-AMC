@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8080"],
       "port": 8080
+    },
+    {
+      "name": "Workspace (Pages + D1)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["-y", "wrangler@4", "pages", "dev", ".", "--d1", "DB", "--binding", "OWNER_SETUP_CODE=local-dev-only", "--port", "8788", "--persist-to", ".wrangler/state"],
+      "port": 8788
     }
   ]
 }

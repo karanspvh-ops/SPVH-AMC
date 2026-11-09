@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>SPVH Workspace</title>
+  <meta name="description" content="SPVH AMC team workspace">
+  <meta name="theme-color" content="#0A1628">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SPVH Work">
+  <link rel="manifest" href="/admin/manifest.webmanifest">
+  <link rel="icon" type="image/png" href="/admin/icons/favicon-64.png">
+  <link rel="apple-touch-icon" href="/admin/icons/apple-touch-icon.png">
+  <link rel="preload" href="/Fonts/Montserrat-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/admin/vendor/phosphor/regular.css">
+  <link rel="stylesheet" href="/admin/vendor/phosphor/fill.css">
+  <link rel="stylesheet" href="/admin/app.css">
+  <script>
+    try {
+      var t = localStorage.getItem('spvh-theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="app" aria-live="polite">
+    <div class="boot">
+      <img src="/admin/icons/icon-192.png" alt="" width="56" height="56">
+    </div>
+  </div>
+  <div id="drawer-root"></div>
+  <div id="layer-root"></div>
+  <div id="toast-root" aria-live="polite" aria-atomic="false"></div>
+  <script type="module" src="/admin/js/main.js"></script>
+</body>
+</html>
