@@ -711,7 +711,7 @@
 
   <script src="script.js"></script>
   <script>
-  (function () {
+  document.addEventListener('DOMContentLoaded', function () {
     Chart.defaults.color = '#94A3B8';
     Chart.defaults.font.family = "'Montserrat','Helvetica',sans-serif";
 
@@ -840,7 +840,7 @@
         if (totalRow) totalRow.style.display = filter === 'all' ? '' : 'none';
       });
     });
-  })();
+  });
   </script>
 </body>
 </html>

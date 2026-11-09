@@ -982,7 +982,7 @@
 
     <!-- Dashboard Charts Script -->
     <script>
-    (function(){
+    document.addEventListener('DOMContentLoaded', function(){
       Chart.defaults.color = '#475569';
       Chart.defaults.font.family = "'Montserrat','Helvetica',sans-serif";
 
@@ -1022,7 +1022,7 @@
         options:{ responsive:true, maintainAspectRatio:false, cutout:'70%',
           plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#fff', borderColor:'#E2E8F0', borderWidth:1, titleColor:'#0A1628', bodyColor:'#475569', callbacks:{label: ctx=>` ${ctx.label}: ${ctx.parsed}%`} } } }
       });
-    })();
+    });
     </script>
 
     <!-- ═══════════════════════════════════════════════════════
