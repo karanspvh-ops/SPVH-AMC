@@ -1,5 +1,5 @@
 import { api, setUnauthorizedHandler, isStandalone } from './api.js';
-import { state, subscribe, loadAll, reset, isAdmin, allTasks, boardById, emit } from './store.js';
+import { state, subscribe, loadAll, reset, isAdmin, isManager, allTasks, boardById, userById, emit } from './store.js';
 import { esc, icon, avatar, swatch } from './util.js';
 import { openMenu, closeMenu, openSheet, toast, toastError, setBusy } from './ui.js';
 import { openTask, openNewTask, closeDrawer, drawerOpenFor, setDrawerNavigation } from './drawer.js';
@@ -8,7 +8,8 @@ import { renderAuth } from './views/auth.js';
 import { renderOverview } from './views/overview.js';
 import { renderMyWork } from './views/mywork.js';
 import { renderRequests } from './views/requests.js';
-import { renderBoard, renderBoards, openBoardSheet } from './views/board.js';
+import { renderBoard, renderBoards, renderPersonBoard, openBoardSheet } from './views/board.js';
+import { renderCalendarPage, openEventSheet } from './views/calendar.js';
 import { renderTeam, resetTeamCache } from './views/team.js';
 
 const app = document.getElementById('app');
@@ -110,6 +111,11 @@ function pageTitle() {
       return { title: b?.name || 'Board', board: b, search: true };
     }
     case 'team': return { title: 'Team', search: false };
+    case 'calendar': return { title: 'Calendar', search: false };
+    case 'people': {
+      const u = userById(Number(parts[1]));
+      return { title: u ? (u.id === state.me.id ? 'Your board' : `${u.name}`) : 'Board', search: true };
+    }
     default: return { title: 'Overview', search: false };
   }
 }
@@ -143,11 +149,13 @@ function renderPage(force = false) {
     case 'boards': renderBoards(el, ctx); break;
     case 'board': renderBoard(el, ctx, Number(parts[1])); break;
     case 'team': renderTeam(el, ctx); break;
+    case 'calendar': renderCalendarPage(el, ctx); break;
+    case 'people': renderPersonBoard(el, ctx, Number(parts[1])); break;
     default: renderOverview(el, ctx);
   }
   if (scroll) {
     const nb = el.querySelector('[data-board]');
-    if (nb && parseHash().parts[0] === 'board') {
+    if (nb) {
       nb.scrollLeft = scroll.left;
       for (const [s, top] of scroll.cols) {
         const c = nb.querySelector(`.col-list[data-status="${s}"]`);
@@ -176,12 +184,13 @@ function renderChrome() {
   const c = counts();
   const me = state.me;
   const navItem = (href, key, ic, label, extra = '') =>
-    `<a class="nav-item${sec === key ? ' is-active' : ''}" href="${href}"${sec === key ? ' aria-current="page"' : ''}>${icon(ic, { fill: sec === key })}<span>${label}</span>${extra}</a>`;
+    `<a class="nav-item${sec === key ? ' is-active' : ''}" href="${href}"${sec === key ? ' aria-current="page"' : ''}>${icon(ic, { weight: sec === key ? 'fill' : 'duotone' })}<span>${label}</span>${extra}</a>`;
 
   document.querySelector('[data-nav]').innerHTML = [
-    navItem('#/', '', 'house-simple', 'Overview'),
-    navItem('#/my', 'my', 'check-square-offset', 'My work', c.mine ? `<span class="nav-count">${c.mine}</span>` : ''),
-    navItem('#/requests', 'requests', 'hand-pointing', 'Requests', c.needsMe ? (isAdmin() ? `<span class="nav-badge" aria-label="${c.needsMe} need you">${c.needsMe}</span>` : `<span class="nav-count">${c.needsMe}</span>`) : ''),
+    navItem('#/', '', 'squares-four', 'Overview'),
+    navItem('#/my', 'my', 'list-checks', 'My work', c.mine ? `<span class="nav-count">${c.mine}</span>` : ''),
+    navItem('#/calendar', 'calendar', 'calendar-dots', 'Calendar'),
+    navItem('#/requests', 'requests', 'tray', 'Requests', c.needsMe ? (isAdmin() ? `<span class="nav-badge" aria-label="${c.needsMe} need you">${c.needsMe}</span>` : `<span class="nav-count">${c.needsMe}</span>`) : ''),
     navItem('#/team', 'team', 'users-three', 'Team', c.pending ? `<span class="nav-badge" aria-label="${c.pending} waiting for access">${c.pending}</span>` : ''),
   ].join('');
 
@@ -196,7 +205,7 @@ function renderChrome() {
     ${showInstall ? `<div class="install-card"><strong>Use it on your phone</strong>Install the workspace on your phone and you stay signed in until you sign out.
       <div style="display:flex;justify-content:space-between;align-items:center"><button type="button" data-install>${icon('device-mobile')}How to install</button>
       <button type="button" class="icon-btn" data-install-dismiss aria-label="Dismiss" style="width:26px;height:26px;color:rgba(201,211,227,.6)">${icon('x')}</button></div></div>` : ''}
-    <button class="user-chip" type="button" data-user-menu aria-haspopup="menu">${avatar(me, 'av-md')}<span class="who"><strong>${esc(me.name)}</strong><span>${isAdmin() ? 'Owner' : esc(me.title || 'Team member')}</span></span>${icon('dots-three-vertical')}</button>`;
+    <button class="user-chip" type="button" data-user-menu aria-haspopup="menu">${avatar(me, 'av-md')}<span class="who"><strong>${esc(me.name)}</strong><span>${isAdmin() ? 'Owner' : isManager(me) ? 'Manager' : esc(me.title || 'Team member')}</span></span>${icon('dots-three-vertical')}</button>`;
 
   const meta = pageTitle();
   document.querySelector('[data-crumbs]').innerHTML = `${meta.board ? swatch(meta.board) : ''}<strong>${esc(meta.title)}</strong>`;
@@ -204,12 +213,13 @@ function renderChrome() {
   searchWrap.hidden = !meta.search;
 
   const tab = (href, key, ic, label, badge = 0) =>
-    `<a class="tab${sec === key || (key === 'boards' && sec === 'board') ? ' is-active' : ''}" href="${href}">${icon(ic, { fill: sec === key || (key === 'boards' && sec === 'board') })}<span>${label}</span>${badge ? `<span class="dot-count">${badge}</span>` : ''}</a>`;
+    `<a class="tab${sec === key ? ' is-active' : ''}" href="${href}">${icon(ic, { weight: sec === key ? 'fill' : 'duotone' })}<span>${label}</span>${badge ? `<span class="dot-count">${badge}</span>` : ''}</a>`;
+  const newLabel = sec === 'requests' ? 'New request' : sec === 'calendar' ? 'Add event' : 'New task';
   document.querySelector('[data-tabbar]').innerHTML = [
-    tab('#/', '', 'house-simple', 'Home'),
-    tab('#/boards', 'boards', 'kanban', 'Boards'),
-    `<button type="button" class="tab tab-new" data-tab-new aria-label="${sec === 'requests' ? 'New request' : 'New task'}"><span class="plus">${icon('plus', { cls: 'ph-bold' })}</span></button>`,
-    tab('#/requests', 'requests', 'hand-pointing', 'Requests', isAdmin() ? c.needsMe : 0),
+    tab('#/', '', 'squares-four', 'Home'),
+    tab('#/calendar', 'calendar', 'calendar-dots', 'Calendar'),
+    `<button type="button" class="tab tab-new" data-tab-new aria-label="${newLabel}"><span class="plus">${icon('plus', { weight: 'bold' })}</span></button>`,
+    tab('#/requests', 'requests', 'tray', 'Requests', isAdmin() ? c.needsMe : 0),
     tab('#/team', 'team', 'users-three', 'Team', c.pending),
   ].join('');
   document.querySelector('[data-top-avatar]').innerHTML = avatar(me, 'av-md');
@@ -222,7 +232,7 @@ function mountShell() {
         <a class="side-brand" href="#/"><img src="/assets/images/SPVH LOGO WHITE_2.png" alt="SPVH" width="948" height="330"><span>Workspace</span></a>
         <nav class="side-nav" data-nav aria-label="Main"></nav>
         <div class="side-section">
-          <div class="side-label"><span>Boards</span>${isAdmin() ? `<button class="icon-btn" type="button" data-new-board aria-label="New board">${icon('plus')}</button>` : ''}</div>
+          <div class="side-label"><a href="#/boards">Boards</a>${isAdmin() ? `<button class="icon-btn" type="button" data-new-board aria-label="New board">${icon('plus')}</button>` : ''}</div>
           <nav class="side-nav" data-boards aria-label="Boards"></nav>
         </div>
         <div class="side-foot" data-side-foot></div>
@@ -254,7 +264,8 @@ function mountShell() {
     if (e.target.closest('[data-new-board]')) { openBoardSheet(null, ctx); return; }
     if (e.target.closest('[data-tab-new]')) {
       const { parts } = parseHash();
-      ctx.newTask(parts[0] === 'requests' ? { kind: 'request' } : {});
+      if (parts[0] === 'calendar') openEventSheet({});
+      else ctx.newTask(parts[0] === 'requests' ? { kind: 'request' } : parts[0] === 'people' ? { assignees: [Number(parts[1])] } : {});
     }
   });
 

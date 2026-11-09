@@ -8,7 +8,7 @@ const names = (ids = []) => {
 };
 
 const ICONS = {
-  created: 'plus-circle', requested: 'hand-pointing', status: 'arrow-right', assigned: 'user-plus',
+  created: 'plus-circle', requested: 'paper-plane-tilt', status: 'arrow-right', assigned: 'user-plus',
   commented: 'chat-circle', renamed: 'pencil-simple', priority: 'cell-signal-full', due: 'calendar-blank',
   moved: 'kanban', checked: 'check-square', deleted: 'trash', access: 'shield-check',
 };
@@ -36,6 +36,8 @@ export function describe(a, taskHtml) {
     case 'checked': return `checked off “${esc(d.text)}” on ${t}`;
     case 'deleted': return `deleted “${esc(d.title)}”`;
     case 'access':
+      if (d.clearance === 'manager') return `gave <b>${esc(d.user)}</b> manager clearance`;
+      if (d.clearance === 'member') return `removed manager clearance from <b>${esc(d.user)}</b>`;
       if (d.status === 'approved') return `approved access for <b>${esc(d.user)}</b>`;
       if (d.status === 'rejected') return `declined the access request from <b>${esc(d.user)}</b>`;
       return `turned off access for <b>${esc(d.user)}</b>`;

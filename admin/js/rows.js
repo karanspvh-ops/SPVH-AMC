@@ -1,5 +1,5 @@
 import { state, userById, boardById, canEdit, patchTask } from './store.js';
-import { esc, icon, statusIcon, prioIcon, dueBadge, avatarStack, avatar, swatch, firstName, STATUS, STATUS_ORDER } from './util.js';
+import { esc, icon, statusIcon, prioIcon, dueBadge, avatarStack, avatar, swatch, firstName, assignerOf, STATUS, STATUS_ORDER } from './util.js';
 import { openMenu, toast, toastError } from './ui.js';
 
 export function taskRow(t, { board = true, requester = false } = {}) {
@@ -8,6 +8,10 @@ export function taskRow(t, { board = true, requester = false } = {}) {
   const creator = userById(t.created_by);
   const sub = [];
   if (requester && creator) sub.push(`<span>From ${esc(creator.id === state.me.id ? 'you' : firstName(creator))}</span>`);
+  if (t.kind === 'task') {
+    const by = userById(assignerOf(t, state.me.id));
+    if (by) sub.push(`<span>Assigned by ${esc(by.id === state.me.id ? 'you' : firstName(by))}</span>`);
+  }
   if (parent) sub.push(`<span>On “${esc(parent.title)}”</span>`);
   if (board && b) sub.push(`<span class="tag tag-board">${swatch(b)}${esc(b.name)}</span>`);
   if (t.kind === 'request' && !requester) sub.push('<span class="tag tag-request">Request</span>');
@@ -61,4 +65,4 @@ export function bindRows(root, openTask) {
 }
 
 export const emptyState = (iconName, title, body, action = '') =>
-  `<div class="empty">${icon(iconName)}<strong>${esc(title)}</strong>${body ? `<p>${esc(body)}</p>` : ''}${action}</div>`;
+  `<div class="empty">${icon(iconName, { weight: 'duotone' })}<strong>${esc(title)}</strong>${body ? `<p>${esc(body)}</p>` : ''}${action}</div>`;

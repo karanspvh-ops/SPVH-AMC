@@ -1,4 +1,4 @@
-const VERSION = 'spvh-ws-v1';
+const VERSION = 'spvh-ws-v2';
 const SHELL = [
   '/admin/',
   '/admin/app.css',
@@ -15,10 +15,17 @@ const SHELL = [
   '/admin/js/views/requests.js',
   '/admin/js/views/board.js',
   '/admin/js/views/team.js',
+  '/admin/js/views/calendar.js',
+  '/admin/js/activity.js',
+  '/admin/js/rows.js',
   '/admin/vendor/phosphor/regular.css',
   '/admin/vendor/phosphor/fill.css',
+  '/admin/vendor/phosphor/bold.css',
+  '/admin/vendor/phosphor/duotone.css',
   '/admin/vendor/phosphor/Phosphor.woff2',
   '/admin/vendor/phosphor/Phosphor-Fill.woff2',
+  '/admin/vendor/phosphor/Phosphor-Bold.woff2',
+  '/admin/vendor/phosphor/Phosphor-Duotone.woff2',
   '/admin/icons/icon-192.png',
   '/admin/img/boardroom.webp',
   '/Fonts/Montserrat-VariableFont_wght.ttf',

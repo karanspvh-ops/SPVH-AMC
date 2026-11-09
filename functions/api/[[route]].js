@@ -8,6 +8,7 @@ const BROWSER_TTL = 12 * 3600 * 1000;
 const PBKDF2_ITERATIONS = 100000;
 const STATUSES = ['todo', 'doing', 'review', 'done'];
 const PRIORITIES = ['low', 'normal', 'high', 'urgent'];
+const EVENT_KINDS = ['celebration', 'holiday', 'travel', 'work_travel', 'leave', 'meeting', 'other'];
 const enc = new TextEncoder();
 
 class HttpError extends Error {
@@ -72,10 +73,44 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS idx_attempts ON login_attempts(email, at)`,
 ];
 
+// Each entry upgrades a live database one step; statements must be safe to re-run.
+const MIGRATIONS = {
+  2: [
+    `ALTER TABLE users ADD COLUMN clearance TEXT NOT NULL DEFAULT 'member'`,
+    `ALTER TABLE task_assignees ADD COLUMN assigned_by INTEGER`,
+    `ALTER TABLE task_assignees ADD COLUMN assigned_at INTEGER`,
+    `UPDATE task_assignees SET
+       assigned_by = (SELECT created_by FROM tasks WHERE tasks.id = task_assignees.task_id),
+       assigned_at = (SELECT created_at FROM tasks WHERE tasks.id = task_assignees.task_id)
+     WHERE assigned_by IS NULL`,
+    `CREATE TABLE IF NOT EXISTS events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, kind TEXT NOT NULL DEFAULT 'other',
+      start_date TEXT NOT NULL, end_date TEXT NOT NULL, start_time TEXT, end_time TEXT,
+      location TEXT NOT NULL DEFAULT '', notes TEXT NOT NULL DEFAULT '', visibility TEXT NOT NULL DEFAULT 'team',
+      created_by INTEGER NOT NULL, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_events_dates ON events(start_date, end_date)`,
+  ],
+};
+
 let schemaReady = false;
 async function ensureSchema(db) {
   if (schemaReady) return;
   await db.batch(SCHEMA.map((s) => db.prepare(s)));
+  await db.prepare('CREATE TABLE IF NOT EXISTS schema_meta (id INTEGER PRIMARY KEY, version INTEGER NOT NULL)').run();
+  let version = (await db.prepare('SELECT version FROM schema_meta WHERE id = 1').first())?.version || 1;
+  for (const v of Object.keys(MIGRATIONS).map(Number).sort((a, b) => a - b)) {
+    if (version >= v) continue;
+    for (const sql of MIGRATIONS[v]) {
+      try {
+        await db.prepare(sql).run();
+      } catch (err) {
+        if (!/duplicate column/i.test(String(err?.message))) throw err;
+      }
+    }
+    await db.prepare('INSERT INTO schema_meta (id, version) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET version = excluded.version').bind(v).run();
+    version = v;
+  }
   const board = await db.prepare('SELECT id FROM boards LIMIT 1').first();
   if (!board) {
     await db.prepare(`INSERT INTO boards (name, description, color, position, created_at) VALUES (?, ?, ?, ?, ?)`)
@@ -159,8 +194,13 @@ async function createSession(db, userId, persistent, ua) {
 
 const publicUser = (u) => ({
   id: u.id, name: u.name, email: u.email, title: u.title || '', phone: u.phone || '',
-  role: u.role, status: u.status, created_at: u.created_at, last_seen_at: u.last_seen_at,
+  role: u.role, clearance: u.role === 'admin' ? 'owner' : u.clearance || 'member',
+  status: u.status, created_at: u.created_at, last_seen_at: u.last_seen_at,
 });
+
+// Owners and managers can see and assign everyone's work; members only see their own.
+const viewAll = (me) => me.role === 'admin' || me.clearance === 'manager';
+const VISIBLE_TO_MEMBER = '(t.created_by = ? OR t.id IN (SELECT task_id FROM task_assignees WHERE user_id = ?))';
 
 async function logActivity(db, { taskId = null, boardId = null, userId, action, detail = null }) {
   await db.prepare('INSERT INTO activity (task_id, board_id, user_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, ?)')
@@ -273,47 +313,53 @@ async function login(request, env, body) {
 
 // ---------- data loading ----------
 
-async function loadTasks(db, where = '1=1', binds = []) {
+async function loadTasks(db, me, where = '1=1', binds = []) {
+  const scope = viewAll(me) ? '' : ` AND ${VISIBLE_TO_MEMBER}`;
+  const scopeBinds = viewAll(me) ? [] : [me.id, me.id];
   const { results: tasks } = await db.prepare(
-    `SELECT id, board_id, kind, parent_id, title, status, priority, due_date, position, created_by, created_at, updated_at, completed_at,
-       (length(body) > 0) AS has_body FROM tasks WHERE ${where} ORDER BY position ASC`
-  ).bind(...binds).all();
+    `SELECT t.id, t.board_id, t.kind, t.parent_id, t.title, t.status, t.priority, t.due_date, t.position, t.created_by,
+       t.created_at, t.updated_at, t.completed_at, (length(t.body) > 0) AS has_body
+     FROM tasks t WHERE (${where})${scope} ORDER BY t.position ASC`
+  ).bind(...binds, ...scopeBinds).all();
   if (!tasks.length) return [];
   const [assignees, checks, comments] = await db.batch([
-    db.prepare('SELECT task_id, user_id FROM task_assignees'),
+    db.prepare('SELECT task_id, user_id, assigned_by, assigned_at FROM task_assignees ORDER BY assigned_at ASC'),
     db.prepare('SELECT task_id, COUNT(*) AS total, SUM(done) AS done FROM checklist GROUP BY task_id'),
     db.prepare('SELECT task_id, COUNT(*) AS n FROM comments GROUP BY task_id'),
   ]);
   const aMap = new Map(), cMap = new Map(), kMap = new Map();
   for (const r of assignees.results) {
     if (!aMap.has(r.task_id)) aMap.set(r.task_id, []);
-    aMap.get(r.task_id).push(r.user_id);
+    aMap.get(r.task_id).push({ user_id: r.user_id, by: r.assigned_by, at: r.assigned_at });
   }
   for (const r of checks.results) cMap.set(r.task_id, { total: r.total, done: r.done || 0 });
   for (const r of comments.results) kMap.set(r.task_id, r.n);
-  return tasks.map((t) => ({
-    ...t,
-    has_body: !!t.has_body,
-    assignees: aMap.get(t.id) || [],
-    checklist: cMap.get(t.id) || { total: 0, done: 0 },
-    comments: kMap.get(t.id) || 0,
-  }));
+  return tasks.map((t) => {
+    const assignments = aMap.get(t.id) || [];
+    return {
+      ...t,
+      has_body: !!t.has_body,
+      assignees: assignments.map((x) => x.user_id),
+      assignments,
+      checklist: cMap.get(t.id) || { total: 0, done: 0 },
+      comments: kMap.get(t.id) || 0,
+    };
+  });
 }
 
-async function loadTask(db, id) {
-  const [t] = await loadTasks(db, 'id = ?', [id]);
-  if (!t) throw new HttpError(404, 'This task no longer exists.');
+async function loadTask(db, me, id) {
+  const [t] = await loadTasks(db, me, 't.id = ?', [id]);
+  if (!t) throw new HttpError(404, 'This task no longer exists, or it isn’t shared with you.');
   return t;
 }
 
-async function taskDetail(db, id) {
-  const task = await loadTask(db, id);
-  const [body, checklist, comments, activity, children] = await db.batch([
+async function taskDetail(db, me, id) {
+  const task = await loadTask(db, me, id);
+  const [body, checklist, comments, activity] = await db.batch([
     db.prepare('SELECT body FROM tasks WHERE id = ?').bind(id),
     db.prepare('SELECT id, text, done, position FROM checklist WHERE task_id = ? ORDER BY position ASC, id ASC').bind(id),
     db.prepare('SELECT id, user_id, body, created_at FROM comments WHERE task_id = ? ORDER BY created_at ASC').bind(id),
     db.prepare('SELECT id, user_id, action, detail, created_at FROM activity WHERE task_id = ? ORDER BY created_at ASC').bind(id),
-    db.prepare('SELECT id FROM tasks WHERE parent_id = ?').bind(id),
   ]);
   return {
     ...task,
@@ -321,12 +367,11 @@ async function taskDetail(db, id) {
     checklist_items: checklist.results.map((c) => ({ ...c, done: !!c.done })),
     comment_list: comments.results,
     activity: activity.results.map((a) => ({ ...a, detail: a.detail ? JSON.parse(a.detail) : null })),
-    children: children.results.map((c) => c.id),
   };
 }
 
 function canEdit(me, task) {
-  return me.role === 'admin' || task.created_by === me.id || task.assignees.includes(me.id);
+  return viewAll(me) || task.created_by === me.id || task.assignees.includes(me.id);
 }
 
 // `existing` assignees are kept as-is even if their access was later turned off.
@@ -339,9 +384,9 @@ async function checkAssignees(db, me, ids, existing = []) {
     `SELECT id, role FROM users WHERE status = 'approved' AND id IN (${fresh.map(() => '?').join(',')})`
   ).bind(...fresh).all();
   if (results.length !== fresh.length) throw new HttpError(400, 'One of the selected people no longer has access.');
-  if (me.role !== 'admin') {
+  if (!viewAll(me)) {
     for (const u of results) {
-      if (u.id !== me.id && u.role !== 'admin') throw new HttpError(403, 'Only Sujay or Karan can assign work to other team members.');
+      if (u.id !== me.id && u.role !== 'admin') throw new HttpError(403, 'Only Sujay, Karan or a manager can assign work to other team members.');
     }
   }
   return clean;
@@ -372,7 +417,7 @@ async function createTask(env, me, body) {
   }
   let parentId = null;
   if (body.parent_id) {
-    const parent = await db.prepare('SELECT id FROM tasks WHERE id = ?').bind(Number(body.parent_id)).first();
+    const parent = await loadTask(db, me, Number(body.parent_id)).catch(() => null);
     if (!parent) throw new HttpError(400, 'The linked task no longer exists.');
     parentId = parent.id;
   }
@@ -384,7 +429,8 @@ async function createTask(env, me, body) {
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(boardId, kind, parentId, title, textBody, status, priority, due, position, me.id, now, now, status === 'done' ? now : null).run();
   const id = res.meta.last_row_id;
-  const stmts = assignees.map((uid) => db.prepare('INSERT INTO task_assignees (task_id, user_id) VALUES (?, ?)').bind(id, uid));
+  const stmts = assignees.map((uid) =>
+    db.prepare('INSERT INTO task_assignees (task_id, user_id, assigned_by, assigned_at) VALUES (?, ?, ?, ?)').bind(id, uid, me.id, now));
   if (Array.isArray(body.checklist)) {
     body.checklist.slice(0, 50).forEach((text, i) => {
       const t = typeof text === 'string' ? text.trim().slice(0, 300) : '';
@@ -393,13 +439,13 @@ async function createTask(env, me, body) {
   }
   if (stmts.length) await db.batch(stmts);
   await logActivity(db, { taskId: id, boardId, userId: me.id, action: kind === 'request' ? 'requested' : 'created', detail: { title, assignees } });
-  return json({ task: await loadTask(db, id) }, 201);
+  return json({ task: await loadTask(db, me, id) }, 201);
 }
 
 async function updateTask(env, me, id, body) {
   const db = env.DB;
-  const task = await loadTask(db, id);
-  if (!canEdit(me, task)) throw new HttpError(403, 'Only the people on this task, or Sujay and Karan, can change it.');
+  const task = await loadTask(db, me, id);
+  if (!canEdit(me, task)) throw new HttpError(403, 'Only the people on this task, a manager, or Sujay and Karan can change it.');
   const sets = [], binds = [], log = [];
 
   if ('title' in body) {
@@ -435,20 +481,20 @@ async function updateTask(env, me, id, body) {
   const stmts = [];
   if ('assignees' in body) {
     const next = await checkAssignees(db, me, body.assignees, task.assignees);
-    if (me.role !== 'admin') {
-      const removed = task.assignees.filter((x) => !next.includes(x));
-      const admins = await adminIds(db);
-      if (removed.some((x) => x !== me.id && !admins.includes(x))) {
-        throw new HttpError(403, 'Only Sujay or Karan can take other people off a task.');
-      }
-    }
     const added = next.filter((x) => !task.assignees.includes(x));
     const removed = task.assignees.filter((x) => !next.includes(x));
-    if (added.length || removed.length) {
-      stmts.push(db.prepare('DELETE FROM task_assignees WHERE task_id = ?').bind(id));
-      for (const uid of next) stmts.push(db.prepare('INSERT INTO task_assignees (task_id, user_id) VALUES (?, ?)').bind(id, uid));
-      log.push(['assigned', { added, removed }]);
+    if (!viewAll(me)) {
+      const admins = await adminIds(db);
+      if (removed.some((x) => x !== me.id && !admins.includes(x))) {
+        throw new HttpError(403, 'Only Sujay, Karan or a manager can take other people off a task.');
+      }
     }
+    const now = Date.now();
+    for (const uid of removed) stmts.push(db.prepare('DELETE FROM task_assignees WHERE task_id = ? AND user_id = ?').bind(id, uid));
+    for (const uid of added) {
+      stmts.push(db.prepare('INSERT INTO task_assignees (task_id, user_id, assigned_by, assigned_at) VALUES (?, ?, ?, ?)').bind(id, uid, me.id, now));
+    }
+    if (added.length || removed.length) log.push(['assigned', { added, removed }]);
   }
 
   sets.push('updated_at = ?'); binds.push(Date.now());
@@ -457,12 +503,12 @@ async function updateTask(env, me, id, body) {
   for (const [action, detail] of log) {
     await logActivity(db, { taskId: id, boardId: task.board_id, userId: me.id, action, detail });
   }
-  return json({ task: await loadTask(db, id) });
+  return json({ task: await loadTask(db, me, id) });
 }
 
 async function deleteTask(env, me, id) {
   const db = env.DB;
-  const task = await loadTask(db, id);
+  const task = await loadTask(db, me, id);
   if (me.role !== 'admin' && task.created_by !== me.id) throw new HttpError(403, 'Only the person who created this task, or Sujay and Karan, can delete it.');
   await db.batch([
     db.prepare('DELETE FROM tasks WHERE id = ?').bind(id),
@@ -474,6 +520,38 @@ async function deleteTask(env, me, id) {
   ]);
   await logActivity(db, { boardId: task.board_id, userId: me.id, action: 'deleted', detail: { title: task.title } });
   return json({ ok: true });
+}
+
+// ---------- calendar events ----------
+
+const canSeeEvent = (me, e) => e.visibility === 'team' || e.created_by === me.id || me.role === 'admin';
+
+function readEvent(body, existing = {}) {
+  const merged = { ...existing, ...body };
+  const title = str(merged.title, { min: 1, max: 120, field: 'Event title' });
+  const kind = EVENT_KINDS.includes(merged.kind) ? merged.kind : 'other';
+  const date = (v) => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
+  const time = (v) => (typeof v === 'string' && /^\d{2}:\d{2}$/.test(v) ? v : null);
+  const start = date(merged.start_date);
+  if (!start) throw new HttpError(400, 'Choose a start date.');
+  const end = date(merged.end_date) || start;
+  if (end < start) throw new HttpError(400, 'The end date can’t be before the start date.');
+  return {
+    title, kind, start_date: start, end_date: end,
+    start_time: time(merged.start_time), end_time: time(merged.end_time),
+    location: str(merged.location, { max: 120, field: 'Location' }),
+    notes: str(merged.notes, { max: 2000, field: 'Notes' }),
+    visibility: merged.visibility === 'private' ? 'private' : 'team',
+  };
+}
+
+async function listEvents(db, me) {
+  const { results } = await db.prepare(
+    me.role === 'admin'
+      ? 'SELECT * FROM events ORDER BY start_date ASC, start_time ASC'
+      : `SELECT * FROM events WHERE visibility = 'team' OR created_by = ? ORDER BY start_date ASC, start_time ASC`
+  ).bind(...(me.role === 'admin' ? [] : [me.id])).all();
+  return results;
 }
 
 async function routeApi(request, env, segs, me) {
@@ -513,24 +591,58 @@ async function routeApi(request, env, segs, me) {
       db.prepare(`SELECT COUNT(*) AS n FROM users WHERE status = 'pending'`),
       db.prepare(`SELECT id, name, title, role, status FROM users WHERE status = 'disabled'`),
     ]);
-    const tasks = await loadTasks(db);
+    const tasks = await loadTasks(db, me);
+    const events = await listEvents(db, me);
     return json({
       me: publicUser(me),
       users: users.results.map(publicUser),
       former: former.results,
       boards: boards.results,
       tasks,
+      events,
       pending: isAdmin ? pending.results[0].n : 0,
     });
   }
 
   if (a === 'activity' && method === 'GET') {
     const limit = Math.min(Number(new URL(request.url).searchParams.get('limit')) || 30, 100);
+    // Members only see activity on their own tasks; access changes are for owners only.
+    const scope = viewAll(me)
+      ? (isAdmin ? '' : `WHERE a.action != 'access'`)
+      : `WHERE a.task_id IN (SELECT t.id FROM tasks t WHERE ${VISIBLE_TO_MEMBER})`;
     const { results } = await db.prepare(
-      `SELECT a.id, a.task_id, a.board_id, a.user_id, a.action, a.detail, a.created_at, t.title AS task_title
-       FROM activity a LEFT JOIN tasks t ON t.id = a.task_id ORDER BY a.created_at DESC LIMIT ?`
-    ).bind(limit).all();
+      `SELECT a.id, a.task_id, a.board_id, a.user_id, a.action, a.detail, a.created_at, tk.title AS task_title
+       FROM activity a LEFT JOIN tasks tk ON tk.id = a.task_id ${scope} ORDER BY a.created_at DESC LIMIT ?`
+    ).bind(...(viewAll(me) ? [] : [me.id, me.id]), limit).all();
     return json({ activity: results.map((r) => ({ ...r, detail: r.detail ? JSON.parse(r.detail) : null })) });
+  }
+
+  // calendar events
+  if (a === 'events') {
+    if (!b && method === 'GET') return json({ events: await listEvents(db, me) });
+    if (!b && method === 'POST') {
+      const e = readEvent(body);
+      const now = Date.now();
+      const res = await db.prepare(
+        `INSERT INTO events (title, kind, start_date, end_date, start_time, end_time, location, notes, visibility, created_by, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(e.title, e.kind, e.start_date, e.end_date, e.start_time, e.end_time, e.location, e.notes, e.visibility, me.id, now, now).run();
+      return json({ event: await db.prepare('SELECT * FROM events WHERE id = ?').bind(res.meta.last_row_id).first() }, 201);
+    }
+    const existing = b ? await db.prepare('SELECT * FROM events WHERE id = ?').bind(Number(b)).first() : null;
+    if (!existing || !canSeeEvent(me, existing)) throw new HttpError(404, 'That event no longer exists.');
+    if (existing.created_by !== me.id && !isAdmin) throw new HttpError(403, 'Only the person who added this event, or Sujay and Karan, can change it.');
+    if (method === 'PATCH') {
+      const e = readEvent(body, existing);
+      await db.prepare(
+        `UPDATE events SET title = ?, kind = ?, start_date = ?, end_date = ?, start_time = ?, end_time = ?, location = ?, notes = ?, visibility = ?, updated_at = ? WHERE id = ?`
+      ).bind(e.title, e.kind, e.start_date, e.end_date, e.start_time, e.end_time, e.location, e.notes, e.visibility, Date.now(), existing.id).run();
+      return json({ event: await db.prepare('SELECT * FROM events WHERE id = ?').bind(existing.id).first() });
+    }
+    if (method === 'DELETE') {
+      await db.prepare('DELETE FROM events WHERE id = ?').bind(existing.id).run();
+      return json({ ok: true });
+    }
   }
 
   // users / access approvals
@@ -546,13 +658,24 @@ async function routeApi(request, env, segs, me) {
       const target = await db.prepare('SELECT * FROM users WHERE id = ?').bind(Number(b)).first();
       if (!target) throw new HttpError(404, 'That person no longer exists.');
       if (owners(env).includes(target.email.toLowerCase())) throw new HttpError(400, 'Owner access can’t be changed.');
-      const status = body.status;
-      if (!['approved', 'rejected', 'disabled'].includes(status)) throw new HttpError(400, 'Unknown access status.');
-      const stmts = [db.prepare('UPDATE users SET status = ?, reviewed_by = ?, reviewed_at = ? WHERE id = ?').bind(status, me.id, Date.now(), target.id)];
-      if (status !== 'approved') stmts.push(db.prepare('DELETE FROM sessions WHERE user_id = ?').bind(target.id));
+      const next = { ...target };
+      const stmts = [];
+      if ('status' in body) {
+        if (!['approved', 'rejected', 'disabled'].includes(body.status)) throw new HttpError(400, 'Unknown access status.');
+        next.status = body.status;
+        stmts.push(db.prepare('UPDATE users SET status = ?, reviewed_by = ?, reviewed_at = ? WHERE id = ?').bind(body.status, me.id, Date.now(), target.id));
+        if (body.status !== 'approved') stmts.push(db.prepare('DELETE FROM sessions WHERE user_id = ?').bind(target.id));
+      }
+      if ('clearance' in body) {
+        if (!['member', 'manager'].includes(body.clearance)) throw new HttpError(400, 'Unknown clearance level.');
+        next.clearance = body.clearance;
+        stmts.push(db.prepare('UPDATE users SET clearance = ? WHERE id = ?').bind(body.clearance, target.id));
+      }
+      if (!stmts.length) throw new HttpError(400, 'Nothing to change.');
       await db.batch(stmts);
-      await logActivity(db, { userId: me.id, action: 'access', detail: { user: target.name, status } });
-      return json({ user: publicUser({ ...target, status }) });
+      if ('status' in body) await logActivity(db, { userId: me.id, action: 'access', detail: { user: target.name, status: body.status } });
+      if ('clearance' in body) await logActivity(db, { userId: me.id, action: 'access', detail: { user: target.name, clearance: body.clearance } });
+      return json({ user: publicUser(next) });
     }
   }
 
@@ -591,12 +714,12 @@ async function routeApi(request, env, segs, me) {
     if (!b && method === 'POST') return createTask(env, me, body);
     const id = Number(b);
     if (!Number.isInteger(id)) throw new HttpError(404, 'Not found.');
-    if (!c && method === 'GET') return json({ task: await taskDetail(db, id) });
+    if (!c && method === 'GET') return json({ task: await taskDetail(db, me, id) });
     if (!c && method === 'PATCH') return updateTask(env, me, id, body);
     if (!c && method === 'DELETE') return deleteTask(env, me, id);
 
     if (c === 'comments' && method === 'POST') {
-      await loadTask(db, id);
+      await loadTask(db, me, id);
       const text = str(body.body, { min: 1, max: 4000, field: 'Comment' });
       const now = Date.now();
       const res = await db.prepare('INSERT INTO comments (task_id, user_id, body, created_at) VALUES (?, ?, ?, ?)').bind(id, me.id, text, now).run();
@@ -606,7 +729,7 @@ async function routeApi(request, env, segs, me) {
     }
 
     if (c === 'checklist' && method === 'POST') {
-      const task = await loadTask(db, id);
+      const task = await loadTask(db, me, id);
       if (!canEdit(me, task)) throw new HttpError(403, 'Only the people on this task can edit its checklist.');
       const text = str(body.text, { min: 1, max: 300, field: 'Checklist item' });
       const max = await db.prepare('SELECT MAX(position) AS p FROM checklist WHERE task_id = ?').bind(id).first();
@@ -618,7 +741,7 @@ async function routeApi(request, env, segs, me) {
   if (a === 'checklist' && b) {
     const item = await db.prepare('SELECT * FROM checklist WHERE id = ?').bind(Number(b)).first();
     if (!item) throw new HttpError(404, 'That checklist item no longer exists.');
-    const task = await loadTask(db, item.task_id);
+    const task = await loadTask(db, me, item.task_id);
     if (!canEdit(me, task)) throw new HttpError(403, 'Only the people on this task can edit its checklist.');
     if (method === 'PATCH') {
       const text = 'text' in body ? str(body.text, { min: 1, max: 300, field: 'Checklist item' }) : item.text;

@@ -1,5 +1,5 @@
 import { api } from '../api.js';
-import { state, isAdmin, allTasks, loadAll, emit } from '../store.js';
+import { state, isAdmin, canViewAll, isManager, allTasks, loadAll, emit } from '../store.js';
 import { esc, icon, avatar, ago, isOverdue } from '../util.js';
 import { openMenu, openSheet, toast, toastError, setBusy } from '../ui.js';
 import { emptyState } from '../rows.js';
@@ -41,7 +41,7 @@ export function renderTeam(root, ctx) {
   root.innerHTML = `
     <div class="page">
       <div class="page-head">
-        <div><h1 class="page-title">Team</h1><p class="page-sub">${admin ? 'Everyone with access, and who is waiting for it.' : 'Everyone working in the SPVH workspace.'}</p></div>
+        <div><h1 class="page-title">Team</h1><p class="page-sub">${admin ? 'Everyone with access, their clearance, and who is waiting for it.' : 'Everyone working in the SPVH workspace.'}</p></div>
         ${admin ? `<div class="seg" role="tablist">
           <button type="button" role="tab" data-tab="members" class="${tab === 'members' ? 'is-active' : ''}" aria-selected="${tab === 'members'}">Members <span class="n">${members.length}</span></button>
           <button type="button" role="tab" data-tab="requests" class="${tab === 'requests' ? 'is-active' : ''}" aria-selected="${tab === 'requests'}">Access requests <span class="n">${directory ? pending.length : state.pending}</span></button>
@@ -64,16 +64,24 @@ function skeleton() {
 
 function membersList(members, ownerEmails, admin) {
   const open = allTasks().filter((t) => t.status !== 'done');
+  const seeWork = canViewAll();
   return `<div class="list">${members.map((u) => {
     const theirs = open.filter((t) => t.assignees.includes(u.id));
     const active = theirs.filter((t) => t.status === 'doing' || t.status === 'review').length;
     const overdue = theirs.filter(isOverdue).length;
     const isOwner = u.role === 'admin';
-    return `<div class="person member-row">
+    const tag = isOwner
+      ? `<span class="tag role-tag">${icon('crown-simple', { weight: 'fill' })}Owner</span>`
+      : isManager(u) ? `<span class="tag manager-tag">${icon('shield-star', { weight: 'fill' })}Manager</span>` : '';
+    const actions = [
+      seeWork ? `<a class="icon-btn" href="#/people/${u.id}" aria-label="Open ${esc(u.name)}’s board" title="Open board">${icon('kanban', { weight: 'bold' })}</a>` : '',
+      admin && !isOwner && !ownerEmails.has(u.email) ? `<button class="icon-btn" type="button" data-member-menu="${u.id}" aria-label="Options for ${esc(u.name)}" aria-haspopup="menu">${icon('dots-three', { weight: 'bold' })}</button>` : '',
+    ].join('');
+    return `<div class="person member-row${seeWork ? '' : ' is-directory'}">
       <div class="person-id">${avatar(u, 'av-lg')}<div style="min-width:0"><strong>${esc(u.name)}${u.id === state.me.id ? ' <span class="hint">(you)</span>' : ''}</strong><span>${esc(u.title || 'Team member')}</span></div></div>
       <div class="member-contact"><a href="mailto:${esc(u.email)}">${esc(u.email)}</a>${u.phone ? `<a href="tel:${esc(u.phone)}">${esc(u.phone)}</a>` : ''}</div>
-      <div class="person-stats"><span><b>${theirs.length}</b> open</span><span><b>${active}</b> active</span>${overdue ? `<span class="is-danger"><b>${overdue}</b> overdue</span>` : ''}</div>
-      <div>${isOwner ? '<span class="tag role-tag">Owner</span>' : admin && !ownerEmails.has(u.email) ? `<button class="icon-btn" type="button" data-member-menu="${u.id}" aria-label="Options for ${esc(u.name)}" aria-haspopup="menu">${icon('dots-three')}</button>` : ''}</div>
+      ${seeWork ? `<div class="person-stats"><span><b>${theirs.length}</b> open</span><span><b>${active}</b> active</span>${overdue ? `<span class="is-danger"><b>${overdue}</b> overdue</span>` : ''}</div>` : ''}
+      <div class="member-end">${tag}${actions}</div>
     </div>`;
   }).join('')}</div>`;
 }
@@ -132,10 +140,22 @@ async function decide(btn, ctx) {
 function memberMenu(btn, ctx) {
   const id = Number(btn.dataset.memberMenu);
   const user = state.users.find((u) => u.id === id);
+  const manager = isManager(user);
   openMenu(btn, {
     align: 'end',
-    items: () => [{ id: 'off', label: 'Turn off access', iconHtml: icon('prohibit'), danger: true }],
-    onSelect: () => {
+    items: () => [
+      manager
+        ? { id: 'demote', label: 'Remove manager clearance', iconHtml: icon('shield-slash') }
+        : { id: 'promote', label: 'Give manager clearance', iconHtml: icon('shield-star') },
+      { type: 'note', label: manager ? 'They will only see their own tasks again.' : 'Managers can see everyone’s boards and assign work to anyone.' },
+      { type: 'sep' },
+      { id: 'off', label: 'Turn off access', iconHtml: icon('prohibit'), danger: true },
+    ],
+    onSelect: (choice) => {
+      if (choice === 'promote' || choice === 'demote') {
+        setClearance(user, choice === 'promote' ? 'manager' : 'member', ctx);
+        return;
+      }
       openSheet(`<h2>Turn off access for ${esc(user.name)}?</h2>
         <p class="lede">They’ll be signed out on every device straight away. Their tasks and comments stay. You can restore access later.</p>
         <div class="sheet-actions"><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-danger" type="button" data-confirm>Turn off access</button></div>`, {
@@ -157,6 +177,15 @@ function memberMenu(btn, ctx) {
       });
     },
   });
+}
+
+async function setClearance(user, clearance, ctx) {
+  try {
+    await api(`users/${user.id}`, { method: 'PATCH', body: { clearance } });
+    toast(clearance === 'manager' ? `${user.name} is now a manager` : `${user.name} is back to seeing only their own work`, { type: 'success' });
+    await loadAll();
+    ctx.rerender();
+  } catch (err) { toastError(err); }
 }
 
 export function resetTeamCache() { directory = null; }

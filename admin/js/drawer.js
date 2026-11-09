@@ -1,6 +1,6 @@
 import { api } from './api.js';
 import {
-  state, subscribe, userById, boardById, admins, isAdmin, canEdit, canDelete,
+  state, subscribe, userById, boardById, admins, isAdmin, canViewAll, canEdit, canDelete,
   assignableUsers, patchTask, createTask, removeTask, upsertTask,
 } from './store.js';
 import {
@@ -198,6 +198,7 @@ function renderShell() {
       <article class="doc">
         <div class="doc-kind" data-region="kind"></div>
         <textarea id="doc-title" class="doc-title" rows="1" maxlength="200" placeholder="${isRequest ? 'What do you need from Sujay or Karan?' : 'Task title'}" aria-label="Title">${esc(t.title)}</textarea>
+        <div class="stepper" data-region="stepper" role="radiogroup" aria-label="Status"></div>
         <dl class="props" data-region="props"></dl>
         <div data-region="readonly"></div>
         <section class="doc-section">
@@ -250,7 +251,7 @@ function renderKind() {
   const bits = [];
   if (t.kind === 'request') {
     const creator = ds.mode === 'view' ? userById(t.created_by) : state.me;
-    bits.push(`<span class="tag tag-request">${icon('hand-pointing', { fill: true })}Request</span>`);
+    bits.push(`<span class="tag tag-request">${icon('paper-plane-tilt', { weight: 'fill' })}Request</span>`);
     if (creator) bits.push(`<span class="hint">from ${esc(creator.id === state.me.id ? 'you' : creator.name)}</span>`);
   }
   if (t.parent_id) {
@@ -272,13 +273,23 @@ function renderProps() {
   const due = t.due_date;
   const dueCls = due && t.status !== 'done' && daysUntil(due) < 0 ? ' style="color:var(--danger);font-weight:600"' : '';
   const creator = ds.mode === 'view' ? userById(t.created_by) : null;
+  renderStepper();
+  const assignedBy = (t.assignments || [])
+    .filter((a) => a.by)
+    .map((a) => {
+      const by = userById(a.by);
+      const to = userById(a.user_id);
+      if (!by || !to) return '';
+      const who = a.by === a.user_id ? `${esc(to.id === state.me.id ? 'You' : to.name)} took it on` : `${esc(by.id === state.me.id ? 'You' : by.name)} assigned ${esc(to.id === state.me.id ? 'you' : firstName(to))}`;
+      return `<span class="assign-line">${avatar(by, 'av-xs')}<span>${who}</span>${a.at ? `<span class="hint">${esc(ago(a.at))}</span>` : ''}</span>`;
+    })
+    .filter(Boolean);
   region.innerHTML = `
-    <div class="prop"><dt>${icon('circle-half')}Status</dt><dd>
-      <button class="prop-btn" data-prop="status" aria-haspopup="menu" ${dis}>${statusIcon(t.status)}${STATUS[t.status].label}</button></dd></div>
     <div class="prop"><dt>${icon('users')}${t.kind === 'request' ? 'Asking' : 'Assignees'}</dt><dd>
       <button class="prop-btn${people.length ? '' : ' is-empty'}" data-prop="assignees" aria-haspopup="menu" ${dis}>
         ${people.length ? `${avatarStack(t.assignees, 4, 'av-sm')}<span class="names">${esc(people.map((p) => p.name).join(', '))}</span>` : 'Add people'}
       </button></dd></div>
+    ${assignedBy.length ? `<div class="prop prop-top"><dt>${icon('arrow-bend-down-right')}Assigned by</dt><dd><div class="assign-lines">${assignedBy.join('')}</div></dd></div>` : ''}
     <div class="prop"><dt>${icon('cell-signal-full')}Priority</dt><dd>
       <button class="prop-btn" data-prop="priority" aria-haspopup="menu" ${dis}>${prioIcon(t.priority)}${PRIORITY[t.priority].label}</button></dd></div>
     <div class="prop"><dt>${icon('calendar-blank')}Due date</dt><dd>
@@ -297,6 +308,22 @@ function renderProps() {
   dateInput?.addEventListener('click', (e) => { try { e.target.showPicker?.(); } catch { /* not supported */ } });
 }
 
+function renderStepper() {
+  const region = ds.el.querySelector('[data-region="stepper"]');
+  if (!region) return;
+  const t = current();
+  const can = editable();
+  const idx = STATUS_ORDER.indexOf(t.status);
+  region.style.setProperty('--fill', String(idx / (STATUS_ORDER.length - 1)));
+  region.dataset.status = t.status;
+  region.innerHTML = `<div class="stepper-track" aria-hidden="true"><i></i></div>${STATUS_ORDER.map((s, i) => `
+    <button type="button" role="radio" class="step${i < idx ? ' is-past' : ''}${i === idx ? ' is-current' : ''}" data-step="${s}"
+      aria-checked="${i === idx}" ${can ? '' : 'disabled'}>
+      <span class="step-dot">${i < idx || (i === idx && s === 'done') ? icon('check', { weight: 'bold' }) : i === idx ? '<i class="pulse"></i>' : ''}</span>
+      <span class="step-label">${STATUS[s].label}</span>
+    </button>`).join('')}`;
+}
+
 function applyPermissions() {
   const can = editable();
   const title = ds.el.querySelector('#doc-title');
@@ -308,7 +335,7 @@ function applyPermissions() {
   }
   const ro = ds.el.querySelector('[data-region="readonly"]');
   if (ro) {
-    ro.innerHTML = can ? '' : `<div class="notice readonly-note">${icon('lock-simple', { fill: true })}<span>You can comment here. Only the people on this task, or Sujay and Karan, can change it.</span></div>`;
+    ro.innerHTML = can ? '' : `<div class="notice readonly-note">${icon('lock-simple', { fill: true })}<span>You can comment here. Only the people on this task, a manager, or Sujay and Karan can change it.</span></div>`;
   }
 }
 
@@ -406,9 +433,9 @@ function renderLinked() {
       ${avatarStack(c.assignees, 2, 'av-sm')}
     </button>`).join('');
   region.innerHTML = `
-    <h3>${icon('hand-pointing')}${isAdmin() ? 'Requests on this task' : 'Need Sujay or Karan?'} ${children.length ? `<span class="count">${children.length}</span>` : ''}</h3>
+    <h3>${icon('paper-plane-tilt')}${isAdmin() ? 'Requests on this task' : 'Need Sujay or Karan?'} ${children.length ? `<span class="count">${children.length}</span>` : ''}</h3>
     <div class="linked">${list}</div>
-    ${ds.asking ? askBox(owners) : owners.length ? `<button type="button" class="btn btn-secondary" data-act="ask" style="margin-top:${children.length ? 8 : 0}px">${icon('hand-pointing')}Ask ${esc(ownerNames)}</button>` : ''}`;
+    ${ds.asking ? askBox(owners) : owners.length ? `<button type="button" class="btn btn-secondary" data-act="ask" style="margin-top:${children.length ? 8 : 0}px">${icon('paper-plane-tilt', { weight: 'bold' })}Ask ${esc(ownerNames)}</button>` : ''}`;
   if (ds.asking) {
     const input = region.querySelector('[name="ask-title"]');
     input?.focus();
@@ -484,9 +511,17 @@ function renderFoot() {
 // ---------- interactions ----------
 
 async function onClick(e) {
-  const el = e.target.closest('[data-act], [data-prop], [data-open-task], [data-who]');
+  const el = e.target.closest('[data-act], [data-prop], [data-open-task], [data-who], [data-step]');
   if (!el || !ds) return;
   const t = current();
+
+  if (el.dataset.step) {
+    if (el.dataset.step === t.status) return;
+    const to = el.dataset.step;
+    setField({ status: to });
+    if (ds.mode === 'view' && to === 'done') toast('Marked as done', { type: 'success' });
+    return;
+  }
 
   if (el.dataset.openTask) { navigate.open(Number(el.dataset.openTask)); return; }
 
@@ -534,9 +569,9 @@ async function onClick(e) {
           sub: u.role === 'admin' ? 'Owner' : u.title,
           iconHtml: avatar(u, 'av-sm'),
           checked: cur.includes(u.id),
-          disabled: !isAdmin() && !options.some((o) => o.id === u.id),
+          disabled: !canViewAll() && !options.some((o) => o.id === u.id),
         }));
-        if (!isAdmin()) rows.push({ type: 'note', label: 'You can assign yourself, Sujay or Karan. Only they can assign other team members.' });
+        if (!canViewAll()) rows.push({ type: 'note', label: 'You can assign yourself, Sujay or Karan. Only they or a manager can assign other team members.' });
         return rows;
       },
       onSelect: (id) => {

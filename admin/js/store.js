@@ -9,6 +9,7 @@ export const state = {
   usersById: new Map(),
   boards: [],
   tasks: new Map(),
+  events: [],
   pending: 0,
   activity: [],
   loaded: false,
@@ -34,6 +35,7 @@ export async function loadAll() {
   setUsers(data.users, data.former);
   state.boards = data.boards;
   state.tasks = new Map(data.tasks.map((t) => [t.id, t]));
+  state.events = data.events || [];
   state.pending = data.pending;
   state.loaded = true;
   emit();
@@ -58,12 +60,17 @@ export function reset() {
   state.usersById = new Map();
   state.boards = [];
   state.tasks = new Map();
+  state.events = [];
   state.pending = 0;
   state.activity = [];
+  state.activityLoaded = false;
   state.loaded = false;
 }
 
 export const isAdmin = () => state.me?.role === 'admin';
+// Owners and managers can see and assign everyone's work.
+export const canViewAll = () => isAdmin() || state.me?.clearance === 'manager';
+export const isManager = (u) => u?.clearance === 'manager';
 export const admins = () => state.users.filter((u) => u.role === 'admin');
 export const userById = (id) => state.usersById.get(id);
 export const boardById = (id) => state.boards.find((b) => b.id === id);
@@ -72,7 +79,20 @@ export const allTasks = () => [...state.tasks.values()];
 export function canEdit(task) {
   const me = state.me;
   if (!me || !task) return false;
-  return me.role === 'admin' || task.created_by === me.id || task.assignees.includes(me.id);
+  return canViewAll() || task.created_by === me.id || task.assignees.includes(me.id);
+}
+
+export const canEditEvent = (e) => !!state.me && (isAdmin() || e.created_by === state.me.id);
+
+export function upsertEvent(event) {
+  const i = state.events.findIndex((e) => e.id === event.id);
+  if (i >= 0) state.events[i] = event; else state.events.push(event);
+  emit();
+}
+
+export function removeEvent(id) {
+  state.events = state.events.filter((e) => e.id !== id);
+  emit();
 }
 
 export function canDelete(task) {
@@ -81,7 +101,7 @@ export function canDelete(task) {
 }
 
 export function assignableUsers() {
-  if (isAdmin()) return state.users;
+  if (canViewAll()) return state.users;
   return state.users.filter((u) => u.id === state.me.id || u.role === 'admin');
 }
 

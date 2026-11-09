@@ -3,8 +3,22 @@ import { state, userById, boardById } from './store.js';
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ESC[c]);
 
-export const icon = (name, { fill = false, cls = '' } = {}) =>
-  `<i class="${fill ? 'ph-fill' : 'ph'} ph-${name}${cls ? ' ' + cls : ''}" aria-hidden="true"></i>`;
+// weight: 'regular' | 'fill' | 'duotone' | 'bold'
+export const icon = (name, { fill = false, weight, cls = '' } = {}) => {
+  const w = weight || (fill ? 'fill' : 'regular');
+  const base = { regular: 'ph', fill: 'ph-fill', duotone: 'ph-duotone', bold: 'ph-bold' }[w];
+  return `<i class="${base} ph-${name}${cls ? ' ' + cls : ''}" aria-hidden="true"></i>`;
+};
+
+export const EVENT_KINDS = {
+  celebration: { label: 'Celebration', icon: 'confetti', color: '#C9A84C' },
+  holiday: { label: 'Holiday', icon: 'sun-horizon', color: '#47A996' },
+  work_travel: { label: 'Work travel', icon: 'briefcase', color: '#496BAD' },
+  travel: { label: 'Personal travel', icon: 'airplane-tilt', color: '#7A5BA8' },
+  leave: { label: 'Leave', icon: 'door-open', color: '#B5603F' },
+  meeting: { label: 'Meeting', icon: 'handshake', color: '#2B6F7F' },
+  other: { label: 'Other', icon: 'calendar-star', color: '#5F6E82' },
+};
 
 export const STATUS = {
   todo: { label: 'To do', icon: 'circle-dashed', fill: false },
@@ -108,7 +122,7 @@ export function dueBadge(task) {
   const n = daysUntil(task.due_date);
   const open = task.status !== 'done';
   const cls = open && n < 0 ? 'is-overdue' : open && n <= 1 ? 'is-soon' : '';
-  return `<span class="due ${cls}">${icon('calendar-blank')}${esc(dueLabel(task.due_date))}</span>`;
+  return `<span class="due ${cls}">${icon('calendar-blank', { weight: 'bold' })}${esc(dueLabel(task.due_date))}</span>`;
 }
 
 export function ago(ms) {
@@ -127,6 +141,23 @@ export function greeting() {
   if (h < 12) return 'Good morning';
   if (h < 17) return 'Good afternoon';
   return 'Good evening';
+}
+
+export const toISO = (d) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+export const fromISO = parseISO;
+export const addDays = (iso, n) => {
+  const d = parseISO(iso);
+  d.setDate(d.getDate() + n);
+  return toISO(d);
+};
+
+/** Who assigned this task: the assigner of the viewer's own assignment first, else anyone else's. */
+export function assignerOf(t, viewerId) {
+  const list = t.assignments || [];
+  const mine = list.find((a) => a.user_id === viewerId && a.by && a.by !== viewerId);
+  const other = list.find((a) => a.by && a.by !== a.user_id);
+  return (mine || other)?.by || null;
 }
 
 export const isOverdue = (t) => t.status !== 'done' && t.due_date && daysUntil(t.due_date) < 0;
