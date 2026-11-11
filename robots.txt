@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://spvhamc.com/sitemap.xml
+Sitemap: https://www.spvhamc.com/sitemap.xml

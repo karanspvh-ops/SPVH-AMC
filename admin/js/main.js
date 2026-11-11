@@ -391,7 +391,7 @@ function showInstall() {
     return;
   }
   openSheet(`<h2>Install on your phone</h2>
-    <p class="lede">Open <b>spvhamc.com/admin</b> on your phone, then add it to your home screen. Once installed, you stay signed in until you sign out.</p>
+    <p class="lede">Open <b>www.spvhamc.com/admin</b> on your phone, then add it to your home screen. Once installed, you stay signed in until you sign out.</p>
     <div class="section-head" style="margin-top:18px"><h2>iPhone (Safari)</h2></div>
     <ol class="ios-steps"><li>${icon('export')}Tap the Share button</li><li>${icon('plus-square')}Choose “Add to Home Screen”</li></ol>
     <div class="section-head" style="margin-top:18px"><h2>Android (Chrome)</h2></div>
