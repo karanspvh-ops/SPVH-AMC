@@ -6,6 +6,7 @@ import { describe, activityIcon } from '../activity.js';
 import { renderKanban } from './board.js';
 import { renderCalendar, openEventSheet } from './calendar.js';
 import { openMenu } from '../ui.js';
+import { pushState } from '../push.js';
 
 let activityRequested = 0;
 let boardView = 'me'; // 'me' | 'all' | user id (owners and managers only)
@@ -14,7 +15,7 @@ function boardTasks() {
   const meId = state.me.id;
   const tasks = allTasks();
   if (!canViewAll() || boardView === 'me') {
-    return tasks.filter((t) => t.assignees.includes(meId) || (t.created_by === meId && (t.kind === 'request' || !t.assignees.length)));
+    return tasks.filter((t) => t.assignees.includes(meId) || (t.created_by === meId && t.kind === 'request'));
   }
   if (boardView === 'all') return tasks;
   return tasks.filter((t) => t.assignees.includes(boardView));
@@ -55,6 +56,8 @@ export function renderOverview(root, ctx) {
           <button class="btn btn-primary" data-new type="button">${icon('plus', { weight: 'bold' })}New task</button>
         </div>
       </div>
+
+      ${notifyBanner()}
 
       ${inboxCount() ? `<section class="ov-section">
         <div class="section-head"><h2>${icon('handshake', { weight: 'duotone' })}Waiting for your answer<span class="count">${inboxCount()}</span></h2></div>
@@ -106,6 +109,11 @@ export function renderOverview(root, ctx) {
   root.querySelectorAll('.pool-strip').forEach((el) => bindPoolCards(el, ctx));
   root.querySelectorAll('.inbox-list').forEach((el) => bindInbox(el, ctx));
   root.querySelector('[data-add-pool]')?.addEventListener('click', () => openPoolSheet(ctx));
+  root.querySelector('[data-notify-on]')?.addEventListener('click', () => ctx.openNotifications());
+  root.querySelector('[data-notify-dismiss]')?.addEventListener('click', () => {
+    try { localStorage.setItem('spvh-notify-dismissed', '1'); } catch { /* storage blocked */ }
+    ctx.rerender();
+  });
   root.querySelector('[data-new]')?.addEventListener('click', () => ctx.newTask(boardView !== 'me' && boardView !== 'all' ? { assignees: [boardView] } : {}));
   root.querySelector('[data-new-event]')?.addEventListener('click', () => openEventSheet({}));
   root.querySelector('[data-board-view]')?.addEventListener('click', (e) => switchMenu(e.currentTarget, ctx));
@@ -128,6 +136,19 @@ export function renderOverview(root, ctx) {
     activityRequested = Date.now();
     loadActivity().catch(() => {});
   }
+}
+
+function notifyBanner() {
+  const st = pushState.status;
+  let dismissed = false;
+  try { dismissed = !!localStorage.getItem('spvh-notify-dismissed'); } catch { /* storage blocked */ }
+  if (dismissed || (st !== 'off' && st !== 'needs-install')) return '';
+  const text = st === 'off'
+    ? 'Turn on notifications to hear about requests, handovers and new work as they happen, even when the app is closed.'
+    : 'Add the workspace to your home screen to get notifications on this iPhone or iPad.';
+  return `<div class="notify-banner">${icon('bell-ringing', { weight: 'duotone' })}<p>${text}</p>
+    <button type="button" class="btn btn-primary btn-sm" data-notify-on>${st === 'off' ? 'Turn on' : 'Show me how'}</button>
+    <button type="button" class="icon-btn" data-notify-dismiss aria-label="Dismiss">${icon('x')}</button></div>`;
 }
 
 function boardViewChip() {

@@ -10,6 +10,9 @@ const STATUSES = ['todo', 'doing', 'review', 'done'];
 const PRIORITIES = ['low', 'normal', 'high', 'urgent'];
 const EVENT_KINDS = ['celebration', 'holiday', 'travel', 'work_travel', 'leave', 'meeting', 'other'];
 const enc = new TextEncoder();
+// Web Push (VAPID). The private half lives in the VAPID_PRIVATE_KEY secret.
+const VAPID_PUBLIC_KEY = 'BPaZ_X7JEWCyS0KBZSp9aD3PUcsb5gN1PwjSE0xEFh0U1JfzooGK-_VzFJzwLKkc5hE0UuM6jZU4hpUaZm4L4gs';
+const VAPID_SUBJECT = 'https://www.spvhamc.com';
 
 class HttpError extends Error {
   constructor(status, message, code) {
@@ -110,6 +113,13 @@ const MIGRATIONS = {
       PRIMARY KEY (board_id, user_id)
     )`,
     `CREATE INDEX IF NOT EXISTS idx_board_access_user ON board_access(user_id, status)`,
+  ],
+  5: [
+    `CREATE TABLE IF NOT EXISTS push_subscriptions (
+      endpoint TEXT PRIMARY KEY, user_id INTEGER NOT NULL, p256dh TEXT NOT NULL, auth TEXT NOT NULL,
+      ua TEXT, created_at INTEGER NOT NULL
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_push_user ON push_subscriptions(user_id)`,
   ],
 };
 
@@ -242,6 +252,104 @@ async function adminIds(db) {
   return results.map((r) => r.id);
 }
 
+
+// ---------- web push ----------
+
+const b64urlDecode = (s) => fromB64(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4));
+const concatBytes = (...parts) => {
+  const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
+  let o = 0;
+  for (const p of parts) { out.set(p, o); o += p.length; }
+  return out;
+};
+
+async function hkdf(salt, ikm, info, length) {
+  const key = await crypto.subtle.importKey('raw', ikm, 'HKDF', false, ['deriveBits']);
+  return new Uint8Array(await crypto.subtle.deriveBits({ name: 'HKDF', hash: 'SHA-256', salt, info }, key, length * 8));
+}
+
+/** RFC 8291 (aes128gcm) encryption of one push message for one subscription. */
+async function encryptPush(sub, plaintext) {
+  const uaPublic = b64urlDecode(sub.p256dh);
+  const authSecret = b64urlDecode(sub.auth);
+  const local = await crypto.subtle.generateKey({ name: 'ECDH', namedCurve: 'P-256' }, true, ['deriveBits']);
+  const asPublic = new Uint8Array(await crypto.subtle.exportKey('raw', local.publicKey));
+  const uaKey = await crypto.subtle.importKey('raw', uaPublic, { name: 'ECDH', namedCurve: 'P-256' }, false, []);
+  const shared = new Uint8Array(await crypto.subtle.deriveBits({ name: 'ECDH', public: uaKey }, local.privateKey, 256));
+  const ikm = await hkdf(authSecret, shared, concatBytes(enc.encode('WebPush: info\0'), uaPublic, asPublic), 32);
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const cek = await hkdf(salt, ikm, enc.encode('Content-Encoding: aes128gcm\0'), 16);
+  const nonce = await hkdf(salt, ikm, enc.encode('Content-Encoding: nonce\0'), 12);
+  const key = await crypto.subtle.importKey('raw', cek, 'AES-GCM', false, ['encrypt']);
+  const body = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv: nonce }, key, concatBytes(plaintext, new Uint8Array([2]))));
+  const header = new Uint8Array(21);
+  header.set(salt, 0);
+  new DataView(header.buffer).setUint32(16, 4096);
+  header[20] = asPublic.length;
+  return concatBytes(header, asPublic, body);
+}
+
+let vapidKey = null;
+async function vapidHeader(env, endpoint) {
+  if (!vapidKey) {
+    const pubRaw = b64urlDecode(VAPID_PUBLIC_KEY);
+    vapidKey = await crypto.subtle.importKey('jwk', {
+      kty: 'EC', crv: 'P-256', d: env.VAPID_PRIVATE_KEY,
+      x: b64url(pubRaw.slice(1, 33)), y: b64url(pubRaw.slice(33, 65)), ext: true,
+    }, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+  }
+  const part = (o) => b64url(enc.encode(JSON.stringify(o)));
+  const unsigned = `${part({ typ: 'JWT', alg: 'ES256' })}.${part({ aud: new URL(endpoint).origin, exp: Math.floor(Date.now() / 1000) + 12 * 3600, sub: VAPID_SUBJECT })}`;
+  const sig = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, vapidKey, enc.encode(unsigned));
+  return `vapid t=${unsigned}.${b64url(sig)}, k=${VAPID_PUBLIC_KEY}`;
+}
+
+async function sendPush(env, sub, payload) {
+  const res = await fetch(sub.endpoint, {
+    method: 'POST',
+    headers: {
+      Authorization: await vapidHeader(env, sub.endpoint),
+      'Content-Encoding': 'aes128gcm',
+      'Content-Type': 'application/octet-stream',
+      TTL: '86400',
+      Urgency: 'high',
+    },
+    body: await encryptPush(sub, enc.encode(JSON.stringify(payload))),
+  });
+  if (res.status === 404 || res.status === 410) {
+    await env.DB.prepare('DELETE FROM push_subscriptions WHERE endpoint = ?').bind(sub.endpoint).run();
+  } else if (!res.ok) {
+    console.warn('push failed', res.status, await res.text().catch(() => ''));
+  }
+}
+
+/** Sends queued notifications after the response has gone out. Never throws. */
+async function flushNotifications(env, queue) {
+  if (!queue.length || !env.VAPID_PRIVATE_KEY) return;
+  for (const { userIds, payload } of queue) {
+    try {
+      const ids = [...new Set(userIds)].filter(Number.isInteger);
+      if (!ids.length) continue;
+      const { results } = await env.DB.prepare(
+        `SELECT * FROM push_subscriptions WHERE user_id IN (${ids.map(() => '?').join(',')})`
+      ).bind(...ids).all();
+      await Promise.all(results.map((sub) => sendPush(env, sub, payload).catch((err) => console.warn('push error', err))));
+    } catch (err) {
+      console.warn('notify error', err);
+    }
+  }
+}
+
+/** Queue a notification for people other than the person acting. */
+function notify(env, me, userIds, payload) {
+  if (!env.notifyQueue) return;
+  const ids = (userIds || []).filter((id) => id && id !== me?.id);
+  if (ids.length) env.notifyQueue.push({ userIds: ids, payload: { tag: 'spvh', ...payload } });
+}
+
+const firstNameOf = (u) => (u?.name || 'Someone').split(' ')[0];
+const taskUrl = (id) => `/admin/#/?t=${id}`;
+
 // ---------- auth ----------
 
 async function authenticate(request, env) {
@@ -300,7 +408,10 @@ async function signup(request, env, body) {
   ).bind(email, name, title, phone, note, isOwner ? 'admin' : 'member', isOwner ? 'approved' : 'pending', hash, salt, now, isOwner ? now : null).run();
   const userId = res.meta.last_row_id;
 
-  if (!isOwner) return json({ status: 'pending' }, 201);
+  if (!isOwner) {
+    notify(env, null, await adminIds(db), { title: 'New access request', body: `${name} wants to join the workspace.`, url: '/admin/#/team', tag: 'access' });
+    return json({ status: 'pending' }, 201);
+  }
 
   const secure = new URL(request.url).protocol === 'https:';
   const persistent = !!body.remember;
@@ -482,6 +593,14 @@ async function createTask(env, me, body) {
   }
   if (stmts.length) await db.batch(stmts);
   await logActivity(db, { taskId: id, boardId, userId: me.id, action: kind === 'request' ? 'requested' : pooled ? 'pooled' : 'created', detail: { title, assignees } });
+  if (pooled) {
+    const { results: everyone } = await db.prepare(`SELECT id FROM users WHERE status = 'approved'`).all();
+    notify(env, me, everyone.map((u) => u.id), { title: 'New in the task pool', body: `${title}. Claim it if you can take it on.`, url: '/admin/#/pool', tag: `pool-${id}` });
+  } else if (kind === 'request') {
+    notify(env, me, assignees, { title: `${firstNameOf(me)} needs your input`, body: title, url: taskUrl(id), tag: `task-${id}` });
+  } else {
+    notify(env, me, assignees, { title: `${firstNameOf(me)} assigned you a task`, body: title, url: taskUrl(id), tag: `task-${id}` });
+  }
   return json({ task: await loadTask(db, me, id) }, 201);
 }
 
@@ -539,6 +658,7 @@ async function updateTask(env, me, id, body) {
       stmts.push(db.prepare('INSERT INTO task_assignees (task_id, user_id, assigned_by, assigned_at) VALUES (?, ?, ?, ?)').bind(id, uid, me.id, now));
     }
     if (added.length || removed.length) log.push(['assigned', { added, removed }]);
+    if (added.length) notify(env, me, added, { title: `${firstNameOf(me)} assigned you a task`, body: task.title, url: taskUrl(id), tag: `task-${id}` });
   }
 
   sets.push('updated_at = ?'); binds.push(Date.now());
@@ -662,6 +782,10 @@ async function offerTask(env, me, id, body) {
     `INSERT INTO task_transfers (task_id, kind, from_user, to_user, note, status, created_at) VALUES (?, ?, ?, ?, ?, 'pending', ?)`
   ).bind(id, kind, me.id, to.id, note, now).run();
   await logActivity(db, { taskId: id, boardId: task.board_id, userId: me.id, action: kind === 'handover' ? 'handover_asked' : 'invited', detail: { to: to.id } });
+  notify(env, me, [to.id], {
+    title: kind === 'handover' ? `${firstNameOf(me)} wants to hand over a task` : `${firstNameOf(me)} invited you to a task`,
+    body: note ? `${task.title}: ${note.slice(0, 120)}` : task.title, url: taskUrl(id), tag: `task-${id}`,
+  });
   return json({ transfer: await db.prepare('SELECT * FROM task_transfers WHERE id = ?').bind(res.meta.last_row_id).first() }, 201);
 }
 
@@ -690,6 +814,7 @@ async function answerTransfer(env, me, transferId, action) {
     stmts.push(db.prepare('UPDATE tasks SET updated_at = ? WHERE id = ?').bind(now, tr.task_id));
     await db.batch(stmts);
     await logActivity(db, { taskId: tr.task_id, boardId: task.board_id, userId: me.id, action: tr.kind === 'handover' ? 'handover_accepted' : 'invite_accepted', detail: { from: tr.from_user } });
+    notify(env, me, [tr.from_user], { title: tr.kind === 'handover' ? `${firstNameOf(me)} took over your task` : `${firstNameOf(me)} joined your task`, body: task.title, url: taskUrl(tr.task_id), tag: `task-${tr.task_id}` });
     return json({ task: await loadTask(db, me, tr.task_id) });
   }
 
@@ -706,6 +831,10 @@ async function answerTransfer(env, me, transferId, action) {
       }
     }
     await logActivity(db, { taskId: tr.task_id, boardId: task.board_id, userId: me.id, action: tr.kind === 'handover' ? 'handover_declined' : 'invite_declined', detail: { from: tr.from_user, pooled } });
+    notify(env, me, [tr.from_user], {
+      title: tr.kind === 'handover' ? `${firstNameOf(me)} declined your handover` : `${firstNameOf(me)} declined your invitation`,
+      body: pooled ? `${task.title} went back to the task pool.` : task.title, url: taskUrl(tr.task_id), tag: `task-${tr.task_id}`,
+    });
     return json({ ok: true, pooled });
   }
   throw new HttpError(404, 'Not found.');
@@ -808,6 +937,7 @@ async function boardsRoute(request, env, me, b, c, d, method, body) {
         `INSERT INTO board_access (board_id, user_id, status, requested_at) VALUES (?, ?, 'pending', ?)
          ON CONFLICT(board_id, user_id) DO UPDATE SET status = 'pending', requested_at = excluded.requested_at, decided_by = NULL, decided_at = NULL`
       ).bind(board.id, me.id, Date.now()).run();
+      notify(env, me, [board.owner_id], { title: `${firstNameOf(me)} asked to see your board`, body: board.name, url: '/admin/#/', tag: `board-${board.id}` });
       return json({ ok: true, status: 'pending' }, 201);
     }
     const uid = Number(d);
@@ -824,6 +954,7 @@ async function boardsRoute(request, env, me, b, c, d, method, body) {
           `INSERT INTO board_access (board_id, user_id, status, requested_at, decided_by, decided_at) VALUES (?, ?, ?, ?, ?, ?)
            ON CONFLICT(board_id, user_id) DO UPDATE SET status = excluded.status, decided_by = excluded.decided_by, decided_at = excluded.decided_at`
         ).bind(board.id, uid, status, Date.now(), me.id, Date.now()).run();
+        if (status === 'approved') notify(env, me, [uid], { title: `${firstNameOf(me)} shared a board with you`, body: board.name, url: `/admin/#/board/${board.id}`, tag: `board-${board.id}` });
       }
       return json({ ok: true });
     }
@@ -957,6 +1088,33 @@ async function routeApi(request, env, segs, me) {
     }
   }
 
+  // push notification subscriptions
+  if (a === 'push') {
+    if (b === 'key' && method === 'GET') return json({ key: VAPID_PUBLIC_KEY, enabled: !!env.VAPID_PRIVATE_KEY });
+    if (b === 'subscribe' && method === 'POST') {
+      const endpoint = str(body.endpoint, { min: 10, max: 1000, field: 'Endpoint' });
+      if (!/^https:\/\//.test(endpoint)) throw new HttpError(400, 'That subscription isn’t valid.');
+      const p256dh = str(body.keys?.p256dh, { min: 10, max: 200, field: 'Key' });
+      const auth = str(body.keys?.auth, { min: 8, max: 100, field: 'Key' });
+      await db.prepare(
+        `INSERT INTO push_subscriptions (endpoint, user_id, p256dh, auth, ua, created_at) VALUES (?, ?, ?, ?, ?, ?)
+         ON CONFLICT(endpoint) DO UPDATE SET user_id = excluded.user_id, p256dh = excluded.p256dh, auth = excluded.auth, ua = excluded.ua`
+      ).bind(endpoint, me.id, p256dh, auth, (request.headers.get('user-agent') || '').slice(0, 200), Date.now()).run();
+      return json({ ok: true }, 201);
+    }
+    if (b === 'unsubscribe' && method === 'POST') {
+      await db.prepare('DELETE FROM push_subscriptions WHERE endpoint = ? AND user_id = ?').bind(String(body.endpoint || ''), me.id).run();
+      return json({ ok: true });
+    }
+    if (b === 'test' && method === 'POST') {
+      if (!env.VAPID_PRIVATE_KEY) throw new HttpError(503, 'Notifications aren’t switched on yet. The VAPID_PRIVATE_KEY secret is missing in Cloudflare.');
+      const n = await db.prepare('SELECT COUNT(*) AS n FROM push_subscriptions WHERE user_id = ?').bind(me.id).first();
+      if (!n.n) throw new HttpError(400, 'This account has no devices signed up for notifications yet.');
+      env.notifyQueue.push({ userIds: [me.id], payload: { title: 'Notifications are on', body: 'You’ll hear about requests, handovers and new work here.', url: '/admin/#/', tag: 'test' } });
+      return json({ ok: true, devices: n.n });
+    }
+  }
+
   // boards
   if (a === 'boards') return boardsRoute(request, env, me, b, c, segs[3], method, body);
 
@@ -979,6 +1137,8 @@ async function routeApi(request, env, segs, me) {
       const res = await db.prepare('INSERT INTO comments (task_id, user_id, body, created_at) VALUES (?, ?, ?, ?)').bind(id, me.id, text, now).run();
       await db.prepare('UPDATE tasks SET updated_at = ? WHERE id = ?').bind(now, id).run();
       await logActivity(db, { taskId: id, userId: me.id, action: 'commented', detail: { excerpt: text.slice(0, 120) } });
+      const onTask = await loadTask(db, me, id);
+      notify(env, me, [...onTask.assignees, onTask.created_by], { title: `${firstNameOf(me)} commented on “${onTask.title}”`, body: text.slice(0, 160), url: taskUrl(id), tag: `task-${id}` });
       return json({ comment: { id: res.meta.last_row_id, user_id: me.id, body: text, created_at: now } }, 201);
     }
 
@@ -1018,7 +1178,15 @@ async function routeApi(request, env, segs, me) {
 }
 
 export async function onRequest(context) {
-  const { request, env, params } = context;
+  const queue = [];
+  const env = { ...context.env, notifyQueue: queue };
+  const response = await handle(context, env);
+  if (queue.length) context.waitUntil(flushNotifications(env, queue));
+  return response;
+}
+
+async function handle(context, env) {
+  const { request, params } = context;
   try {
     if (!env.DB) throw new HttpError(500, 'The workspace database isn’t connected yet.');
     if (request.method !== 'GET' && request.headers.get('x-spvh') !== '1') {

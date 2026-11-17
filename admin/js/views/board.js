@@ -49,6 +49,8 @@ export function cardHtml(t) {
  * opts.key identifies this kanban for quick-add state; opts.newTask(status, title) creates a task.
  */
 export function renderKanban(host, ctx, { tasks, key, newTask, embedded = false, canAdd = true }) {
+  // Open pool tasks belong to everyone, so they live in the Task pool, never in anyone's columns.
+  tasks = tasks.filter((t) => !isOpenInPool(t));
   const columns = STATUS_ORDER.map((s) => {
     const list = sortTasks(tasks.filter((t) => t.status === s));
     const adding = quickAdd && quickAdd.key === key && quickAdd.status === s;

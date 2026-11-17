@@ -1,4 +1,4 @@
-const VERSION = 'spvh-ws-v5';
+const VERSION = 'spvh-ws-v6';
 const SHELL = [
   '/admin/',
   '/admin/app.css',
@@ -17,6 +17,7 @@ const SHELL = [
   '/admin/js/views/team.js',
   '/admin/js/views/calendar.js',
   '/admin/js/views/pool.js',
+  '/admin/js/push.js',
   '/admin/js/activity.js',
   '/admin/js/rows.js',
   '/admin/vendor/phosphor/regular.css',
@@ -72,4 +73,32 @@ self.addEventListener('fetch', (event) => {
         .catch(() => cache.match(req))
     )
   );
+});
+
+// ---------- push notifications ----------
+
+self.addEventListener('push', (event) => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch { data = { body: event.data ? event.data.text() : '' }; }
+  event.waitUntil(Promise.all([
+    self.registration.showNotification(data.title || 'SPVH Workspace', {
+      body: data.body || '',
+      icon: '/admin/icons/icon-192.png',
+      tag: data.tag,
+      renotify: !!data.tag,
+      data: { url: data.url || '/admin/' },
+    }),
+    // If the app is open, tell it to refresh so the new work appears straight away.
+    self.clients.matchAll({ type: 'window' }).then((list) => list.forEach((c) => c.postMessage({ type: 'refresh' }))),
+  ]));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = new URL(event.notification.data?.url || '/admin/', self.location.origin).href;
+  event.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+    const open = list.find((c) => c.url.startsWith(`${self.location.origin}/admin`));
+    if (open) return open.focus().then(() => open.navigate(url)).catch(() => self.clients.openWindow(url));
+    return self.clients.openWindow(url);
+  }));
 });

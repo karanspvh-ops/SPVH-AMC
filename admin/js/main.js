@@ -14,6 +14,7 @@ import { renderRequests } from './views/requests.js';
 import { renderBoard, renderBoards, renderPersonBoard, openBoardSheet } from './views/board.js';
 import { renderCalendarPage, openEventSheet } from './views/calendar.js';
 import { renderPool, openPoolSheet } from './views/pool.js';
+import { enablePush, disablePush, testPush, syncPush, setBadge, refreshPushStatus, pushState, PUSH_COPY } from './push.js';
 import { renderTeam, resetTeamCache } from './views/team.js';
 
 const app = document.getElementById('app');
@@ -74,6 +75,7 @@ const ctx = {
   go,
   rerender: () => renderPage(true),
   refresh: () => loadAll().catch(() => {}),
+  openNotifications: () => openNotifications(),
   get query() { return query; },
 };
 
@@ -243,6 +245,7 @@ function renderChrome() {
     tab('#/requests', 'requests', 'tray', 'Requests', isAdmin() ? c.needsMe : 0),
   ].join('');
   document.querySelector('[data-top-avatar]').innerHTML = avatar(me, 'av-md');
+  setBadge(c.inbox + (isAdmin() ? c.needsMe + c.pending : 0));
 }
 
 function mountShell() {
@@ -306,6 +309,7 @@ function userMenu(anchor) {
       { id: 'team', label: state.pending ? `Team (${state.pending} waiting)` : 'Team', iconHtml: icon('users-three') },
       { id: 'profile', label: 'Edit profile', iconHtml: icon('user-circle') },
       { id: 'password', label: 'Change password', iconHtml: icon('key') },
+      { id: 'notify', label: 'Notifications', iconHtml: icon('bell-ringing'), sub: pushState.status === 'on' ? 'On' : 'Off' },
       { id: 'theme', label: 'Appearance', iconHtml: icon('circle-half-tilt'), sub: themeLabel() },
       ...(!isStandalone() ? [{ id: 'install', label: 'Install on your phone', iconHtml: icon('device-mobile') }] : []),
       { type: 'sep' },
@@ -313,6 +317,7 @@ function userMenu(anchor) {
     ],
     onSelect: (id) => {
       if (id === 'team') go('#/team');
+      if (id === 'notify') openNotifications();
       if (id === 'profile') editProfile();
       if (id === 'password') changePassword();
       if (id === 'theme') setTimeout(() => themeMenu(anchor), 0);
@@ -407,6 +412,35 @@ function changePassword() {
   });
 }
 
+export async function openNotifications() {
+  const status = await refreshPushStatus();
+  const body = status === 'on'
+    ? `<div class="notice">${icon('bell-ringing', { fill: true })}<span>Notifications are on for this device.</span></div>
+       <div class="sheet-actions"><button class="btn btn-ghost" type="button" data-push="off">Turn off</button><button class="btn btn-secondary" type="button" data-push="test">Send a test</button><button class="btn btn-primary" type="button" data-close>Done</button></div>`
+    : status === 'off'
+      ? `<div class="sheet-actions"><button class="btn btn-ghost" type="button" data-close>Not now</button><button class="btn btn-primary" type="button" data-push="on">${icon('bell-ringing', { weight: 'bold' })}Turn on notifications</button></div>`
+      : `<div class="notice is-warn">${icon('info', { fill: true })}<span>${esc(PUSH_COPY[status] || '')}</span></div>
+         <div class="sheet-actions">${status === 'needs-install' ? `<button class="btn btn-secondary" type="button" data-install-help>How to install</button>` : ''}<button class="btn btn-primary" type="button" data-close>OK</button></div>`;
+  openSheet(`<h2>Notifications</h2>
+    <p class="lede">Get a notification on this device when someone assigns you work, asks for your input, hands a task over, invites you, wants to see your board, or adds to the task pool.</p>
+    <div style="margin-top:16px">${body}</div>`, {
+    label: 'Notifications',
+    onMount: (sheet, close) => {
+      sheet.querySelector('[data-install-help]')?.addEventListener('click', () => { close(); showInstall(); });
+      sheet.querySelectorAll('[data-push]').forEach((b) => b.addEventListener('click', async () => {
+        setBusy(b, true);
+        try {
+          if (b.dataset.push === 'on') { await enablePush(); toast('Notifications are on. Sending a test…', { type: 'success' }); await testPush(); close(); }
+          if (b.dataset.push === 'off') { await disablePush(); toast('Notifications turned off for this device', { type: 'success' }); close(); }
+          if (b.dataset.push === 'test') { await testPush(); toast('Test sent. It should arrive in a few seconds.', { type: 'success' }); setBusy(b, false); }
+          await refreshPushStatus();
+          renderPage(true);
+        } catch (err) { setBusy(b, false); toastError(err); }
+      }));
+    },
+  });
+}
+
 function showInstall() {
   if (deferredInstall) {
     deferredInstall.prompt();
@@ -461,6 +495,8 @@ async function startApp() {
   currentKey = '';
   route();
   unsub = subscribe(() => { renderChrome(); renderPage(); });
+  syncPush();
+  refreshPushStatus().then(() => renderPage());
   clearInterval(pollTimer);
   pollTimer = setInterval(sync, 45000);
 }
@@ -496,6 +532,10 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     ctx.newTask();
   }
+});
+
+navigator.serviceWorker?.addEventListener('message', (e) => {
+  if (e.data?.type === 'refresh') sync();
 });
 
 window.addEventListener('beforeinstallprompt', (e) => {
