@@ -11,6 +11,9 @@ const ICONS = {
   created: 'plus-circle', requested: 'paper-plane-tilt', status: 'arrow-right', assigned: 'user-plus',
   commented: 'chat-circle', renamed: 'pencil-simple', priority: 'cell-signal-full', due: 'calendar-blank',
   moved: 'kanban', checked: 'check-square', deleted: 'trash', access: 'shield-check',
+  pooled: 'stack', claimed: 'hand-grabbing', released: 'arrow-u-up-left', invited: 'user-plus',
+  handover_asked: 'user-switch', handover_accepted: 'user-switch', handover_declined: 'arrow-u-up-left',
+  invite_accepted: 'user-plus', invite_declined: 'x-circle',
 };
 export const activityIcon = (a) => icon(ICONS[a.action] || 'dot-outline');
 
@@ -35,6 +38,15 @@ export function describe(a, taskHtml) {
     case 'moved': return `moved ${t} to the <b>${esc(d.board)}</b> board`;
     case 'checked': return `checked off “${esc(d.text)}” on ${t}`;
     case 'deleted': return `deleted “${esc(d.title)}”`;
+    case 'pooled': return `added ${t} to the task pool`;
+    case 'claimed': return `claimed ${t} from the task pool`;
+    case 'released': return `put ${t} back in the task pool`;
+    case 'invited': return `invited ${esc(names([d.to]))} to work on ${t}`;
+    case 'handover_asked': return `asked ${esc(names([d.to]))} to take over ${t}`;
+    case 'handover_accepted': return `took over ${t} from ${esc(names([d.from]))}`;
+    case 'handover_declined': return `declined to take over ${t}${d.pooled ? ', so it went back to the pool' : ''}`;
+    case 'invite_accepted': return `joined ${t}`;
+    case 'invite_declined': return `declined to join ${t}`;
     case 'access':
       if (d.clearance === 'manager') return `gave <b>${esc(d.user)}</b> manager clearance`;
       if (d.clearance === 'member') return `removed manager clearance from <b>${esc(d.user)}</b>`;

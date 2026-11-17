@@ -1,4 +1,4 @@
-const VERSION = 'spvh-ws-v2';
+const VERSION = 'spvh-ws-v3';
 const SHELL = [
   '/admin/',
   '/admin/app.css',
@@ -16,6 +16,7 @@ const SHELL = [
   '/admin/js/views/board.js',
   '/admin/js/views/team.js',
   '/admin/js/views/calendar.js',
+  '/admin/js/views/pool.js',
   '/admin/js/activity.js',
   '/admin/js/rows.js',
   '/admin/vendor/phosphor/regular.css',

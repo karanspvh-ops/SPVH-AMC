@@ -2,6 +2,7 @@ import { api } from './api.js';
 import {
   state, subscribe, userById, boardById, admins, isAdmin, canViewAll, canEdit, canDelete,
   assignableUsers, patchTask, createTask, removeTask, upsertTask,
+  isOpenInPool, transfersFor, claimTask, poolAction,
 } from './store.js';
 import {
   esc, icon, statusIcon, prioIcon, swatch, avatar, avatarStack, STATUS, STATUS_ORDER, PRIORITY, PRIORITY_ORDER,
@@ -22,6 +23,8 @@ subscribe(() => {
   if (!task) { closeDrawer(); return; }
   renderProps();
   renderKind();
+  renderPoolBanner();
+  renderCollab();
   renderLinked();
   applyPermissions();
 });
@@ -113,6 +116,8 @@ async function loadDetail(id) {
     const body = ds.el.querySelector('#doc-body');
     if (body && document.activeElement !== body) { body.value = task.body; autosize(body); }
     renderChecklist();
+    renderPoolBanner();
+    renderCollab();
     renderTimeline();
   } catch (err) {
     if (err.status === 404) { removeTask(id); closeDrawer(); }
@@ -197,6 +202,7 @@ function renderShell() {
     <div class="drawer-scroll">
       <article class="doc">
         <div class="doc-kind" data-region="kind"></div>
+        <div data-region="pool"></div>
         <textarea id="doc-title" class="doc-title" rows="1" maxlength="200" placeholder="${isRequest ? 'What do you need from Sujay or Karan?' : 'Task title'}" aria-label="Title">${esc(t.title)}</textarea>
         <div class="stepper" data-region="stepper" role="radiogroup" aria-label="Status"></div>
         <dl class="props" data-region="props"></dl>
@@ -206,6 +212,7 @@ function renderShell() {
           <textarea id="doc-body" class="doc-body" placeholder="Add context, decisions, links…" aria-label="Notes">${isNew ? esc(t.body) : ''}</textarea>
         </section>
         <section class="doc-section" data-region="checklist"></section>
+        <section class="doc-section" data-region="collab"></section>
         <section class="doc-section" data-region="linked"></section>
         ${isNew ? '' : '<div class="divider"></div><section class="doc-section" data-region="timeline"></section>'}
       </article>
@@ -238,6 +245,8 @@ function renderShell() {
   renderKind();
   renderProps();
   renderChecklist();
+  renderPoolBanner();
+  renderCollab();
   renderLinked();
   if (ds.mode === 'view') renderTimeline();
   else renderFoot();
@@ -312,7 +321,7 @@ function renderStepper() {
   const region = ds.el.querySelector('[data-region="stepper"]');
   if (!region) return;
   const t = current();
-  const can = editable();
+  const can = editable() && !inPool();
   const idx = STATUS_ORDER.indexOf(t.status);
   region.style.setProperty('--fill', String(idx / (STATUS_ORDER.length - 1)));
   region.dataset.status = t.status;
@@ -322,6 +331,119 @@ function renderStepper() {
       <span class="step-dot">${i < idx || (i === idx && s === 'done') ? icon('check', { weight: 'bold' }) : i === idx ? '<i class="pulse"></i>' : ''}</span>
       <span class="step-label">${STATUS[s].label}</span>
     </button>`).join('')}`;
+}
+
+
+const inPool = () => ds?.mode === 'view' && isOpenInPool(state.tasks.get(ds.id));
+
+function poolProgress(t) {
+  const ck = t.checklist || { total: 0, done: 0 };
+  if (!ck.total) return '';
+  return `<div class="progress-line"><span class="pbar"><i style="transform:scaleX(${ck.done / ck.total})"></i></span><span>${ck.done} of ${ck.total} done</span></div>`;
+}
+
+function renderPoolBanner() {
+  const region = ds.el.querySelector('[data-region="pool"]');
+  if (!region) return;
+  if (ds.mode !== 'view') { region.innerHTML = ''; return; }
+  const t = state.tasks.get(ds.id);
+  const meId = state.me.id;
+  const pending = transfersFor(ds.id);
+  const blocks = [];
+
+  if (isOpenInPool(t)) {
+    const by = userById(t.handover_by);
+    blocks.push(`<div class="pool-banner">
+      <div class="pool-banner-head">${icon('stack', { weight: 'duotone' })}<div><strong>Open in the task pool</strong>
+        <p>Claim it and it moves to your board, where you can add the details and a checklist.</p></div></div>
+      ${poolProgress(t)}
+      ${t.handover_note ? `<blockquote class="handover-quote">${by ? avatar(by, 'av-xs') : ''}<span><b>${esc(by ? `${firstName(by)}’s` : 'Previous')} handover:</b> ${esc(t.handover_note)}</span></blockquote>` : ''}
+      <button type="button" class="btn btn-primary" data-act="claim">${icon('hand-grabbing', { weight: 'bold' })}Claim this task</button>
+    </div>`);
+  }
+
+  for (const tr of pending) {
+    const from = userById(tr.from_user);
+    const to = userById(tr.to_user);
+    const handover = tr.kind === 'handover';
+    if (tr.to_user === meId) {
+      blocks.push(`<div class="pool-banner is-offer">
+        <div class="pool-banner-head">${from ? avatar(from, 'av-md') : ''}<div><strong>${esc(from?.name || 'Someone')} ${handover ? 'wants to hand this task over to you' : 'invited you to work on this task'}</strong>
+          <p>${handover ? 'If you decline, it goes back to the task pool with its progress.' : 'Join to see it on your board and help finish it.'}</p></div></div>
+        ${tr.note ? `<blockquote class="handover-quote"><span>${esc(tr.note)}</span></blockquote>` : ''}
+        <div class="banner-actions"><button type="button" class="btn btn-ghost" data-answer="decline" data-transfer="${tr.id}">Decline</button>
+          <button type="button" class="btn btn-primary" data-answer="accept" data-transfer="${tr.id}">${handover ? 'Take it over' : 'Join task'}</button></div>
+      </div>`);
+    } else if (tr.from_user === meId || canViewAll()) {
+      const who = tr.from_user === meId ? 'your' : `${esc(firstName(from))}’s`;
+      blocks.push(`<div class="pool-banner is-waiting">
+        <div class="pool-banner-head">${icon('hourglass-medium', { weight: 'duotone' })}<div><strong>Waiting for ${esc(to?.name || 'them')} to ${handover ? `accept ${who} handover` : `respond to ${who} invitation`}</strong></div></div>
+        ${tr.from_user === meId || canViewAll() ? `<div class="banner-actions"><button type="button" class="btn btn-ghost" data-answer="cancel" data-transfer="${tr.id}">Withdraw</button></div>` : ''}
+      </div>`);
+    }
+  }
+  region.innerHTML = blocks.join('');
+}
+
+function renderCollab() {
+  const region = ds.el.querySelector('[data-region="collab"]');
+  if (!region) return;
+  if (ds.mode !== 'view') { region.innerHTML = ''; return; }
+  const t = state.tasks.get(ds.id);
+  const meId = state.me.id;
+  const onTask = t.assignees.includes(meId);
+  const canAct = !isOpenInPool(t) && t.status !== 'done' && (onTask || canViewAll()) && t.kind === 'task';
+  const notes = (ds.detail?.transfers || []).filter((x) => x.note && (x.kind === 'handover' || x.kind === 'release'));
+  if (!canAct && !notes.length) { region.innerHTML = ''; return; }
+
+  const history = notes.length ? `<div class="handover-history">${notes.slice().reverse().map((x) => {
+    const from = userById(x.from_user);
+    const to = userById(x.to_user);
+    const what = x.kind === 'release' ? 'put it back in the pool' : x.status === 'accepted' ? `handed it to ${to ? firstName(to) : 'someone'}` : x.status === 'declined' ? `offered it to ${to ? firstName(to) : 'someone'}, who declined` : `offered it to ${to ? firstName(to) : 'someone'}`;
+    return `<div class="handover-item">${from ? avatar(from, 'av-sm') : ''}<div><p><b>${esc(from?.name || 'Someone')}</b> ${esc(what)} <span class="hint">${esc(ago(x.created_at))}</span></p><blockquote>${esc(x.note)}</blockquote></div></div>`;
+  }).join('')}</div>` : '';
+
+  let actions = '';
+  if (canAct) {
+    if (ds.collab) {
+      const mode = ds.collab.mode;
+      const candidates = state.users.filter((u) => u.id !== meId && !t.assignees.includes(u.id));
+      const pick = mode === 'release' ? '' : `<div class="field"><span class="label">${mode === 'invite' ? 'Who should join you?' : 'Who should take it over?'}</span>
+        <div class="ask-who">${candidates.length ? candidates.map((u) => `<button type="button" class="who-toggle${ds.collab.to === u.id ? ' is-on' : ''}" data-collab-to="${u.id}" aria-pressed="${ds.collab.to === u.id}">${avatar(u, 'av-md')}${esc(u.name)}</button>`).join('') : '<span class="hint">Everyone is already on this task.</span>'}</div></div>`;
+      const noteLabel = mode === 'invite' ? 'Message (optional)' : 'Handover note';
+      const notePh = mode === 'invite' ? 'What do you need help with?' : 'What’s done, what’s left, anything they should know';
+      actions = `<form class="ask-box" data-collab-form>
+        ${pick}
+        <div class="field"><label class="label" for="collab-note">${noteLabel}</label>
+          <textarea class="input" id="collab-note" name="note" rows="3" maxlength="2000" placeholder="${esc(notePh)}">${esc(ds.collab.note || '')}</textarea></div>
+        ${mode === 'handover' ? '<p class="hint">They need to accept. If they decline, the task goes back to the pool with its progress and your note.</p>' : ''}
+        ${mode === 'release' ? '<p class="hint">Everyone comes off the task and it returns to the pool for anyone to claim.</p>' : ''}
+        <div class="ask-actions"><button type="button" class="btn btn-ghost" data-act="collab-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">${mode === 'invite' ? 'Send invitation' : mode === 'handover' ? 'Ask to take over' : 'Put back in pool'}</button></div>
+      </form>`;
+    } else {
+      actions = `<div class="collab-actions">
+        <button type="button" class="btn btn-secondary" data-act="collab" data-mode="invite">${icon('user-plus', { weight: 'bold' })}Invite a colleague</button>
+        ${onTask ? `<button type="button" class="btn btn-secondary" data-act="collab" data-mode="handover">${icon('user-switch', { weight: 'bold' })}Hand over</button>` : ''}
+        ${canViewAll() ? `<button type="button" class="btn btn-ghost" data-act="collab" data-mode="release">${icon('arrow-u-up-left', { weight: 'bold' })}Put back in pool</button>` : ''}
+      </div>`;
+    }
+  }
+  region.innerHTML = `<h3>${icon('handshake')}Working on this</h3>${actions}${history}`;
+  const ta = region.querySelector('textarea[name="note"]');
+  ta?.addEventListener('input', () => { ds.collab.note = ta.value; });
+}
+
+async function runPoolAct(btn, fn) {
+  setBusy(btn, true);
+  try {
+    await fn();
+  } catch (err) {
+    setBusy(btn, false);
+    toastError(err);
+    return;
+  }
+  if (ds && state.tasks.has(ds.id)) loadDetail(ds.id);
 }
 
 function applyPermissions() {
@@ -335,14 +457,14 @@ function applyPermissions() {
   }
   const ro = ds.el.querySelector('[data-region="readonly"]');
   if (ro) {
-    ro.innerHTML = can ? '' : `<div class="notice readonly-note">${icon('lock-simple', { fill: true })}<span>You can comment here. Only the people on this task, a manager, or Sujay and Karan can change it.</span></div>`;
+    ro.innerHTML = can || inPool() ? '' : `<div class="notice readonly-note">${icon('lock-simple', { fill: true })}<span>You can comment here. Only the people on this task, a manager, or Sujay and Karan can change it.</span></div>`;
   }
 }
 
 function renderChecklist() {
   const region = ds.el.querySelector('[data-region="checklist"]');
   if (!region) return;
-  const can = editable();
+  const can = editable() && !inPool();
   let items;
   if (ds.mode === 'new') items = ds.draft.checklist.map((text, i) => ({ id: `d${i}`, text, done: false }));
   else if (!ds.detail) {
@@ -421,7 +543,7 @@ function renderLinked() {
   const region = ds.el.querySelector('[data-region="linked"]');
   if (!region) return;
   const t = current();
-  if (ds.mode === 'new' || t.kind === 'request') { region.innerHTML = ''; return; }
+  if (ds.mode === 'new' || t.kind === 'request' || inPool()) { region.innerHTML = ''; return; }
   const children = [...state.tasks.values()].filter((x) => x.parent_id === t.id);
   const owners = admins().filter((u) => u.id !== state.me.id);
   if (!children.length && !owners.length) { region.innerHTML = ''; return; }
@@ -511,9 +633,26 @@ function renderFoot() {
 // ---------- interactions ----------
 
 async function onClick(e) {
-  const el = e.target.closest('[data-act], [data-prop], [data-open-task], [data-who], [data-step]');
+  const el = e.target.closest('[data-act], [data-prop], [data-open-task], [data-who], [data-step], [data-transfer], [data-collab-to]');
   if (!el || !ds) return;
   const t = current();
+
+  if (el.dataset.transfer) {
+    const answer = el.dataset.answer;
+    const tr = state.transfers.find((x) => x.id === Number(el.dataset.transfer));
+    runPoolAct(el, async () => {
+      const res = await poolAction(`transfers/${el.dataset.transfer}/${answer}`);
+      if (answer === 'accept') toast(tr?.kind === 'handover' ? 'The task is yours now' : 'You’ve joined the task', { type: 'success' });
+      else if (answer === 'decline') toast(res.pooled ? 'Declined. The task went back to the pool.' : 'Declined', { type: 'success' });
+      else toast('Request withdrawn', { type: 'success' });
+    });
+    return;
+  }
+  if (el.dataset.collabTo) {
+    ds.collab.to = Number(el.dataset.collabTo);
+    renderCollab();
+    return;
+  }
 
   if (el.dataset.step) {
     if (el.dataset.step === t.status) return;
@@ -586,6 +725,14 @@ async function onClick(e) {
   }
 
   switch (el.dataset.act) {
+    case 'claim':
+      runPoolAct(el, async () => {
+        await claimTask(ds.id);
+        toast('It’s yours. Add the details and a checklist.', { type: 'success' });
+      });
+      break;
+    case 'collab': ds.collab = { mode: el.dataset.mode, to: null, note: '' }; renderCollab(); ds.el.querySelector('#collab-note')?.focus(); break;
+    case 'collab-cancel': ds.collab = null; renderCollab(); break;
     case 'close': closeDrawer(); break;
     case 'clear-due': setField({ due_date: null }); break;
     case 'more': moreMenu(el); break;
@@ -623,6 +770,22 @@ function ds_bindForms() {
         toastError(err);
         setBusy(btn, false);
       }
+    }
+    if (form.matches('[data-collab-form]') && ds.el.contains(form)) {
+      e.preventDefault();
+      const { mode, to } = ds.collab;
+      const note = form.querySelector('[name="note"]').value.trim();
+      if (mode !== 'release' && !to) { toast('Choose a colleague first.', { type: 'error' }); return; }
+      if (mode === 'handover' && !note) { form.querySelector('[name="note"]').focus(); toast('Add a short handover note so they know where things stand.', { type: 'error' }); return; }
+      const btn = form.querySelector('button[type="submit"]');
+      const name = to ? firstName(userById(to)) : '';
+      runPoolAct(btn, async () => {
+        if (mode === 'release') await poolAction(`tasks/${ds.id}/release`, { note });
+        else await poolAction(`tasks/${ds.id}/offer`, { kind: mode, to_user: to, note });
+        ds.collab = null;
+        toast(mode === 'release' ? 'Back in the task pool' : mode === 'invite' ? `Invitation sent to ${name}` : `Asked ${name} to take it over`, { type: 'success' });
+      });
+      return;
     }
     if (form.matches('[data-ask-form]') && ds.el.contains(form)) {
       e.preventDefault();

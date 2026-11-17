@@ -1,5 +1,5 @@
 import { api } from '../api.js';
-import { state, isAdmin, canViewAll, allTasks, boardById, canEdit, patchTask, createTask, emit, userById } from '../store.js';
+import { state, isAdmin, canViewAll, allTasks, boardById, canEdit, patchTask, createTask, emit, userById, isOpenInPool, transfersFor } from '../store.js';
 import {
   esc, icon, statusIcon, prioIcon, dueBadge, avatarStack, avatar, swatch, taskRef, sortTasks, firstName, assignerOf,
   STATUS, STATUS_ORDER, BOARD_COLORS,
@@ -28,15 +28,15 @@ export function cardHtml(t) {
   const ck = t.checklist || { total: 0, done: 0 };
   const meta = [
     dueBadge(t),
-    ck.total ? `<span class="meta${ck.done === ck.total ? ' is-complete' : ''}">${icon('check-square', { weight: 'bold' })}${ck.done}/${ck.total}</span>` : '',
     t.comments ? `<span class="meta">${icon('chat-circle', { weight: 'bold' })}${t.comments}</span>` : '',
     t.has_body ? `<span class="meta" title="Has notes">${icon('note', { weight: 'bold' })}</span>` : '',
   ].join('');
   return `<div class="card${can ? ' can-drag' : ''}${t.status === 'done' ? ' is-done' : ''}" role="button" tabindex="0" data-id="${t.id}"
       aria-label="${esc(t.title)}, ${STATUS[t.status].label}">
-    <div class="card-top"><span class="card-id">${taskRef(t)}</span>${t.kind === 'request' ? `<span class="tag tag-request">${icon('paper-plane-tilt', { weight: 'bold' })}Request</span>` : ''}${t.priority !== 'normal' ? prioIcon(t.priority) : ''}</div>
+    <div class="card-top"><span class="card-id">${taskRef(t)}</span>${t.kind === 'request' ? `<span class="tag tag-request">${icon('paper-plane-tilt', { weight: 'bold' })}Request</span>` : ''}${isOpenInPool(t) ? `<span class="tag tag-pool">${icon('stack', { weight: 'bold' })}In pool</span>` : ''}${transfersFor(t.id).some((x) => x.kind === 'handover') ? `<span class="tag tag-handover">${icon('user-switch', { weight: 'bold' })}Handover</span>` : ''}${t.priority !== 'normal' ? prioIcon(t.priority) : ''}</div>
     <div class="card-title">${esc(t.title)}</div>
-    ${fromLine(t)}
+    ${isOpenInPool(t) ? '' : fromLine(t)}
+    ${ck.total ? `<div class="progress-line is-card${ck.done === ck.total ? ' is-complete' : ''}"><span class="pbar"><i style="transform:scaleX(${ck.done / ck.total})"></i></span><span>${ck.done}/${ck.total}</span></div>` : ''}
     <div class="card-meta">${meta}${avatarStack(t.assignees, 3, 'av-sm')}</div>
   </div>`;
 }

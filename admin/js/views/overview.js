@@ -1,4 +1,5 @@
-import { state, isAdmin, canViewAll, allTasks, userById, loadActivity, createTask } from '../store.js';
+import { state, isAdmin, canViewAll, allTasks, userById, loadActivity, createTask, poolTasks, inbox } from '../store.js';
+import { poolCard, bindPoolCards, inboxCards, bindInbox, openPoolSheet } from './pool.js';
 import { esc, icon, avatar, statusIcon, greeting, longToday, daysUntil, byDue, isOverdue, firstName, ago } from '../util.js';
 import { taskRow, bindRows, emptyState } from '../rows.js';
 import { describe, activityIcon } from '../activity.js';
@@ -37,6 +38,7 @@ export function renderOverview(root, ctx) {
     ? open.filter((t) => t.kind === 'request' && t.assignees.includes(me.id)).sort(byDue)
     : [];
 
+  const pool = poolTasks().sort((a, b) => (b.updated_at || 0) - (a.updated_at || 0));
   const bits = [longToday()];
   if (overdue) bits.push(`${overdue} overdue`);
   else if (dueThisWeek) bits.push(`${dueThisWeek} due this week`);
@@ -53,6 +55,19 @@ export function renderOverview(root, ctx) {
           <button class="btn btn-primary" data-new type="button">${icon('plus', { weight: 'bold' })}New task</button>
         </div>
       </div>
+
+      ${inbox().length ? `<section class="ov-section">
+        <div class="section-head"><h2>${icon('handshake', { weight: 'duotone' })}Waiting for your answer<span class="count">${inbox().length}</span></h2></div>
+        <div class="inbox-list">${inboxCards()}</div>
+      </section>` : ''}
+
+      ${pool.length || canViewAll() ? `<section class="ov-section">
+        <div class="section-head"><h2>${icon('stack', { weight: 'duotone' })}Open in the task pool<span class="count">${pool.length || ''}</span></h2>
+          <div class="section-tools">${canViewAll() ? '<button type="button" class="link" data-add-pool>Add to pool</button>' : ''}<a href="#/pool">See all</a></div></div>
+        ${pool.length
+          ? `<div class="pool-strip">${pool.slice(0, 3).map((t) => poolCard(t, { compact: true })).join('')}</div>`
+          : `<div class="list">${emptyState('stack', 'The pool is empty', 'Add open work here and anyone on the team can claim it.')}</div>`}
+      </section>` : ''}
 
       ${needsMe.length ? `<section class="ov-section">
         <div class="section-head"><h2>${icon('tray', { weight: 'duotone' })}Needs your input<span class="count">${needsMe.length}</span></h2><a href="#/requests">All requests</a></div>
@@ -88,6 +103,9 @@ export function renderOverview(root, ctx) {
     </div>`;
 
   bindRows(root, ctx.openTask);
+  root.querySelectorAll('.pool-strip').forEach((el) => bindPoolCards(el, ctx));
+  root.querySelectorAll('.inbox-list').forEach((el) => bindInbox(el, ctx));
+  root.querySelector('[data-add-pool]')?.addEventListener('click', () => openPoolSheet(ctx));
   root.querySelector('[data-new]')?.addEventListener('click', () => ctx.newTask(boardView !== 'me' && boardView !== 'all' ? { assignees: [boardView] } : {}));
   root.querySelector('[data-new-event]')?.addEventListener('click', () => openEventSheet({}));
   root.querySelector('[data-board-view]')?.addEventListener('click', (e) => switchMenu(e.currentTarget, ctx));

@@ -1,5 +1,5 @@
 import { api, setUnauthorizedHandler, isStandalone } from './api.js';
-import { state, subscribe, loadAll, reset, isAdmin, isManager, allTasks, boardById, userById, emit } from './store.js';
+import { state, subscribe, loadAll, reset, isAdmin, isManager, canViewAll, allTasks, boardById, userById, emit, poolTasks, inbox } from './store.js';
 import { esc, icon, avatar, swatch } from './util.js';
 import { openMenu, closeMenu, openSheet, toast, toastError, setBusy } from './ui.js';
 import { openTask, openNewTask, closeDrawer, drawerOpenFor, setDrawerNavigation } from './drawer.js';
@@ -10,6 +10,7 @@ import { renderMyWork } from './views/mywork.js';
 import { renderRequests } from './views/requests.js';
 import { renderBoard, renderBoards, renderPersonBoard, openBoardSheet } from './views/board.js';
 import { renderCalendarPage, openEventSheet } from './views/calendar.js';
+import { renderPool, openPoolSheet } from './views/pool.js';
 import { renderTeam, resetTeamCache } from './views/team.js';
 
 const app = document.getElementById('app');
@@ -68,6 +69,7 @@ const ctx = {
   },
   go,
   rerender: () => renderPage(true),
+  refresh: () => loadAll().catch(() => {}),
   get query() { return query; },
 };
 
@@ -112,6 +114,7 @@ function pageTitle() {
     }
     case 'team': return { title: 'Team', search: false };
     case 'calendar': return { title: 'Calendar', search: false };
+    case 'pool': return { title: 'Task pool', search: true };
     case 'people': {
       const u = userById(Number(parts[1]));
       return { title: u ? (u.id === state.me.id ? 'Your board' : `${u.name}`) : 'Board', search: true };
@@ -150,6 +153,7 @@ function renderPage(force = false) {
     case 'board': renderBoard(el, ctx, Number(parts[1])); break;
     case 'team': renderTeam(el, ctx); break;
     case 'calendar': renderCalendarPage(el, ctx); break;
+    case 'pool': renderPool(el, ctx); break;
     case 'people': renderPersonBoard(el, ctx, Number(parts[1])); break;
     default: renderOverview(el, ctx);
   }
@@ -174,6 +178,8 @@ function counts() {
       ? open.filter((t) => t.kind === 'request' && t.assignees.includes(me.id)).length
       : open.filter((t) => t.kind === 'request' && t.created_by === me.id).length,
     pending: isAdmin() ? state.pending : 0,
+    pool: poolTasks().length,
+    inbox: inbox().length,
   };
 }
 
@@ -187,8 +193,9 @@ function renderChrome() {
     `<a class="nav-item${sec === key ? ' is-active' : ''}" href="${href}"${sec === key ? ' aria-current="page"' : ''}>${icon(ic, { weight: sec === key ? 'fill' : 'duotone' })}<span>${label}</span>${extra}</a>`;
 
   document.querySelector('[data-nav]').innerHTML = [
-    navItem('#/', '', 'squares-four', 'Overview'),
+    navItem('#/', '', 'squares-four', 'Overview', c.inbox ? `<span class="nav-badge" aria-label="${c.inbox} waiting for your answer">${c.inbox}</span>` : ''),
     navItem('#/my', 'my', 'list-checks', 'My work', c.mine ? `<span class="nav-count">${c.mine}</span>` : ''),
+    navItem('#/pool', 'pool', 'stack', 'Task pool', c.pool ? `<span class="nav-count">${c.pool}</span>` : ''),
     navItem('#/calendar', 'calendar', 'calendar-dots', 'Calendar'),
     navItem('#/requests', 'requests', 'tray', 'Requests', c.needsMe ? (isAdmin() ? `<span class="nav-badge" aria-label="${c.needsMe} need you">${c.needsMe}</span>` : `<span class="nav-count">${c.needsMe}</span>`) : ''),
     navItem('#/team', 'team', 'users-three', 'Team', c.pending ? `<span class="nav-badge" aria-label="${c.pending} waiting for access">${c.pending}</span>` : ''),
@@ -214,13 +221,13 @@ function renderChrome() {
 
   const tab = (href, key, ic, label, badge = 0) =>
     `<a class="tab${sec === key ? ' is-active' : ''}" href="${href}">${icon(ic, { weight: sec === key ? 'fill' : 'duotone' })}<span>${label}</span>${badge ? `<span class="dot-count">${badge}</span>` : ''}</a>`;
-  const newLabel = sec === 'requests' ? 'New request' : sec === 'calendar' ? 'Add event' : 'New task';
+  const newLabel = sec === 'requests' ? 'New request' : sec === 'calendar' ? 'Add event' : sec === 'pool' && canViewAll() ? 'Add to pool' : 'New task';
   document.querySelector('[data-tabbar]').innerHTML = [
-    tab('#/', '', 'squares-four', 'Home'),
-    tab('#/calendar', 'calendar', 'calendar-dots', 'Calendar'),
+    tab('#/', '', 'squares-four', 'Home', c.inbox),
+    tab('#/pool', 'pool', 'stack', 'Pool', c.pool),
     `<button type="button" class="tab tab-new" data-tab-new aria-label="${newLabel}"><span class="plus">${icon('plus', { weight: 'bold' })}</span></button>`,
+    tab('#/calendar', 'calendar', 'calendar-dots', 'Calendar'),
     tab('#/requests', 'requests', 'tray', 'Requests', isAdmin() ? c.needsMe : 0),
-    tab('#/team', 'team', 'users-three', 'Team', c.pending),
   ].join('');
   document.querySelector('[data-top-avatar]').innerHTML = avatar(me, 'av-md');
 }
@@ -265,6 +272,7 @@ function mountShell() {
     if (e.target.closest('[data-tab-new]')) {
       const { parts } = parseHash();
       if (parts[0] === 'calendar') openEventSheet({});
+      else if (parts[0] === 'pool' && canViewAll()) openPoolSheet(ctx);
       else ctx.newTask(parts[0] === 'requests' ? { kind: 'request' } : parts[0] === 'people' ? { assignees: [Number(parts[1])] } : {});
     }
   });
@@ -282,6 +290,7 @@ function userMenu(anchor) {
     align: anchor.classList.contains('user-chip') ? 'start' : 'end',
     items: () => [
       { type: 'label', label: me.email },
+      { id: 'team', label: state.pending ? `Team (${state.pending} waiting)` : 'Team', iconHtml: icon('users-three') },
       { id: 'profile', label: 'Edit profile', iconHtml: icon('user-circle') },
       { id: 'password', label: 'Change password', iconHtml: icon('key') },
       { id: 'theme', label: 'Appearance', iconHtml: icon('circle-half-tilt'), sub: themeLabel() },
@@ -290,6 +299,7 @@ function userMenu(anchor) {
       { id: 'signout', label: 'Sign out', iconHtml: icon('sign-out'), danger: true },
     ],
     onSelect: (id) => {
+      if (id === 'team') go('#/team');
       if (id === 'profile') editProfile();
       if (id === 'password') changePassword();
       if (id === 'theme') setTimeout(() => themeMenu(anchor), 0);

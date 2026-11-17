@@ -10,6 +10,7 @@ export const state = {
   boards: [],
   tasks: new Map(),
   events: [],
+  transfers: [],
   pending: 0,
   activity: [],
   loaded: false,
@@ -36,6 +37,7 @@ export async function loadAll() {
   state.boards = data.boards;
   state.tasks = new Map(data.tasks.map((t) => [t.id, t]));
   state.events = data.events || [];
+  state.transfers = data.transfers || [];
   state.pending = data.pending;
   state.loaded = true;
   emit();
@@ -61,6 +63,7 @@ export function reset() {
   state.boards = [];
   state.tasks = new Map();
   state.events = [];
+  state.transfers = [];
   state.pending = 0;
   state.activity = [];
   state.activityLoaded = false;
@@ -139,4 +142,24 @@ export async function createTask(payload) {
   state.tasks.set(task.id, task);
   emit();
   return task;
+}
+
+// ---------- task pool ----------
+
+export const isOpenInPool = (t) => !!t && t.pooled && !t.assignees.length && t.status !== 'done';
+export const poolTasks = () => allTasks().filter(isOpenInPool);
+export const transfersFor = (taskId) => state.transfers.filter((x) => x.task_id === taskId);
+export const inbox = () => state.transfers.filter((x) => x.to_user === state.me?.id);
+
+export async function claimTask(id) {
+  const { task } = await api(`tasks/${id}/claim`, { method: 'POST', body: {} });
+  upsertTask(task);
+  return task;
+}
+
+/** Pool actions that touch several records: run, then reload everything so all views agree. */
+export async function poolAction(path, body = {}) {
+  const res = await api(path, { method: 'POST', body });
+  await loadAll();
+  return res;
 }

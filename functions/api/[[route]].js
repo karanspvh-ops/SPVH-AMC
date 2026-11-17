@@ -91,6 +91,16 @@ const MIGRATIONS = {
     )`,
     `CREATE INDEX IF NOT EXISTS idx_events_dates ON events(start_date, end_date)`,
   ],
+  3: [
+    `ALTER TABLE tasks ADD COLUMN pooled INTEGER NOT NULL DEFAULT 0`,
+    `CREATE TABLE IF NOT EXISTS task_transfers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, task_id INTEGER NOT NULL, kind TEXT NOT NULL,
+      from_user INTEGER NOT NULL, to_user INTEGER, note TEXT NOT NULL DEFAULT '',
+      status TEXT NOT NULL DEFAULT 'pending', created_at INTEGER NOT NULL, resolved_at INTEGER
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_transfers_task ON task_transfers(task_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_transfers_to ON task_transfers(to_user, status)`,
+  ],
 };
 
 let schemaReady = false;
@@ -200,7 +210,11 @@ const publicUser = (u) => ({
 
 // Owners and managers can see and assign everyone's work; members only see their own.
 const viewAll = (me) => me.role === 'admin' || me.clearance === 'manager';
-const VISIBLE_TO_MEMBER = '(t.created_by = ? OR t.id IN (SELECT task_id FROM task_assignees WHERE user_id = ?))';
+// A member sees: tasks they created or are on, open tasks in the pool, and tasks someone is offering them.
+const VISIBLE_TO_MEMBER = `(t.created_by = ? OR t.id IN (SELECT task_id FROM task_assignees WHERE user_id = ?)
+  OR (t.pooled = 1 AND t.status != 'done' AND NOT EXISTS (SELECT 1 FROM task_assignees x WHERE x.task_id = t.id))
+  OR t.id IN (SELECT task_id FROM task_transfers WHERE to_user = ? AND status = 'pending'))`;
+const memberBinds = (me) => [me.id, me.id, me.id];
 
 async function logActivity(db, { taskId = null, boardId = null, userId, action, detail = null }) {
   await db.prepare('INSERT INTO activity (task_id, board_id, user_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, ?)')
@@ -315,10 +329,15 @@ async function login(request, env, body) {
 
 async function loadTasks(db, me, where = '1=1', binds = []) {
   const scope = viewAll(me) ? '' : ` AND ${VISIBLE_TO_MEMBER}`;
-  const scopeBinds = viewAll(me) ? [] : [me.id, me.id];
+  const scopeBinds = viewAll(me) ? [] : memberBinds(me);
   const { results: tasks } = await db.prepare(
     `SELECT t.id, t.board_id, t.kind, t.parent_id, t.title, t.status, t.priority, t.due_date, t.position, t.created_by,
-       t.created_at, t.updated_at, t.completed_at, (length(t.body) > 0) AS has_body
+       t.created_at, t.updated_at, t.completed_at, t.pooled, (length(t.body) > 0) AS has_body,
+       CASE WHEN t.pooled = 1 THEN substr(t.body, 1, 280) END AS body_preview,
+       (SELECT tr.note FROM task_transfers tr WHERE tr.task_id = t.id AND tr.kind IN ('handover', 'release') AND tr.note != ''
+         ORDER BY tr.created_at DESC LIMIT 1) AS handover_note,
+       (SELECT tr.from_user FROM task_transfers tr WHERE tr.task_id = t.id AND tr.kind IN ('handover', 'release') AND tr.note != ''
+         ORDER BY tr.created_at DESC LIMIT 1) AS handover_by
      FROM tasks t WHERE (${where})${scope} ORDER BY t.position ASC`
   ).bind(...binds, ...scopeBinds).all();
   if (!tasks.length) return [];
@@ -339,6 +358,7 @@ async function loadTasks(db, me, where = '1=1', binds = []) {
     return {
       ...t,
       has_body: !!t.has_body,
+      pooled: !!t.pooled,
       assignees: assignments.map((x) => x.user_id),
       assignments,
       checklist: cMap.get(t.id) || { total: 0, done: 0 },
@@ -361,7 +381,9 @@ async function taskDetail(db, me, id) {
     db.prepare('SELECT id, user_id, body, created_at FROM comments WHERE task_id = ? ORDER BY created_at ASC').bind(id),
     db.prepare('SELECT id, user_id, action, detail, created_at FROM activity WHERE task_id = ? ORDER BY created_at ASC').bind(id),
   ]);
+  const transfers = await db.prepare('SELECT * FROM task_transfers WHERE task_id = ? ORDER BY created_at ASC').bind(id).all();
   return {
+    transfers: transfers.results,
     ...task,
     body: body.results[0]?.body || '',
     checklist_items: checklist.results.map((c) => ({ ...c, done: !!c.done })),
@@ -408,7 +430,9 @@ async function createTask(env, me, body) {
   const status = STATUSES.includes(body.status) ? body.status : 'todo';
   const priority = PRIORITIES.includes(body.priority) ? body.priority : 'normal';
   const due = body.due_date && /^\d{4}-\d{2}-\d{2}$/.test(body.due_date) ? body.due_date : null;
-  const assignees = await checkAssignees(db, me, body.assignees || []);
+  const pooled = body.pooled === true && body.kind !== 'request';
+  if (pooled && !viewAll(me)) throw new HttpError(403, 'Only Sujay, Karan or a manager can add tasks to the pool.');
+  const assignees = pooled ? [] : await checkAssignees(db, me, body.assignees || []);
   const admins = await adminIds(db);
   let kind = body.kind === 'request' ? 'request' : 'task';
   if (me.role !== 'admin' && assignees.some((id) => admins.includes(id))) kind = 'request';
@@ -421,24 +445,24 @@ async function createTask(env, me, body) {
     if (!parent) throw new HttpError(400, 'The linked task no longer exists.');
     parentId = parent.id;
   }
-  const textBody = typeof body.body === 'string' ? body.body.slice(0, 20000) : '';
+  const textBody = typeof body.body === 'string' ? body.body.slice(0, pooled ? 600 : 20000) : '';
   const now = Date.now();
   const position = Number.isFinite(body.position) ? body.position : await nextPosition(db, boardId, status);
   const res = await db.prepare(
-    `INSERT INTO tasks (board_id, kind, parent_id, title, body, status, priority, due_date, position, created_by, created_at, updated_at, completed_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).bind(boardId, kind, parentId, title, textBody, status, priority, due, position, me.id, now, now, status === 'done' ? now : null).run();
+    `INSERT INTO tasks (board_id, kind, parent_id, title, body, status, priority, due_date, position, created_by, created_at, updated_at, completed_at, pooled)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(boardId, kind, parentId, title, textBody, pooled ? 'todo' : status, priority, due, position, me.id, now, now, !pooled && status === 'done' ? now : null, pooled ? 1 : 0).run();
   const id = res.meta.last_row_id;
   const stmts = assignees.map((uid) =>
     db.prepare('INSERT INTO task_assignees (task_id, user_id, assigned_by, assigned_at) VALUES (?, ?, ?, ?)').bind(id, uid, me.id, now));
-  if (Array.isArray(body.checklist)) {
+  if (!pooled && Array.isArray(body.checklist)) {
     body.checklist.slice(0, 50).forEach((text, i) => {
       const t = typeof text === 'string' ? text.trim().slice(0, 300) : '';
       if (t) stmts.push(db.prepare('INSERT INTO checklist (task_id, text, position) VALUES (?, ?, ?)').bind(id, t, (i + 1) * 1024));
     });
   }
   if (stmts.length) await db.batch(stmts);
-  await logActivity(db, { taskId: id, boardId, userId: me.id, action: kind === 'request' ? 'requested' : 'created', detail: { title, assignees } });
+  await logActivity(db, { taskId: id, boardId, userId: me.id, action: kind === 'request' ? 'requested' : pooled ? 'pooled' : 'created', detail: { title, assignees } });
   return json({ task: await loadTask(db, me, id) }, 201);
 }
 
@@ -554,6 +578,128 @@ async function listEvents(db, me) {
   return results;
 }
 
+
+// ---------- task pool: claim, release, invite, handover ----------
+
+const isOpenInPool = (t) => t.pooled && !t.assignees.length && t.status !== 'done';
+
+async function returnToPool(db, taskId) {
+  await db.batch([
+    db.prepare(`UPDATE tasks SET pooled = 1, status = 'todo', completed_at = NULL, updated_at = ? WHERE id = ?`).bind(Date.now(), taskId),
+    db.prepare(`UPDATE task_transfers SET status = 'cancelled', resolved_at = ? WHERE task_id = ? AND status = 'pending'`).bind(Date.now(), taskId),
+  ]);
+}
+
+async function claimTask(env, me, id) {
+  const db = env.DB;
+  const task = await loadTask(db, me, id);
+  if (!isOpenInPool(task)) throw new HttpError(409, 'Someone has already claimed this task.');
+  const now = Date.now();
+  // Only one claim can win: the insert does nothing if anyone is already on the task.
+  const res = await db.prepare(
+    `INSERT INTO task_assignees (task_id, user_id, assigned_by, assigned_at)
+     SELECT ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM task_assignees WHERE task_id = ?)`
+  ).bind(id, me.id, me.id, now, id).run();
+  if (!res.meta.changes) throw new HttpError(409, 'Someone claimed this task a moment before you.');
+  await db.prepare('UPDATE tasks SET updated_at = ? WHERE id = ?').bind(now, id).run();
+  await logActivity(db, { taskId: id, boardId: task.board_id, userId: me.id, action: 'claimed', detail: { title: task.title } });
+  return json({ task: await loadTask(db, me, id) });
+}
+
+async function releaseTask(env, me, id, body) {
+  const db = env.DB;
+  if (!viewAll(me)) throw new HttpError(403, 'Only Sujay, Karan or a manager can put tasks back in the pool. Hand it over to a colleague instead.');
+  const task = await loadTask(db, me, id);
+  if (task.status === 'done') throw new HttpError(400, 'This task is already done.');
+  const note = str(body.note, { max: 2000, field: 'Handover note' });
+  const now = Date.now();
+  await db.batch([
+    db.prepare('DELETE FROM task_assignees WHERE task_id = ?').bind(id),
+    db.prepare(`INSERT INTO task_transfers (task_id, kind, from_user, to_user, note, status, created_at, resolved_at) VALUES (?, 'release', ?, NULL, ?, 'done', ?, ?)`).bind(id, me.id, note, now, now),
+  ]);
+  await returnToPool(db, id);
+  await logActivity(db, { taskId: id, boardId: task.board_id, userId: me.id, action: 'released', detail: { title: task.title } });
+  return json({ task: await loadTask(db, me, id) });
+}
+
+async function offerTask(env, me, id, body) {
+  const db = env.DB;
+  const task = await loadTask(db, me, id);
+  const kind = body.kind === 'handover' ? 'handover' : 'invite';
+  if (!task.assignees.includes(me.id) && !viewAll(me)) throw new HttpError(403, 'Only people working on this task can invite others or hand it over.');
+  if (task.status === 'done') throw new HttpError(400, 'This task is already done.');
+  if (kind === 'handover' && !task.assignees.includes(me.id)) throw new HttpError(400, 'You can only hand over a task you are working on.');
+  const to = await db.prepare(`SELECT id, name FROM users WHERE id = ? AND status = 'approved'`).bind(Number(body.to_user)).first();
+  if (!to) throw new HttpError(400, 'Choose someone who has access to the workspace.');
+  if (to.id === me.id) throw new HttpError(400, 'Choose someone other than yourself.');
+  if (task.assignees.includes(to.id)) throw new HttpError(400, `${to.name} is already working on this task.`);
+  const pending = await db.prepare(`SELECT kind, to_user FROM task_transfers WHERE task_id = ? AND status = 'pending'`).bind(id).all();
+  if (kind === 'handover' && pending.results.some((r) => r.kind === 'handover')) throw new HttpError(409, 'A handover is already waiting for an answer.');
+  if (pending.results.some((r) => r.to_user === to.id)) throw new HttpError(409, `${to.name} already has a request waiting on this task.`);
+  const note = str(body.note, { max: 2000, field: 'Note' });
+  const now = Date.now();
+  const res = await db.prepare(
+    `INSERT INTO task_transfers (task_id, kind, from_user, to_user, note, status, created_at) VALUES (?, ?, ?, ?, ?, 'pending', ?)`
+  ).bind(id, kind, me.id, to.id, note, now).run();
+  await logActivity(db, { taskId: id, boardId: task.board_id, userId: me.id, action: kind === 'handover' ? 'handover_asked' : 'invited', detail: { to: to.id } });
+  return json({ transfer: await db.prepare('SELECT * FROM task_transfers WHERE id = ?').bind(res.meta.last_row_id).first() }, 201);
+}
+
+async function answerTransfer(env, me, transferId, action) {
+  const db = env.DB;
+  const tr = await db.prepare('SELECT * FROM task_transfers WHERE id = ?').bind(transferId).first();
+  if (!tr || tr.status !== 'pending') throw new HttpError(404, 'This request has already been answered or withdrawn.');
+  const now = Date.now();
+  const task = await db.prepare('SELECT id, board_id, title FROM tasks WHERE id = ?').bind(tr.task_id).first();
+  if (!task) throw new HttpError(404, 'This task no longer exists.');
+
+  if (action === 'cancel') {
+    if (tr.from_user !== me.id && !viewAll(me)) throw new HttpError(403, 'Only the person who sent this request can withdraw it.');
+    await db.prepare(`UPDATE task_transfers SET status = 'cancelled', resolved_at = ? WHERE id = ?`).bind(now, tr.id).run();
+    return json({ ok: true });
+  }
+  if (tr.to_user !== me.id) throw new HttpError(403, 'This request is for someone else.');
+
+  if (action === 'accept') {
+    const stmts = [db.prepare(`UPDATE task_transfers SET status = 'accepted', resolved_at = ? WHERE id = ?`).bind(now, tr.id)];
+    if (tr.kind === 'handover') stmts.push(db.prepare('DELETE FROM task_assignees WHERE task_id = ? AND user_id = ?').bind(tr.task_id, tr.from_user));
+    stmts.push(db.prepare(
+      `INSERT INTO task_assignees (task_id, user_id, assigned_by, assigned_at)
+       SELECT ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM task_assignees WHERE task_id = ? AND user_id = ?)`
+    ).bind(tr.task_id, me.id, tr.from_user, now, tr.task_id, me.id));
+    stmts.push(db.prepare('UPDATE tasks SET updated_at = ? WHERE id = ?').bind(now, tr.task_id));
+    await db.batch(stmts);
+    await logActivity(db, { taskId: tr.task_id, boardId: task.board_id, userId: me.id, action: tr.kind === 'handover' ? 'handover_accepted' : 'invite_accepted', detail: { from: tr.from_user } });
+    return json({ task: await loadTask(db, me, tr.task_id) });
+  }
+
+  if (action === 'decline') {
+    await db.prepare(`UPDATE task_transfers SET status = 'declined', resolved_at = ? WHERE id = ?`).bind(now, tr.id).run();
+    let pooled = false;
+    if (tr.kind === 'handover') {
+      // The person handing over asked to leave the task: they come off it, and if nobody is left it returns to the pool.
+      await db.prepare('DELETE FROM task_assignees WHERE task_id = ? AND user_id = ?').bind(tr.task_id, tr.from_user).run();
+      const left = await db.prepare('SELECT COUNT(*) AS n FROM task_assignees WHERE task_id = ?').bind(tr.task_id).first();
+      if (!left.n) {
+        await returnToPool(db, tr.task_id);
+        pooled = true;
+      }
+    }
+    await logActivity(db, { taskId: tr.task_id, boardId: task.board_id, userId: me.id, action: tr.kind === 'handover' ? 'handover_declined' : 'invite_declined', detail: { from: tr.from_user, pooled } });
+    return json({ ok: true, pooled });
+  }
+  throw new HttpError(404, 'Not found.');
+}
+
+async function listTransfers(db, me) {
+  const { results } = await db.prepare(
+    viewAll(me)
+      ? `SELECT * FROM task_transfers WHERE status = 'pending' ORDER BY created_at DESC`
+      : `SELECT * FROM task_transfers WHERE status = 'pending' AND (to_user = ? OR from_user = ?) ORDER BY created_at DESC`
+  ).bind(...(viewAll(me) ? [] : [me.id, me.id])).all();
+  return results;
+}
+
 async function routeApi(request, env, segs, me) {
   const db = env.DB;
   const method = request.method;
@@ -593,7 +739,9 @@ async function routeApi(request, env, segs, me) {
     ]);
     const tasks = await loadTasks(db, me);
     const events = await listEvents(db, me);
+    const transfers = await listTransfers(db, me);
     return json({
+      transfers,
       me: publicUser(me),
       users: users.results.map(publicUser),
       former: former.results,
@@ -613,7 +761,7 @@ async function routeApi(request, env, segs, me) {
     const { results } = await db.prepare(
       `SELECT a.id, a.task_id, a.board_id, a.user_id, a.action, a.detail, a.created_at, tk.title AS task_title
        FROM activity a LEFT JOIN tasks tk ON tk.id = a.task_id ${scope} ORDER BY a.created_at DESC LIMIT ?`
-    ).bind(...(viewAll(me) ? [] : [me.id, me.id]), limit).all();
+    ).bind(...(viewAll(me) ? [] : memberBinds(me)), limit).all();
     return json({ activity: results.map((r) => ({ ...r, detail: r.detail ? JSON.parse(r.detail) : null })) });
   }
 
@@ -717,6 +865,9 @@ async function routeApi(request, env, segs, me) {
     if (!c && method === 'GET') return json({ task: await taskDetail(db, me, id) });
     if (!c && method === 'PATCH') return updateTask(env, me, id, body);
     if (!c && method === 'DELETE') return deleteTask(env, me, id);
+    if (c === 'claim' && method === 'POST') return claimTask(env, me, id);
+    if (c === 'release' && method === 'POST') return releaseTask(env, me, id, body);
+    if (c === 'offer' && method === 'POST') return offerTask(env, me, id, body);
 
     if (c === 'comments' && method === 'POST') {
       await loadTask(db, me, id);
@@ -736,6 +887,10 @@ async function routeApi(request, env, segs, me) {
       const res = await db.prepare('INSERT INTO checklist (task_id, text, position) VALUES (?, ?, ?)').bind(id, text, (max?.p || 0) + 1024).run();
       return json({ item: { id: res.meta.last_row_id, text, done: false } }, 201);
     }
+  }
+
+  if (a === 'transfers' && b && method === 'POST' && ['accept', 'decline', 'cancel'].includes(c)) {
+    return answerTransfer(env, me, Number(b), c);
   }
 
   if (a === 'checklist' && b) {
