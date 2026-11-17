@@ -14,6 +14,7 @@ import { renderRequests } from './views/requests.js';
 import { renderBoard, renderBoards, renderPersonBoard, openBoardSheet } from './views/board.js';
 import { renderCalendarPage, openEventSheet } from './views/calendar.js';
 import { renderPool, openPoolSheet } from './views/pool.js';
+import { renderRepeating } from './views/repeating.js';
 import { enablePush, disablePush, testPush, syncPush, setBadge, refreshPushStatus, pushState, PUSH_COPY } from './push.js';
 import { renderTeam, resetTeamCache } from './views/team.js';
 
@@ -121,6 +122,7 @@ function pageTitle() {
     case 'team': return { title: 'Team', search: false };
     case 'calendar': return { title: 'Calendar', search: false };
     case 'pool': return { title: 'Task pool', search: true };
+    case 'repeating': return { title: 'Repeating tasks', search: false };
     case 'people': {
       const u = userById(Number(parts[1]));
       return { title: u ? (u.id === state.me.id ? 'Your profile' : u.name) : 'Profile', search: true };
@@ -160,6 +162,7 @@ function renderPage(force = false) {
     case 'team': renderTeam(el, ctx); break;
     case 'calendar': renderCalendarPage(el, ctx); break;
     case 'pool': renderPool(el, ctx); break;
+    case 'repeating': renderRepeating(el, ctx); break;
     case 'people': renderPersonBoard(el, ctx, Number(parts[1])); break;
     default: renderOverview(el, ctx);
   }
@@ -202,6 +205,7 @@ function renderChrome() {
     navItem('#/', '', 'squares-four', 'Overview', c.inbox ? `<span class="nav-badge" aria-label="${c.inbox} waiting for your answer">${c.inbox}</span>` : ''),
     navItem('#/my', 'my', 'list-checks', 'My work', c.mine ? `<span class="nav-count">${c.mine}</span>` : ''),
     navItem('#/pool', 'pool', 'stack', 'Task pool', c.pool ? `<span class="nav-count">${c.pool}</span>` : ''),
+    ...(canViewAll() || state.recurrences.length ? [navItem('#/repeating', 'repeating', 'arrows-clockwise', 'Repeating', state.recurrences.length ? `<span class="nav-count">${state.recurrences.length}</span>` : '')] : []),
     navItem('#/calendar', 'calendar', 'calendar-dots', 'Calendar'),
     navItem('#/requests', 'requests', 'tray', 'Requests', c.needsMe ? (isAdmin() ? `<span class="nav-badge" aria-label="${c.needsMe} need you">${c.needsMe}</span>` : `<span class="nav-count">${c.needsMe}</span>`) : ''),
     navItem('#/team', 'team', 'users-three', 'Team', c.pending ? `<span class="nav-badge" aria-label="${c.pending} waiting for access">${c.pending}</span>` : ''),

@@ -193,3 +193,17 @@ export function byDue(a, b) {
   if (b.due_date) return 1;
   return PRIORITY_ORDER.indexOf(a.priority) - PRIORITY_ORDER.indexOf(b.priority) || b.updated_at - a.updated_at;
 }
+
+export const FREQ_LABEL = { weekly: 'Every week', monthly: 'Every month', quarterly: 'Every quarter', yearly: 'Every year' };
+export const FREQ_ORDER = ['weekly', 'monthly', 'quarterly', 'yearly'];
+
+/** 95 min -> "1 h 35 min", 30 h -> "1 d 6 h". */
+export function fmtDuration(ms) {
+  const min = Math.max(0, Math.round(ms / 60000));
+  if (min < 1) return 'under a minute';
+  if (min < 60) return `${min} min`;
+  const h = Math.floor(min / 60), m = min % 60;
+  if (h < 24) return m ? `${h} h ${m} min` : `${h} h`;
+  const d = Math.floor(h / 24), rh = h % 24;
+  return rh ? `${d} d ${rh} h` : `${d} d`;
+}

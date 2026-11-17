@@ -1288,3 +1288,24 @@ body.is-dragging, body.is-dragging * { cursor: grabbing !important; }
 .notify-banner p { flex: 1; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
 .notify-banner .btn { flex: none; }
 @media (max-width: 560px) { .notify-banner { flex-wrap: wrap; } .notify-banner p { flex-basis: calc(100% - 80px); } }
+
+/* ---------- v6: repeating tasks, duplicate flags, stage timing ---------- */
+.tag-dup { background: var(--danger-soft); color: var(--danger); }
+.card-repeat { display: inline-grid; place-items: center; color: var(--ink-3); font-size: 12px; margin-left: 2px; }
+.dup-banner { margin: 6px 0 12px; padding: 16px; border-radius: var(--r-md); background: var(--danger-soft); border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent); }
+.dup-banner .pool-banner-head > .ph-duotone { font-size: 24px; color: var(--danger); }
+.dup-banner .linked-item { margin-top: 12px; }
+.stage-bar { display: flex; height: 10px; border-radius: 6px; overflow: hidden; background: var(--sunken); gap: 2px; margin: 4px 0 12px; }
+.stage-bar i { min-width: 0; flex-basis: 0; transition: flex-grow 320ms var(--ease-out); }
+.sb-todo { background: var(--ink-3); }
+.sb-doing { background: var(--brand); }
+.sb-review { background: var(--gold); }
+.stage-rows { display: grid; gap: 6px; max-width: 420px; }
+.stage-rows > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 13.5px; }
+.stage-rows dt { display: flex; align-items: center; gap: 8px; color: var(--ink-2); }
+.stage-rows dd { font-weight: 600; color: var(--ink); display: flex; gap: 8px; align-items: baseline; }
+.stage-rows .stage-total { border-top: 1px solid var(--line); padding-top: 8px; margin-top: 2px; }
+.sb-dot { width: 8px; height: 8px; border-radius: 3px; display: inline-block; }
+[data-region="timing"] > .hint { display: block; margin-top: 10px; }
+.repeat-icon { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand-ink); flex: none; font-size: 14px; }
+.repeat-row.is-paused .row-title { color: var(--ink-3); }

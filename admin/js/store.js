@@ -12,6 +12,7 @@ export const state = {
   events: [],
   transfers: [],
   boardRequests: [],
+  recurrences: [],
   pending: 0,
   activity: [],
   loaded: false,
@@ -40,6 +41,7 @@ export async function loadAll() {
   state.events = data.events || [];
   state.transfers = data.transfers || [];
   state.boardRequests = data.board_requests || [];
+  state.recurrences = data.recurrences || [];
   state.pending = data.pending;
   state.loaded = true;
   emit();
@@ -67,6 +69,7 @@ export function reset() {
   state.events = [];
   state.transfers = [];
   state.boardRequests = [];
+  state.recurrences = [];
   state.pending = 0;
   state.activity = [];
   state.activityLoaded = false;
@@ -180,3 +183,5 @@ export const boardsOf = (userId) => state.boards.filter((b) => b.owner_id === us
 export const sharedBoards = () => state.boards.filter((b) => !isTeamBoard(b) && b.owner_id !== state.me?.id && canViewBoard(b));
 export const addableBoards = () => state.boards.filter(canAddToBoard);
 export const defaultBoardId = () => (teamBoards()[0] || addableBoards()[0])?.id;
+
+export const recurrenceById = (id) => state.recurrences.find((r) => r.id === id);

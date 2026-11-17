@@ -14,6 +14,7 @@ const ICONS = {
   pooled: 'stack', claimed: 'hand-grabbing', released: 'arrow-u-up-left', invited: 'user-plus',
   handover_asked: 'user-switch', handover_accepted: 'user-switch', handover_declined: 'arrow-u-up-left',
   invite_accepted: 'user-plus', invite_declined: 'x-circle',
+  repeat_set: 'arrows-clockwise', repeated: 'arrows-clockwise', flagged: 'copy-simple',
 };
 export const activityIcon = (a) => icon(ICONS[a.action] || 'dot-outline');
 
@@ -47,6 +48,9 @@ export function describe(a, taskHtml) {
     case 'handover_declined': return `declined to take over ${t}${d.pooled ? ', so it went back to the pool' : ''}`;
     case 'invite_accepted': return `joined ${t}`;
     case 'invite_declined': return `declined to join ${t}`;
+    case 'repeat_set': return `made ${t} repeat <b>${esc(({ weekly: 'every week', monthly: 'every month', quarterly: 'every quarter', yearly: 'every year' })[d.freq] || '')}</b>`;
+    case 'repeated': return `${t} came round again`;
+    case 'flagged': return `added ${t}, which looks like “${esc(d.title)}”`;
     case 'access':
       if (d.clearance === 'manager') return `gave <b>${esc(d.user)}</b> manager clearance`;
       if (d.clearance === 'member') return `removed manager clearance from <b>${esc(d.user)}</b>`;

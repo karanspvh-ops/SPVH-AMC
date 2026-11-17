@@ -121,6 +121,21 @@ const MIGRATIONS = {
     )`,
     `CREATE INDEX IF NOT EXISTS idx_push_user ON push_subscriptions(user_id)`,
   ],
+  6: [
+    `ALTER TABLE tasks ADD COLUMN recurrence_id INTEGER`,
+    `ALTER TABLE tasks ADD COLUMN dup_of INTEGER`,
+    `ALTER TABLE tasks ADD COLUMN dup_reason TEXT`,
+    `ALTER TABLE users ADD COLUMN reports_to INTEGER`,
+    `CREATE TABLE IF NOT EXISTS recurrences (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, body TEXT NOT NULL DEFAULT '',
+      board_id INTEGER NOT NULL, priority TEXT NOT NULL DEFAULT 'normal',
+      assignees TEXT NOT NULL DEFAULT '[]', checklist TEXT NOT NULL DEFAULT '[]',
+      freq TEXT NOT NULL, anchor_day INTEGER NOT NULL, next_due TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'active', created_by INTEGER NOT NULL, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_tasks_recurrence ON tasks(recurrence_id)`,
+    `CREATE TABLE IF NOT EXISTS app_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)`,
+  ],
 };
 
 let schemaReady = false;
@@ -225,7 +240,7 @@ async function createSession(db, userId, persistent, ua) {
 const publicUser = (u) => ({
   id: u.id, name: u.name, email: u.email, title: u.title || '', phone: u.phone || '',
   role: u.role, clearance: u.role === 'admin' ? 'owner' : u.clearance || 'member',
-  status: u.status, created_at: u.created_at, last_seen_at: u.last_seen_at,
+  status: u.status, created_at: u.created_at, last_seen_at: u.last_seen_at, reports_to: u.reports_to || null,
 });
 
 // Owners and managers can see and assign everyone's work; members only see their own.
@@ -459,7 +474,7 @@ async function loadTasks(db, me, where = '1=1', binds = []) {
   const scopeBinds = seesAll(me) ? [] : memberBinds(me);
   const { results: tasks } = await db.prepare(
     `SELECT t.id, t.board_id, t.kind, t.parent_id, t.title, t.status, t.priority, t.due_date, t.position, t.created_by,
-       t.created_at, t.updated_at, t.completed_at, t.pooled, (length(t.body) > 0) AS has_body,
+       t.created_at, t.updated_at, t.completed_at, t.pooled, t.recurrence_id, t.dup_of, t.dup_reason, (length(t.body) > 0) AS has_body,
        (SELECT bo.owner_id FROM boards bo WHERE bo.id = t.board_id) AS board_owner,
        CASE WHEN t.pooled = 1 THEN substr(t.body, 1, 280) END AS body_preview,
        (SELECT tr.note FROM task_transfers tr WHERE tr.task_id = t.id AND tr.kind IN ('handover', 'release') AND tr.note != ''
@@ -487,6 +502,8 @@ async function loadTasks(db, me, where = '1=1', binds = []) {
       ...t,
       has_body: !!t.has_body,
       pooled: !!t.pooled,
+      dup_of: viewAll(me) ? t.dup_of : null,
+      dup_reason: viewAll(me) ? t.dup_reason : null,
       assignees: assignments.map((x) => x.user_id),
       assignments,
       checklist: cMap.get(t.id) || { total: 0, done: 0 },
@@ -510,13 +527,20 @@ async function taskDetail(db, me, id) {
     db.prepare('SELECT id, user_id, action, detail, created_at FROM activity WHERE task_id = ? ORDER BY created_at ASC').bind(id),
   ]);
   const transfers = await db.prepare('SELECT * FROM task_transfers WHERE task_id = ? ORDER BY created_at ASC').bind(id).all();
+  const events = activity.results.map((a) => ({ ...a, detail: a.detail ? JSON.parse(a.detail) : null }));
+  let duplicate = null;
+  if (task.dup_of) {
+    duplicate = await db.prepare('SELECT id, title, status, completed_at, recurrence_id FROM tasks WHERE id = ?').bind(task.dup_of).first();
+  }
   return {
     transfers: transfers.results,
+    timing: me.role === 'admin' ? stageTiming(task, events) : null,
+    duplicate,
     ...task,
     body: body.results[0]?.body || '',
     checklist_items: checklist.results.map((c) => ({ ...c, done: !!c.done })),
     comment_list: comments.results,
-    activity: activity.results.map((a) => ({ ...a, detail: a.detail ? JSON.parse(a.detail) : null })),
+    activity: viewAll(me) ? events : events.filter((a) => a.action !== 'flagged'),
   };
 }
 
@@ -562,6 +586,11 @@ async function createTask(env, me, body) {
   const pooled = body.pooled === true && body.kind !== 'request';
   if (pooled && !viewAll(me)) throw new HttpError(403, 'Only Sujay, Karan or a manager can add tasks to the pool.');
   if (pooled && board.owner_id != null) throw new HttpError(400, 'Pool tasks go on a team board, not a personal one.');
+  if (FREQS.includes(body.repeat)) {
+    if (!viewAll(me)) throw new HttpError(403, 'Only Sujay, Karan or a manager can set up repeating tasks.');
+    if (pooled || body.kind === 'request') throw new HttpError(400, 'Pool tasks and requests can’t repeat.');
+    if (!due) throw new HttpError(400, 'Set a due date first. The schedule repeats from it.');
+  }
   const assignees = pooled ? [] : await checkAssignees(db, me, body.assignees || []);
   const admins = await adminIds(db);
   let kind = body.kind === 'request' ? 'request' : 'task';
@@ -600,6 +629,12 @@ async function createTask(env, me, body) {
     notify(env, me, assignees, { title: `${firstNameOf(me)} needs your input`, body: title, url: taskUrl(id), tag: `task-${id}` });
   } else {
     notify(env, me, assignees, { title: `${firstNameOf(me)} assigned you a task`, body: title, url: taskUrl(id), tag: `task-${id}` });
+  }
+  if (kind === 'task' && FREQS.includes(body.repeat)) {
+    if (!viewAll(me)) throw new HttpError(403, 'Only Sujay, Karan or a manager can set up repeating tasks.');
+    await makeRecurring(db, me, id, body.repeat);
+  } else if (kind === 'task') {
+    await checkDuplicate(env, me, id, title);
   }
   return json({ task: await loadTask(db, me, id) }, 201);
 }
@@ -666,6 +701,9 @@ async function updateTask(env, me, id, body) {
   await db.batch(stmts);
   for (const [action, detail] of log) {
     await logActivity(db, { taskId: id, boardId: task.board_id, userId: me.id, action, detail });
+  }
+  if (log.some(([action]) => action === 'renamed') && task.kind === 'task' && !task.dup_of && !task.recurrence_id) {
+    await checkDuplicate(env, me, id, body.title);
   }
   return json({ task: await loadTask(db, me, id) });
 }
@@ -962,6 +1000,185 @@ async function boardsRoute(request, env, me, b, c, d, method, body) {
   throw new HttpError(404, 'Not found.');
 }
 
+
+// ---------- repeating tasks ----------
+
+const FREQS = ['weekly', 'monthly', 'quarterly', 'yearly'];
+const LEAD_DAYS = { weekly: 2, monthly: 5, quarterly: 10, yearly: 14 };
+const isoUTC = (ms) => new Date(ms).toISOString().slice(0, 10);
+const todayIST = () => isoUTC(Date.now() + 5.5 * 3600 * 1000);
+const addDaysISO = (iso, n) => { const [y, m, d] = iso.split('-').map(Number); return isoUTC(Date.UTC(y, m - 1, d + n)); };
+
+function advanceDue(iso, freq, anchor) {
+  const [y, m, d] = iso.split('-').map(Number);
+  if (freq === 'weekly') return isoUTC(Date.UTC(y, m - 1, d + 7));
+  const months = { monthly: 1, quarterly: 3, yearly: 12 }[freq];
+  const first = new Date(Date.UTC(y, m - 1 + months, 1));
+  const lastDay = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate();
+  return isoUTC(Date.UTC(first.getUTCFullYear(), first.getUTCMonth(), Math.min(anchor, lastDay)));
+}
+
+async function makeRecurring(db, me, taskId, freq) {
+  const t = await db.prepare('SELECT * FROM tasks WHERE id = ?').bind(taskId).first();
+  if (!t) throw new HttpError(404, 'This task no longer exists.');
+  if (t.kind !== 'task' || t.pooled) throw new HttpError(400, 'Only regular tasks can repeat.');
+  if (!t.due_date) throw new HttpError(400, 'Set a due date first. The schedule repeats from it.');
+  if (t.recurrence_id) {
+    const existing = await db.prepare(`SELECT status FROM recurrences WHERE id = ?`).bind(t.recurrence_id).first();
+    if (existing && existing.status !== 'stopped') throw new HttpError(400, 'This task already repeats.');
+  }
+  const [assignees, checklist] = await db.batch([
+    db.prepare('SELECT user_id FROM task_assignees WHERE task_id = ?').bind(taskId),
+    db.prepare('SELECT text FROM checklist WHERE task_id = ? ORDER BY position ASC, id ASC').bind(taskId),
+  ]);
+  const anchor = Number(t.due_date.slice(8, 10));
+  const now = Date.now();
+  const res = await db.prepare(
+    `INSERT INTO recurrences (title, body, board_id, priority, assignees, checklist, freq, anchor_day, next_due, status, created_by, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)`
+  ).bind(t.title, t.body, t.board_id, t.priority, JSON.stringify(assignees.results.map((r) => r.user_id)),
+    JSON.stringify(checklist.results.map((r) => r.text)), freq, anchor, advanceDue(t.due_date, freq, anchor), me.id, now, now).run();
+  await db.prepare('UPDATE tasks SET recurrence_id = ?, dup_of = NULL, dup_reason = NULL WHERE id = ?').bind(res.meta.last_row_id, taskId).run();
+  await logActivity(db, { taskId, boardId: t.board_id, userId: me.id, action: 'repeat_set', detail: { freq } });
+  return res.meta.last_row_id;
+}
+
+async function listRecurrences(db, me) {
+  const { results } = await db.prepare(
+    `SELECT r.*, (SELECT MAX(id) FROM tasks WHERE recurrence_id = r.id) AS last_task_id,
+       (SELECT COUNT(*) FROM tasks WHERE recurrence_id = r.id) AS copies
+     FROM recurrences r WHERE r.status != 'stopped' ORDER BY r.next_due ASC`
+  ).all();
+  const rows = results.map((r) => ({ ...r, assignees: JSON.parse(r.assignees), checklist: JSON.parse(r.checklist) }));
+  return viewAll(me) ? rows : rows.filter((r) => r.created_by === me.id || r.assignees.includes(me.id));
+}
+
+/** Creates each repeating task's next copy once its lead window opens. Runs at most every few minutes. */
+async function runRecurrences(env) {
+  const db = env.DB;
+  const now = Date.now();
+  const last = await db.prepare(`SELECT value FROM app_meta WHERE key = 'recur_last'`).first();
+  if (last && now - Number(last.value) < 3 * 60 * 1000) return;
+  const claim = await db.prepare(
+    `INSERT INTO app_meta (key, value) VALUES ('recur_last', ?)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value WHERE CAST(app_meta.value AS INTEGER) < ?`
+  ).bind(String(now), now - 3 * 60 * 1000).run();
+  if (!claim.meta.changes) return;
+
+  const today = todayIST();
+  const { results } = await db.prepare(`SELECT * FROM recurrences WHERE status = 'active'`).all();
+  for (const r of results) {
+    const horizon = addDaysISO(today, LEAD_DAYS[r.freq] || 3);
+    if (r.next_due > horizon) continue;
+    // Missed cycles are skipped: only the latest occurrence inside the window is created.
+    let due = r.next_due;
+    let next = advanceDue(due, r.freq, r.anchor_day);
+    while (next <= horizon) { due = next; next = advanceDue(due, r.freq, r.anchor_day); }
+    const moved = await db.prepare('UPDATE recurrences SET next_due = ?, updated_at = ? WHERE id = ? AND next_due = ?')
+      .bind(next, now, r.id, r.next_due).run();
+    if (!moved.meta.changes) continue;
+
+    let board = await db.prepare('SELECT id FROM boards WHERE id = ? AND archived = 0').bind(r.board_id).first();
+    if (!board) board = await db.prepare('SELECT id FROM boards WHERE archived = 0 AND owner_id IS NULL ORDER BY position LIMIT 1').first();
+    const assignees = JSON.parse(r.assignees);
+    const { results: active } = assignees.length
+      ? await db.prepare(`SELECT id FROM users WHERE status = 'approved' AND id IN (${assignees.map(() => '?').join(',')})`).bind(...assignees).all()
+      : { results: [] };
+    const position = await nextPosition(db, board.id, 'todo');
+    const res = await db.prepare(
+      `INSERT INTO tasks (board_id, kind, title, body, status, priority, due_date, position, created_by, created_at, updated_at, recurrence_id)
+       VALUES (?, 'task', ?, ?, 'todo', ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(board.id, r.title, r.body, r.priority, due, position, r.created_by, now, now, r.id).run();
+    const id = res.meta.last_row_id;
+    const stmts = active.map((u) => db.prepare('INSERT INTO task_assignees (task_id, user_id, assigned_by, assigned_at) VALUES (?, ?, ?, ?)').bind(id, u.id, r.created_by, now));
+    JSON.parse(r.checklist).forEach((text, i) => stmts.push(db.prepare('INSERT INTO checklist (task_id, text, position) VALUES (?, ?, ?)').bind(id, text, (i + 1) * 1024)));
+    if (stmts.length) await db.batch(stmts);
+    await logActivity(db, { taskId: id, boardId: board.id, userId: r.created_by, action: 'repeated', detail: { due } });
+    if (env.notifyQueue && active.length) {
+      env.notifyQueue.push({ userIds: active.map((u) => u.id), payload: { title: 'New this cycle', body: `${r.title}, due ${due}`, url: taskUrl(id), tag: `task-${id}` } });
+    }
+  }
+}
+
+// ---------- duplicate check ----------
+
+const DUP_STOP = new Set(['the', 'and', 'for', 'with', 'from', 'into', 'this', 'that', 'our', 'all', 'new', 'task']);
+const MONTH_WORDS = new Set(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'sept', 'oct', 'nov', 'dec',
+  'january', 'february', 'march', 'april', 'june', 'july', 'august', 'september', 'october', 'november', 'december',
+  'q1', 'q2', 'q3', 'q4', 'fy', 'week', 'weekly', 'month', 'monthly', 'quarter', 'quarterly', 'annual', 'yearly']);
+
+function titleWords(title) {
+  return new Set(String(title).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/)
+    .filter((w) => w.length > 2 && !/^\d+$/.test(w) && !DUP_STOP.has(w) && !MONTH_WORDS.has(w)));
+}
+
+function looksSame(a, b) {
+  const A = titleWords(a), B = titleWords(b);
+  if (!A.size || !B.size) return false;
+  let shared = 0;
+  for (const w of A) if (B.has(w)) shared++;
+  const union = A.size + B.size - shared;
+  return shared / union >= 0.75;
+}
+
+/** Flags a task added by anyone below owner level that repeats completed one-off work or a repeating task. */
+async function checkDuplicate(env, me, taskId, title) {
+  if (me.role === 'admin') return;
+  const db = env.DB;
+  const since = Date.now() - 400 * 86400 * 1000;
+  const { results } = await db.prepare(
+    `SELECT id, title, status, recurrence_id, completed_at FROM tasks
+     WHERE id != ? AND kind = 'task' AND ((status = 'done' AND recurrence_id IS NULL AND completed_at > ?) OR recurrence_id IS NOT NULL)
+     ORDER BY (recurrence_id IS NOT NULL) DESC, completed_at DESC LIMIT 2000`
+  ).bind(taskId, since).all();
+  const match = results.find((t) => looksSame(title, t.title));
+  if (!match) return;
+  const reason = match.recurrence_id ? 'repeating' : 'completed';
+  await db.prepare('UPDATE tasks SET dup_of = ?, dup_reason = ? WHERE id = ?').bind(match.id, reason, taskId).run();
+  await logActivity(db, { taskId, userId: me.id, action: 'flagged', detail: { of: match.id, title: match.title, reason } });
+  const owners = await adminIds(db);
+  const boss = me.reports_to ? [me.reports_to] : [];
+  notify(env, null, [...boss, ...owners].filter((id) => id !== me.id), {
+    title: `Possible duplicate from ${firstNameOf(me)}`,
+    body: reason === 'repeating'
+      ? `“${title}” looks like the repeating task “${match.title}”.`
+      : `“${title}” looks like “${match.title}”, which is already done.`,
+    url: taskUrl(taskId), tag: `dup-${taskId}`,
+  });
+}
+
+// ---------- time in each stage (owners only) ----------
+
+function stageTiming(task, events) {
+  const at = (e) => e.created_at;
+  const claims = events.filter((e) => e.action === 'claimed');
+  const lastClaim = claims[claims.length - 1];
+  let start = task.created_at;
+  let poolWait = null;
+  if (lastClaim) {
+    const pooledBefore = events.filter((e) => at(e) <= at(lastClaim) && (e.action === 'pooled' || e.action === 'released' || (e.action === 'handover_declined' && e.detail?.pooled)));
+    const enteredPool = pooledBefore.length ? at(pooledBefore[pooledBefore.length - 1]) : task.created_at;
+    poolWait = at(lastClaim) - enteredPool;
+    start = at(lastClaim);
+  }
+  const changes = events.filter((e) => e.action === 'status' && at(e) >= start);
+  const firstAfterStart = changes[0];
+  let current = lastClaim ? 'todo' : (firstAfterStart?.detail?.from || events.find((e) => e.action === 'status')?.detail?.from || task.status);
+  const spans = { todo: 0, doing: 0, review: 0 };
+  let t0 = start;
+  let doneAt = null;
+  for (const e of changes) {
+    if (current !== 'done') spans[current] = (spans[current] || 0) + (at(e) - t0);
+    current = e.detail?.to || current;
+    t0 = at(e);
+    doneAt = current === 'done' ? at(e) : null;
+  }
+  const finished = task.status === 'done';
+  if (!finished && current !== 'done') spans[current] = (spans[current] || 0) + (Date.now() - t0);
+  const end = finished ? (doneAt || task.completed_at || Date.now()) : Date.now();
+  return { start, started_by_claim: !!lastClaim, pool_wait: poolWait, spans, current: task.status, finished, total: end - start };
+}
+
 async function routeApi(request, env, segs, me) {
   const db = env.DB;
   const method = request.method;
@@ -999,11 +1216,13 @@ async function routeApi(request, env, segs, me) {
       db.prepare(`SELECT COUNT(*) AS n FROM users WHERE status = 'pending'`),
       db.prepare(`SELECT id, name, title, role, status FROM users WHERE status = 'disabled'`),
     ]);
+    await runRecurrences(env).catch((err) => console.warn('recurrence run failed', err));
     const tasks = await loadTasks(db, me);
     const events = await listEvents(db, me);
     const transfers = await listTransfers(db, me);
     return json({
       transfers,
+      recurrences: await listRecurrences(db, me),
       board_requests: await boardRequests(db, me),
       me: publicUser(me),
       users: users.results.map(publicUser),
@@ -1018,7 +1237,8 @@ async function routeApi(request, env, segs, me) {
   if (a === 'activity' && method === 'GET') {
     const limit = Math.min(Number(new URL(request.url).searchParams.get('limit')) || 30, 100);
     // Members only see activity on their own tasks; access changes are for owners only.
-    const scope = isAdmin ? '' : `WHERE a.action != 'access' AND a.task_id IN (SELECT t.id FROM tasks t WHERE ${VISIBLE_TO_MEMBER})`;
+    const hideFlags = viewAll(me) ? '' : ` AND a.action != 'flagged'`;
+    const scope = isAdmin ? '' : `WHERE a.action != 'access'${hideFlags} AND a.task_id IN (SELECT t.id FROM tasks t WHERE ${VISIBLE_TO_MEMBER})`;
     const { results } = await db.prepare(
       `SELECT a.id, a.task_id, a.board_id, a.user_id, a.action, a.detail, a.created_at, tk.title AS task_title
        FROM activity a LEFT JOIN tasks tk ON tk.id = a.task_id ${scope} ORDER BY a.created_at DESC LIMIT ?`
@@ -1080,11 +1300,55 @@ async function routeApi(request, env, segs, me) {
         next.clearance = body.clearance;
         stmts.push(db.prepare('UPDATE users SET clearance = ? WHERE id = ?').bind(body.clearance, target.id));
       }
+      if ('reports_to' in body) {
+        const boss = body.reports_to == null ? null : await db.prepare(
+          `SELECT id FROM users WHERE id = ? AND status = 'approved' AND (role = 'admin' OR clearance = 'manager')`
+        ).bind(Number(body.reports_to)).first();
+        if (body.reports_to != null && !boss) throw new HttpError(400, 'Choose an owner or someone with manager clearance.');
+        if (boss && boss.id === target.id) throw new HttpError(400, 'Someone can’t report to themselves.');
+        next.reports_to = boss ? boss.id : null;
+        stmts.push(db.prepare('UPDATE users SET reports_to = ? WHERE id = ?').bind(next.reports_to, target.id));
+      }
       if (!stmts.length) throw new HttpError(400, 'Nothing to change.');
       await db.batch(stmts);
       if ('status' in body) await logActivity(db, { userId: me.id, action: 'access', detail: { user: target.name, status: body.status } });
       if ('clearance' in body) await logActivity(db, { userId: me.id, action: 'access', detail: { user: target.name, clearance: body.clearance } });
       return json({ user: publicUser(next) });
+    }
+  }
+
+  // repeating task series
+  if (a === 'recurrences') {
+    if (!b && method === 'GET') return json({ recurrences: await listRecurrences(db, me) });
+    const r = b ? await db.prepare('SELECT * FROM recurrences WHERE id = ?').bind(Number(b)).first() : null;
+    if (!r) throw new HttpError(404, 'That repeating task no longer exists.');
+    if (!viewAll(me) && r.created_by !== me.id) throw new HttpError(403, 'Only Sujay, Karan, a manager or whoever set it up can change this schedule.');
+    if (!c && method === 'PATCH') {
+      const freq = FREQS.includes(body.freq) ? body.freq : r.freq;
+      const status = ['active', 'paused', 'stopped'].includes(body.status) ? body.status : r.status;
+      let nextDue = r.next_due;
+      if (freq !== r.freq) {
+        // Re-anchor the schedule on the latest copy's due date.
+        const lastDue = (await db.prepare('SELECT MAX(due_date) AS d FROM tasks WHERE recurrence_id = ?').bind(r.id).first())?.d || r.next_due;
+        nextDue = advanceDue(lastDue, freq, r.anchor_day);
+      }
+      if (status === 'active' && r.status === 'paused') {
+        const today = todayIST();
+        while (nextDue < today) nextDue = advanceDue(nextDue, freq, r.anchor_day);
+      }
+      await db.prepare('UPDATE recurrences SET freq = ?, status = ?, next_due = ?, updated_at = ? WHERE id = ?').bind(freq, status, nextDue, Date.now(), r.id).run();
+      return json({ recurrence: (await listRecurrences(db, me)).find((x) => x.id === r.id) || { ...r, status } });
+    }
+    if (c === 'template' && method === 'POST') {
+      const t = await loadTask(db, me, Number(body.task_id));
+      if (t.recurrence_id !== r.id) throw new HttpError(400, 'That task isn’t part of this repeating series.');
+      const [full, checklist] = await db.batch([
+        db.prepare('SELECT body FROM tasks WHERE id = ?').bind(t.id),
+        db.prepare('SELECT text FROM checklist WHERE task_id = ? ORDER BY position ASC, id ASC').bind(t.id),
+      ]);
+      await db.prepare('UPDATE recurrences SET title = ?, body = ?, board_id = ?, priority = ?, assignees = ?, checklist = ?, updated_at = ? WHERE id = ?')
+        .bind(t.title, full.results[0]?.body || '', t.board_id, t.priority, JSON.stringify(t.assignees), JSON.stringify(checklist.results.map((x) => x.text)), Date.now(), r.id).run();
+      return json({ ok: true });
     }
   }
 
@@ -1127,6 +1391,18 @@ async function routeApi(request, env, segs, me) {
     if (!c && method === 'PATCH') return updateTask(env, me, id, body);
     if (!c && method === 'DELETE') return deleteTask(env, me, id);
     if (c === 'claim' && method === 'POST') return claimTask(env, me, id);
+    if (c === 'repeat' && method === 'POST') {
+      if (!viewAll(me)) throw new HttpError(403, 'Only Sujay, Karan or a manager can set up repeating tasks.');
+      if (!FREQS.includes(body.freq)) throw new HttpError(400, 'Choose how often it repeats.');
+      await loadTask(db, me, id);
+      await makeRecurring(db, me, id, body.freq);
+      return json({ task: await loadTask(db, me, id) });
+    }
+    if (c === 'flag' && method === 'DELETE') {
+      if (!viewAll(me)) throw new HttpError(403, 'Only Sujay, Karan or a manager can clear this.');
+      await db.prepare('UPDATE tasks SET dup_of = NULL, dup_reason = NULL WHERE id = ?').bind(id).run();
+      return json({ task: await loadTask(db, me, id) });
+    }
     if (c === 'release' && method === 'POST') return releaseTask(env, me, id, body);
     if (c === 'offer' && method === 'POST') return offerTask(env, me, id, body);
 

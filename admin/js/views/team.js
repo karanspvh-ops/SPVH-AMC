@@ -78,7 +78,7 @@ function membersList(members, ownerEmails, admin) {
       admin && !isOwner && !ownerEmails.has(u.email) ? `<button class="icon-btn" type="button" data-member-menu="${u.id}" aria-label="Options for ${esc(u.name)}" aria-haspopup="menu">${icon('dots-three', { weight: 'bold' })}</button>` : '',
     ].join('');
     return `<div class="person member-row${seeWork ? '' : ' is-directory'}">
-      <div class="person-id">${avatar(u, 'av-lg')}<div style="min-width:0"><strong>${esc(u.name)}${u.id === state.me.id ? ' <span class="hint">(you)</span>' : ''}</strong><span>${esc(u.title || 'Team member')}</span></div></div>
+      <div class="person-id">${avatar(u, 'av-lg')}<div style="min-width:0"><strong>${esc(u.name)}${u.id === state.me.id ? ' <span class="hint">(you)</span>' : ''}</strong><span>${esc(u.title || 'Team member')}${seeWork && u.reports_to && state.usersById.get(u.reports_to) ? ` · Reports to ${esc(state.usersById.get(u.reports_to).name.split(' ')[0])}` : ''}</span></div></div>
       <div class="member-contact"><a href="mailto:${esc(u.email)}">${esc(u.email)}</a>${u.phone ? `<a href="tel:${esc(u.phone)}">${esc(u.phone)}</a>` : ''}</div>
       ${seeWork ? `<div class="person-stats"><span><b>${theirs.length}</b> open</span><span><b>${active}</b> active</span>${overdue ? `<span class="is-danger"><b>${overdue}</b> overdue</span>` : ''}</div>` : ''}
       <div class="member-end">${tag}${actions}</div>
@@ -144,6 +144,8 @@ function memberMenu(btn, ctx) {
   openMenu(btn, {
     align: 'end',
     items: () => [
+      { id: 'reports', label: user.reports_to ? `Reports to ${state.usersById.get(user.reports_to)?.name || 'someone'}` : 'Set who they report to', iconHtml: icon('user-circle-gear') },
+      { type: 'sep' },
       manager
         ? { id: 'demote', label: 'Remove manager clearance', iconHtml: icon('shield-slash') }
         : { id: 'promote', label: 'Give manager clearance', iconHtml: icon('shield-star') },
@@ -152,6 +154,10 @@ function memberMenu(btn, ctx) {
       { id: 'off', label: 'Turn off access', iconHtml: icon('prohibit'), danger: true },
     ],
     onSelect: (choice) => {
+      if (choice === 'reports') {
+        setTimeout(() => reportsMenu(btn, user, ctx), 0);
+        return;
+      }
       if (choice === 'promote' || choice === 'demote') {
         setClearance(user, choice === 'promote' ? 'manager' : 'member', ctx);
         return;
@@ -175,6 +181,27 @@ function memberMenu(btn, ctx) {
           });
         },
       });
+    },
+  });
+}
+
+function reportsMenu(anchor, user, ctx) {
+  const bosses = state.users.filter((u) => u.id !== user.id && (u.role === 'admin' || u.clearance === 'manager'));
+  openMenu(anchor, {
+    align: 'end',
+    items: () => [
+      { type: 'label', label: `${user.name.split(' ')[0]} reports to` },
+      ...bosses.map((b) => ({ id: String(b.id), label: b.name, sub: b.role === 'admin' ? 'Owner' : 'Manager', iconHtml: avatar(b, 'av-sm'), checked: user.reports_to === b.id })),
+      { id: 'none', label: 'No one', checked: !user.reports_to },
+      { type: 'note', label: 'Their manager is told when they add a task that looks like a duplicate. Sujay and Karan always get a copy.' },
+    ],
+    onSelect: async (id) => {
+      try {
+        await api(`users/${user.id}`, { method: 'PATCH', body: { reports_to: id === 'none' ? null : Number(id) } });
+        await loadAll();
+        toast(id === 'none' ? 'Reporting line removed' : `${user.name.split(' ')[0]} now reports to ${state.usersById.get(Number(id))?.name.split(' ')[0]}`, { type: 'success' });
+        ctx.rerender();
+      } catch (err) { toastError(err); }
     },
   });
 }

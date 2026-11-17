@@ -2,11 +2,11 @@ import { api } from './api.js';
 import {
   state, subscribe, userById, boardById, admins, isAdmin, canViewAll, canEdit, canDelete,
   assignableUsers, patchTask, createTask, removeTask, upsertTask,
-  isOpenInPool, transfersFor, claimTask, poolAction, addableBoards, defaultBoardId,
+  isOpenInPool, transfersFor, claimTask, poolAction, addableBoards, defaultBoardId, recurrenceById, loadAll,
 } from './store.js';
 import {
   esc, icon, statusIcon, prioIcon, swatch, avatar, avatarStack, STATUS, STATUS_ORDER, PRIORITY, PRIORITY_ORDER,
-  dueLabel, daysUntil, taskRef, autosize, debounce, ago, firstName, fullDate,
+  dueLabel, daysUntil, taskRef, autosize, debounce, ago, firstName, fullDate, FREQ_LABEL, FREQ_ORDER, fmtDuration, shortDate,
 } from './util.js';
 import { openMenu, closeMenu, openSheet, toast, toastError, setBusy } from './ui.js';
 import { describe, activityIcon } from './activity.js';
@@ -24,6 +24,7 @@ subscribe(() => {
   renderProps();
   renderKind();
   renderPoolBanner();
+  renderDup();
   renderCollab();
   renderLinked();
   applyPermissions();
@@ -53,6 +54,7 @@ export function openNewTask(defaults = {}) {
     assignees: defaults.assignees || (kind === 'request' ? [] : isAdmin() ? [] : [me.id]),
     parent_id: defaults.parent_id || null,
     checklist: [],
+    repeat: defaults.repeat || null,
   };
   mount({ mode: 'new', draft });
 }
@@ -117,6 +119,8 @@ async function loadDetail(id) {
     if (body && document.activeElement !== body) { body.value = task.body; autosize(body); }
     renderChecklist();
     renderPoolBanner();
+    renderDup();
+    renderTiming();
     renderCollab();
     renderTimeline();
   } catch (err) {
@@ -203,6 +207,7 @@ function renderShell() {
       <article class="doc">
         <div class="doc-kind" data-region="kind"></div>
         <div data-region="pool"></div>
+        <div data-region="dup"></div>
         <textarea id="doc-title" class="doc-title" rows="1" maxlength="200" placeholder="${isRequest ? 'What do you need from Sujay or Karan?' : 'Task title'}" aria-label="Title">${esc(t.title)}</textarea>
         <div class="stepper" data-region="stepper" role="radiogroup" aria-label="Status"></div>
         <dl class="props" data-region="props"></dl>
@@ -212,6 +217,7 @@ function renderShell() {
           <textarea id="doc-body" class="doc-body" placeholder="Add context, decisions, links…" aria-label="Notes">${isNew ? esc(t.body) : ''}</textarea>
         </section>
         <section class="doc-section" data-region="checklist"></section>
+        <section class="doc-section" data-region="timing"></section>
         <section class="doc-section" data-region="collab"></section>
         <section class="doc-section" data-region="linked"></section>
         ${isNew ? '' : '<div class="divider"></div><section class="doc-section" data-region="timeline"></section>'}
@@ -308,6 +314,7 @@ function renderProps() {
       </span>
       ${due && can ? `<button class="icon-btn" data-act="clear-due" aria-label="Clear due date">${icon('x')}</button>` : ''}
     </dd></div>
+    ${repeatProp(t, can)}
     <div class="prop"><dt>${icon('kanban')}Board</dt><dd>
       <button class="prop-btn" data-prop="board" aria-haspopup="menu" ${dis}>${swatch(b)}${esc(b?.name || 'Choose')}</button></dd></div>
     ${creator ? `<div class="prop"><dt>${icon('user-circle')}Created</dt><dd><span class="prop-static">${avatar(creator, 'av-sm')}${esc(creator.name)}<span class="hint">${esc(ago(t.created_at))}</span></span></dd></div>` : ''}`;
@@ -340,6 +347,115 @@ function poolProgress(t) {
   const ck = t.checklist || { total: 0, done: 0 };
   if (!ck.total) return '';
   return `<div class="progress-line"><span class="pbar"><i style="transform:scaleX(${ck.done / ck.total})"></i></span><span>${ck.done} of ${ck.total} done</span></div>`;
+}
+
+function repeatProp(t, can) {
+  const series = t.recurrence_id ? recurrenceById(t.recurrence_id) : null;
+  const manage = canViewAll() || (series && series.created_by === state.me.id);
+  if (ds.mode === 'new') {
+    if (!canViewAll() || t.kind === 'request') return '';
+    const label = t.repeat ? FREQ_LABEL[t.repeat] : 'Doesn’t repeat';
+    return `<div class="prop"><dt>${icon('arrows-clockwise')}Repeats</dt><dd>
+      <button class="prop-btn${t.repeat ? '' : ' is-empty'}" data-prop="repeat" aria-haspopup="menu">${esc(label)}${t.repeat && !t.due_date ? ' <span class="hint">needs a due date</span>' : ''}</button></dd></div>`;
+  }
+  if (series) {
+    const paused = series.status === 'paused';
+    return `<div class="prop"><dt>${icon('arrows-clockwise')}Repeats</dt><dd>
+      <button class="prop-btn" data-prop="repeat" aria-haspopup="menu" ${manage ? '' : 'disabled'}>${esc(FREQ_LABEL[series.freq])}
+        <span class="hint">${paused ? 'Paused' : `next copy due ${esc(shortDate(series.next_due))}`}</span></button></dd></div>`;
+  }
+  if (t.recurrence_id && !series) return `<div class="prop"><dt>${icon('arrows-clockwise')}Repeats</dt><dd><span class="prop-static">Stopped</span></dd></div>`;
+  if (!canViewAll() || t.kind !== 'task' || t.pooled) return '';
+  return `<div class="prop"><dt>${icon('arrows-clockwise')}Repeats</dt><dd>
+    <button class="prop-btn is-empty" data-prop="repeat" aria-haspopup="menu" ${can ? '' : 'disabled'}>Doesn’t repeat</button></dd></div>`;
+}
+
+function repeatMenu(anchor) {
+  const t = current();
+  if (ds.mode === 'new') {
+    openMenu(anchor, {
+      items: () => [
+        { id: 'none', label: 'Doesn’t repeat', checked: !ds.draft.repeat },
+        ...FREQ_ORDER.map((f) => ({ id: f, label: FREQ_LABEL[f], checked: ds.draft.repeat === f })),
+        { type: 'note', label: 'The schedule follows the due date. Each new copy appears a few days before it’s due, with a fresh checklist.' },
+      ],
+      onSelect: (id) => { setField({ repeat: id === 'none' ? null : id }); },
+    });
+    return;
+  }
+  const series = t.recurrence_id ? recurrenceById(t.recurrence_id) : null;
+  if (!series) {
+    openMenu(anchor, {
+      items: () => [
+        ...FREQ_ORDER.map((f) => ({ id: f, label: FREQ_LABEL[f] })),
+        { type: 'note', label: t.due_date ? 'Repeats from this task’s due date.' : 'Set a due date first. The schedule repeats from it.' },
+      ],
+      onSelect: (freq) => {
+        api(`tasks/${t.id}/repeat`, { method: 'POST', body: { freq } })
+          .then(async ({ task }) => { upsertTask(task); await loadAll(); toast(`Repeats ${FREQ_LABEL[freq].toLowerCase()}`, { type: 'success' }); })
+          .catch(toastError);
+      },
+    });
+    return;
+  }
+  openMenu(anchor, {
+    items: () => [
+      { type: 'label', label: 'How often' },
+      ...FREQ_ORDER.map((f) => ({ id: `freq:${f}`, label: FREQ_LABEL[f], checked: series.freq === f })),
+      { type: 'sep' },
+      { id: 'template', label: 'Use this task as the template', iconHtml: icon('copy-simple') },
+      series.status === 'paused'
+        ? { id: 'resume', label: 'Resume', iconHtml: icon('play') }
+        : { id: 'pause', label: 'Pause', iconHtml: icon('pause') },
+      { id: 'stop', label: 'Stop repeating', iconHtml: icon('stop-circle'), danger: true },
+    ],
+    onSelect: async (id) => {
+      try {
+        if (id.startsWith('freq:')) await api(`recurrences/${series.id}`, { method: 'PATCH', body: { freq: id.slice(5) } });
+        if (id === 'pause' || id === 'resume' || id === 'stop') await api(`recurrences/${series.id}`, { method: 'PATCH', body: { status: id === 'pause' ? 'paused' : id === 'resume' ? 'active' : 'stopped' } });
+        if (id === 'template') await api(`recurrences/${series.id}/template`, { method: 'POST', body: { task_id: t.id } });
+        await loadAll();
+        toast({ template: 'Future copies will match this task', pause: 'Paused', resume: 'Resumed', stop: 'Stopped repeating' }[id] || 'Schedule updated', { type: 'success' });
+      } catch (err) { toastError(err); }
+    },
+  });
+}
+
+function renderDup() {
+  const region = ds.el.querySelector('[data-region="dup"]');
+  if (!region) return;
+  const t = ds.mode === 'view' ? state.tasks.get(ds.id) : null;
+  const orig = ds.detail?.duplicate;
+  if (!t?.dup_of || !canViewAll()) { region.innerHTML = ''; return; }
+  const creator = userById(t.created_by);
+  const what = t.dup_reason === 'repeating'
+    ? 'repeats work that is already set up as a repeating task'
+    : `repeats a one-time task that was completed${orig?.completed_at ? ` on ${esc(fullDate(orig.completed_at))}` : ''}`;
+  region.innerHTML = `<div class="dup-banner">
+    <div class="pool-banner-head">${icon('copy-simple', { weight: 'duotone' })}<div><strong>Possible duplicate</strong>
+      <p>${esc(creator ? creator.name : 'Someone')} added this task. It ${what}.</p></div></div>
+    ${orig ? `<button type="button" class="linked-item" data-open-task="${orig.id}">${icon('arrow-bend-up-left')}<span class="row-main"><span class="row-title" style="display:block">${esc(orig.title)}</span><span class="row-sub"><span>${taskRef(orig)}${orig.status === 'done' ? ', done' : ''}</span></span></span></button>` : ''}
+    <div class="banner-actions"><button type="button" class="btn btn-ghost" data-act="clear-dup">Not a duplicate</button></div>
+  </div>`;
+}
+
+function renderTiming() {
+  const region = ds.el.querySelector('[data-region="timing"]');
+  if (!region) return;
+  const tm = ds.detail?.timing;
+  if (!isAdmin() || !tm || ds.mode !== 'view') { region.innerHTML = ''; return; }
+  const stages = [['todo', 'To do'], ['doing', 'In progress'], ['review', 'In review']];
+  const sum = stages.reduce((n, [k]) => n + (tm.spans[k] || 0), 0) || 1;
+  const t = state.tasks.get(ds.id);
+  region.innerHTML = `
+    <h3>${icon('timer')}Time in each stage <span class="count">Owners only</span></h3>
+    <div class="stage-bar" role="img" aria-label="Time split across stages">${stages.map(([k]) => `<i class="sb-${k}" style="flex-grow:${Math.max(tm.spans[k] || 0, 0)}"></i>`).join('')}</div>
+    <dl class="stage-rows">
+      ${stages.map(([k, label]) => `<div><dt><span class="sb-dot sb-${k}"></span>${label}${t?.status === k && !tm.finished ? ' <span class="hint">(now)</span>' : ''}</dt><dd>${esc(fmtDuration(tm.spans[k] || 0))}<span class="hint">${Math.round(((tm.spans[k] || 0) / sum) * 100)}%</span></dd></div>`).join('')}
+      <div class="stage-total"><dt>${tm.finished ? 'Took to complete' : 'Open for'}</dt><dd>${esc(fmtDuration(tm.total))}</dd></div>
+      ${tm.pool_wait != null ? `<div><dt>Waited in the task pool</dt><dd>${esc(fmtDuration(tm.pool_wait))}</dd></div>` : ''}
+    </dl>
+    <p class="hint">${tm.started_by_claim ? `Counted from when it was claimed, ${esc(fullDate(tm.start))}.` : `Counted from when it was created, ${esc(fullDate(tm.start))}.`}</p>`;
 }
 
 function renderPoolBanner() {
@@ -687,6 +803,10 @@ async function onClick(e) {
     });
     return;
   }
+  if (prop === 'repeat') {
+    repeatMenu(el);
+    return;
+  }
   if (prop === 'board') {
     openMenu(el, {
       items: () => addableBoards().map((b) => ({ id: String(b.id), label: b.name, sub: b.access === 'team' ? 'Team board' : b.access === 'owner' ? 'Your board' : '', iconHtml: swatch(b), checked: current().board_id === b.id })),
@@ -725,6 +845,13 @@ async function onClick(e) {
   }
 
   switch (el.dataset.act) {
+    case 'clear-dup':
+      runPoolAct(el, async () => {
+        const { task } = await api(`tasks/${ds.id}/flag`, { method: 'DELETE' });
+        upsertTask(task);
+        toast('Marked as not a duplicate', { type: 'success' });
+      });
+      break;
     case 'claim':
       runPoolAct(el, async () => {
         await claimTask(ds.id);
