@@ -2,7 +2,7 @@ import { api } from './api.js';
 import {
   state, subscribe, userById, boardById, admins, isAdmin, canViewAll, canEdit, canDelete,
   assignableUsers, patchTask, createTask, removeTask, upsertTask,
-  isOpenInPool, transfersFor, claimTask, poolAction,
+  isOpenInPool, transfersFor, claimTask, poolAction, addableBoards, defaultBoardId,
 } from './store.js';
 import {
   esc, icon, statusIcon, prioIcon, swatch, avatar, avatarStack, STATUS, STATUS_ORDER, PRIORITY, PRIORITY_ORDER,
@@ -46,7 +46,7 @@ export function openNewTask(defaults = {}) {
     title: '',
     body: '',
     kind,
-    board_id: defaults.board_id || state.boards[0]?.id,
+    board_id: defaults.board_id || defaultBoardId(),
     status: defaults.status || 'todo',
     priority: 'normal',
     due_date: null,
@@ -689,7 +689,7 @@ async function onClick(e) {
   }
   if (prop === 'board') {
     openMenu(el, {
-      items: () => state.boards.map((b) => ({ id: String(b.id), label: b.name, iconHtml: swatch(b), checked: current().board_id === b.id })),
+      items: () => addableBoards().map((b) => ({ id: String(b.id), label: b.name, sub: b.access === 'team' ? 'Team board' : b.access === 'owner' ? 'Your board' : '', iconHtml: swatch(b), checked: current().board_id === b.id })),
       onSelect: (id) => { setField({ board_id: Number(id) }); },
     });
     return;

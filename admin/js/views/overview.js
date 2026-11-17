@@ -1,5 +1,5 @@
-import { state, isAdmin, canViewAll, allTasks, userById, loadActivity, createTask, poolTasks, inbox } from '../store.js';
-import { poolCard, bindPoolCards, inboxCards, bindInbox, openPoolSheet } from './pool.js';
+import { state, isAdmin, canViewAll, allTasks, userById, loadActivity, createTask, poolTasks, inbox, defaultBoardId } from '../store.js';
+import { poolCard, bindPoolCards, inboxCards, bindInbox, openPoolSheet, inboxCount } from './pool.js';
 import { esc, icon, avatar, statusIcon, greeting, longToday, daysUntil, byDue, isOverdue, firstName, ago } from '../util.js';
 import { taskRow, bindRows, emptyState } from '../rows.js';
 import { describe, activityIcon } from '../activity.js';
@@ -56,8 +56,8 @@ export function renderOverview(root, ctx) {
         </div>
       </div>
 
-      ${inbox().length ? `<section class="ov-section">
-        <div class="section-head"><h2>${icon('handshake', { weight: 'duotone' })}Waiting for your answer<span class="count">${inbox().length}</span></h2></div>
+      ${inboxCount() ? `<section class="ov-section">
+        <div class="section-head"><h2>${icon('handshake', { weight: 'duotone' })}Waiting for your answer<span class="count">${inboxCount()}</span></h2></div>
         <div class="inbox-list">${inboxCards()}</div>
       </section>` : ''}
 
@@ -120,7 +120,7 @@ export function renderOverview(root, ctx) {
     tasks: boardTasks(),
     key: `overview-${boardView}`,
     embedded: true,
-    newTask: (status, title) => createTask({ board_id: state.boards[0]?.id, status, title, assignees: assignTo }),
+    newTask: (status, title) => createTask({ board_id: defaultBoardId(), status, title, assignees: assignTo }),
   });
   renderCalendar(root.querySelector('[data-ov-calendar]'), ctx, { compact: true });
 

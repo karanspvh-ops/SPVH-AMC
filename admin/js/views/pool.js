@@ -1,8 +1,9 @@
 import {
-  state, allTasks, canViewAll, boardById, userById, isOpenInPool, poolTasks, inbox, claimTask, poolAction, createTask,
+  state, allTasks, canViewAll, boardById, userById, isOpenInPool, poolTasks, inbox, claimTask, poolAction, createTask, teamBoards, loadAll,
 } from '../store.js';
 import { esc, icon, avatar, avatarStack, prioIcon, dueBadge, swatch, firstName, ago } from '../util.js';
 import { openSheet, toast, toastError, setBusy } from '../ui.js';
+import { api } from '../api.js';
 import { emptyState } from '../rows.js';
 
 let tab = 'open';
@@ -77,7 +78,30 @@ export function bindPoolCards(root, ctx) {
   });
 }
 
-export function inboxCards() {
+export const inboxCount = () => inbox().length + state.boardRequests.length;
+
+function boardRequestCards() {
+  return state.boardRequests.map((r) => {
+    const who = userById(r.user_id);
+    if (!who) return '';
+    const owner = r.owner_id && r.owner_id !== state.me.id ? userById(r.owner_id) : null;
+    return `<article class="inbox-card is-board">
+      <div class="inbox-head">${avatar(who, 'av-md')}<div>
+        <p><b>${esc(who.name)}</b> asked to see ${owner ? `${esc(firstName(owner))}’s` : 'your'} board</p>
+        <a class="link inbox-task" href="#/board/${r.board_id}">${icon('lock-simple', { weight: 'bold' })} ${esc(r.board_name)}</a>
+      </div></div>
+      <div class="inbox-actions">
+        <span class="hint">${esc(ago(r.requested_at))}</span>
+        <button type="button" class="btn btn-ghost" data-board-req="${r.board_id}" data-user="${r.user_id}" data-answer="decline">Decline</button>
+        <button type="button" class="btn btn-primary" data-board-req="${r.board_id}" data-user="${r.user_id}" data-answer="approve">Let them see it</button>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+export const inboxCards = () => boardRequestCards() + transferCards();
+
+function transferCards() {
   return inbox().map((tr) => {
     const t = state.tasks.get(tr.task_id);
     const from = userById(tr.from_user);
@@ -101,6 +125,17 @@ export function inboxCards() {
 
 export function bindInbox(root, ctx) {
   root.addEventListener('click', async (e) => {
+    const br = e.target.closest('[data-board-req]');
+    if (br) {
+      e.stopPropagation();
+      setBusy(br, true);
+      try {
+        await api(`boards/${br.dataset.boardReq}/access/${br.dataset.user}/${br.dataset.answer}`, { method: 'POST', body: {} });
+        await loadAll();
+        toast(br.dataset.answer === 'approve' ? 'Access granted' : 'Request declined', { type: 'success' });
+      } catch (err) { setBusy(br, false); toastError(err); }
+      return;
+    }
     const b = e.target.closest('[data-transfer]');
     if (!b) return;
     e.stopPropagation();
@@ -144,7 +179,7 @@ export function renderPool(root, ctx) {
           ${canViewAll() ? `<button class="btn btn-primary" type="button" data-add-pool>${icon('plus', { weight: 'bold' })}Add to pool</button>` : ''}
         </div>
       </div>
-      ${inbox().length ? `<section class="ov-section"><div class="section-head"><h2>${icon('handshake', { weight: 'duotone' })}Waiting for your answer<span class="count">${inbox().length}</span></h2></div><div class="inbox-list">${inboxCards()}</div></section>` : ''}
+      ${inbox().length ? `<section class="ov-section"><div class="section-head"><h2>${icon('handshake', { weight: 'duotone' })}Waiting for your answer<span class="count">${inbox().length}</span></h2></div><div class="inbox-list">${transferCards()}</div></section>` : ''}
       ${list.length
         ? `<div class="pool-grid">${list.map((t) => poolCard(t)).join('')}</div>`
         : `<div class="list">${tab === 'open'
@@ -159,7 +194,7 @@ export function renderPool(root, ctx) {
 }
 
 export function openPoolSheet(ctx) {
-  const boards = state.boards;
+  const boards = teamBoards();
   openSheet(`
     <h2>Add to the task pool</h2>
     <p class="lede">Give it a name and a short description. Whoever claims it adds the details and checklist.</p>

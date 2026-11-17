@@ -101,6 +101,16 @@ const MIGRATIONS = {
     `CREATE INDEX IF NOT EXISTS idx_transfers_task ON task_transfers(task_id)`,
     `CREATE INDEX IF NOT EXISTS idx_transfers_to ON task_transfers(to_user, status)`,
   ],
+  4: [
+    `ALTER TABLE boards ADD COLUMN owner_id INTEGER`,
+    `ALTER TABLE boards ADD COLUMN visibility TEXT NOT NULL DEFAULT 'shown'`,
+    `CREATE TABLE IF NOT EXISTS board_access (
+      board_id INTEGER NOT NULL, user_id INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'pending',
+      requested_at INTEGER NOT NULL, decided_by INTEGER, decided_at INTEGER,
+      PRIMARY KEY (board_id, user_id)
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_board_access_user ON board_access(user_id, status)`,
+  ],
 };
 
 let schemaReady = false;
@@ -210,11 +220,17 @@ const publicUser = (u) => ({
 
 // Owners and managers can see and assign everyone's work; members only see their own.
 const viewAll = (me) => me.role === 'admin' || me.clearance === 'manager';
-// A member sees: tasks they created or are on, open tasks in the pool, and tasks someone is offering them.
+// Everyone except Sujay and Karan sees: tasks they created or are on, open pool tasks, tasks offered to them,
+// every task on personal boards they may view (their own, shown ones, hidden ones they were approved for),
+// and, for managers only, every task on team boards.
 const VISIBLE_TO_MEMBER = `(t.created_by = ? OR t.id IN (SELECT task_id FROM task_assignees WHERE user_id = ?)
   OR (t.pooled = 1 AND t.status != 'done' AND NOT EXISTS (SELECT 1 FROM task_assignees x WHERE x.task_id = t.id))
-  OR t.id IN (SELECT task_id FROM task_transfers WHERE to_user = ? AND status = 'pending'))`;
-const memberBinds = (me) => [me.id, me.id, me.id];
+  OR t.id IN (SELECT task_id FROM task_transfers WHERE to_user = ? AND status = 'pending')
+  OR t.board_id IN (SELECT vb.id FROM boards vb WHERE vb.owner_id IS NOT NULL AND (vb.owner_id = ? OR vb.visibility = 'shown'
+       OR vb.id IN (SELECT board_id FROM board_access WHERE user_id = ? AND status = 'approved')))
+  OR (? = 1 AND t.board_id IN (SELECT id FROM boards WHERE owner_id IS NULL)))`;
+const memberBinds = (me) => [me.id, me.id, me.id, me.id, me.id, me.clearance === 'manager' ? 1 : 0];
+const seesAll = (me) => me.role === 'admin';
 
 async function logActivity(db, { taskId = null, boardId = null, userId, action, detail = null }) {
   await db.prepare('INSERT INTO activity (task_id, board_id, user_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, ?)')
@@ -328,11 +344,12 @@ async function login(request, env, body) {
 // ---------- data loading ----------
 
 async function loadTasks(db, me, where = '1=1', binds = []) {
-  const scope = viewAll(me) ? '' : ` AND ${VISIBLE_TO_MEMBER}`;
-  const scopeBinds = viewAll(me) ? [] : memberBinds(me);
+  const scope = seesAll(me) ? '' : ` AND ${VISIBLE_TO_MEMBER}`;
+  const scopeBinds = seesAll(me) ? [] : memberBinds(me);
   const { results: tasks } = await db.prepare(
     `SELECT t.id, t.board_id, t.kind, t.parent_id, t.title, t.status, t.priority, t.due_date, t.position, t.created_by,
        t.created_at, t.updated_at, t.completed_at, t.pooled, (length(t.body) > 0) AS has_body,
+       (SELECT bo.owner_id FROM boards bo WHERE bo.id = t.board_id) AS board_owner,
        CASE WHEN t.pooled = 1 THEN substr(t.body, 1, 280) END AS body_preview,
        (SELECT tr.note FROM task_transfers tr WHERE tr.task_id = t.id AND tr.kind IN ('handover', 'release') AND tr.note != ''
          ORDER BY tr.created_at DESC LIMIT 1) AS handover_note,
@@ -393,7 +410,7 @@ async function taskDetail(db, me, id) {
 }
 
 function canEdit(me, task) {
-  return viewAll(me) || task.created_by === me.id || task.assignees.includes(me.id);
+  return viewAll(me) || task.created_by === me.id || task.assignees.includes(me.id) || task.board_owner === me.id;
 }
 
 // `existing` assignees are kept as-is even if their access was later turned off.
@@ -425,13 +442,15 @@ async function createTask(env, me, body) {
   const db = env.DB;
   const title = str(body.title, { min: 1, max: 200, field: 'Title' });
   const boardId = Number(body.board_id);
-  const board = await db.prepare('SELECT id FROM boards WHERE id = ? AND archived = 0').bind(boardId).first();
+  const board = await db.prepare('SELECT id, owner_id FROM boards WHERE id = ? AND archived = 0').bind(boardId).first();
+  if (board && !canAddToBoard(me, board)) throw new HttpError(403, 'Only the board’s owner can add tasks to it.');
   if (!board) throw new HttpError(400, 'Choose a board for this task.');
   const status = STATUSES.includes(body.status) ? body.status : 'todo';
   const priority = PRIORITIES.includes(body.priority) ? body.priority : 'normal';
   const due = body.due_date && /^\d{4}-\d{2}-\d{2}$/.test(body.due_date) ? body.due_date : null;
   const pooled = body.pooled === true && body.kind !== 'request';
   if (pooled && !viewAll(me)) throw new HttpError(403, 'Only Sujay, Karan or a manager can add tasks to the pool.');
+  if (pooled && board.owner_id != null) throw new HttpError(400, 'Pool tasks go on a team board, not a personal one.');
   const assignees = pooled ? [] : await checkAssignees(db, me, body.assignees || []);
   const admins = await adminIds(db);
   let kind = body.kind === 'request' ? 'request' : 'task';
@@ -496,8 +515,9 @@ async function updateTask(env, me, id, body) {
     if (due !== task.due_date) { sets.push('due_date = ?'); binds.push(due); log.push(['due', { to: due }]); }
   }
   if ('board_id' in body) {
-    const board = await db.prepare('SELECT id, name FROM boards WHERE id = ? AND archived = 0').bind(Number(body.board_id)).first();
+    const board = await db.prepare('SELECT id, name, owner_id FROM boards WHERE id = ? AND archived = 0').bind(Number(body.board_id)).first();
     if (!board) throw new HttpError(400, 'That board doesn’t exist.');
+    if (board.id !== task.board_id && !canAddToBoard(me, board)) throw new HttpError(403, 'Only the board’s owner can move tasks onto it.');
     if (board.id !== task.board_id) { sets.push('board_id = ?'); binds.push(board.id); log.push(['moved', { board: board.name }]); }
   }
   if ('position' in body && Number.isFinite(body.position)) { sets.push('position = ?'); binds.push(body.position); }
@@ -693,11 +713,122 @@ async function answerTransfer(env, me, transferId, action) {
 
 async function listTransfers(db, me) {
   const { results } = await db.prepare(
-    viewAll(me)
+    seesAll(me)
       ? `SELECT * FROM task_transfers WHERE status = 'pending' ORDER BY created_at DESC`
       : `SELECT * FROM task_transfers WHERE status = 'pending' AND (to_user = ? OR from_user = ?) ORDER BY created_at DESC`
-  ).bind(...(viewAll(me) ? [] : [me.id, me.id])).all();
+  ).bind(...(seesAll(me) ? [] : [me.id, me.id])).all();
   return results;
+}
+
+
+// ---------- boards: team boards (no owner) and personal boards ----------
+
+const BOARD_COLORS = ['blue', 'teal', 'gold', 'plum', 'slate', 'rust'];
+const canAddToBoard = (me, b) => me.role === 'admin' || b.owner_id == null || b.owner_id === me.id;
+const canManageBoard = (me, b) => me.role === 'admin' || (b.owner_id != null && b.owner_id === me.id);
+
+async function listBoards(db, me) {
+  const { results } = await db.prepare(
+    `SELECT b.*, (SELECT status FROM board_access ba WHERE ba.board_id = b.id AND ba.user_id = ?) AS my_access
+     FROM boards b WHERE b.archived = 0 ORDER BY (b.owner_id IS NOT NULL), b.position ASC, b.id ASC`
+  ).bind(me.id).all();
+  return results.map((b) => {
+    let access;
+    if (b.owner_id == null) access = 'team';
+    else if (b.owner_id === me.id) access = 'owner';
+    else if (me.role === 'admin') access = 'admin';
+    else if (b.visibility === 'shown') access = 'open';
+    else if (b.my_access === 'approved') access = 'approved';
+    else if (b.my_access === 'pending') access = 'pending';
+    else access = 'locked';
+    const locked = access === 'locked' || access === 'pending';
+    const { my_access, ...rest } = b;
+    return { ...rest, description: locked ? '' : rest.description, access };
+  });
+}
+
+async function boardRequests(db, me) {
+  const { results } = await db.prepare(
+    `SELECT ba.board_id, ba.user_id, ba.requested_at, b.name AS board_name, b.owner_id
+     FROM board_access ba JOIN boards b ON b.id = ba.board_id
+     WHERE ba.status = 'pending' AND b.archived = 0 AND (b.owner_id = ? OR ? = 1) ORDER BY ba.requested_at DESC`
+  ).bind(me.id, me.role === 'admin' ? 1 : 0).all();
+  return results;
+}
+
+async function boardsRoute(request, env, me, b, c, d, method, body) {
+  const db = env.DB;
+  const isAdmin = me.role === 'admin';
+  if (!b && method === 'POST') {
+    const name = str(body.name, { min: 1, max: 60, field: 'Board name' });
+    const description = str(body.description, { max: 240, field: 'Description' });
+    const color = BOARD_COLORS.includes(body.color) ? body.color : 'blue';
+    const team = isAdmin && body.team === true;
+    const visibility = body.visibility === 'hidden' && !team ? 'hidden' : 'shown';
+    const max = await db.prepare('SELECT MAX(position) AS p FROM boards').first();
+    const res = await db.prepare(
+      'INSERT INTO boards (name, description, color, position, created_by, created_at, owner_id, visibility) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    ).bind(name, description, color, (max?.p || 0) + 1, me.id, Date.now(), team ? null : me.id, visibility).run();
+    const board = (await listBoards(db, me)).find((x) => x.id === res.meta.last_row_id);
+    return json({ board }, 201);
+  }
+
+  const board = b ? await db.prepare('SELECT * FROM boards WHERE id = ?').bind(Number(b)).first() : null;
+  if (!board) throw new HttpError(404, 'That board doesn’t exist.');
+
+  if (!c && method === 'PATCH') {
+    if (!canManageBoard(me, board)) throw new HttpError(403, 'Only the board’s owner, Sujay or Karan can change this board.');
+    const name = 'name' in body ? str(body.name, { min: 1, max: 60, field: 'Board name' }) : board.name;
+    const description = 'description' in body ? str(body.description, { max: 240, field: 'Description' }) : board.description;
+    const color = BOARD_COLORS.includes(body.color) ? body.color : board.color;
+    const visibility = board.owner_id == null ? 'shown' : body.visibility === 'hidden' ? 'hidden' : body.visibility === 'shown' ? 'shown' : board.visibility;
+    const archived = 'archived' in body ? (body.archived ? 1 : 0) : board.archived;
+    if (archived && board.owner_id == null) {
+      const count = await db.prepare('SELECT COUNT(*) AS n FROM boards WHERE archived = 0 AND owner_id IS NULL').first();
+      if (count.n <= 1) throw new HttpError(400, 'Keep at least one team board.');
+    }
+    await db.prepare('UPDATE boards SET name = ?, description = ?, color = ?, visibility = ?, archived = ? WHERE id = ?')
+      .bind(name, description, color, visibility, archived, board.id).run();
+    return json({ board: (await listBoards(db, me)).find((x) => x.id === board.id) || { ...board, archived } });
+  }
+
+  if (c === 'access') {
+    if (board.owner_id == null) throw new HttpError(400, 'Team boards are open to the whole team.');
+    if (!d && method === 'GET') {
+      if (!canManageBoard(me, board)) throw new HttpError(403, 'Only the board’s owner can see who has access.');
+      const { results } = await db.prepare('SELECT user_id, status, requested_at, decided_at FROM board_access WHERE board_id = ? ORDER BY requested_at DESC').bind(board.id).all();
+      return json({ access: results });
+    }
+    if (!d && method === 'POST') {
+      if (board.owner_id === me.id || isAdmin) throw new HttpError(400, 'You can already see this board.');
+      if (board.visibility === 'shown') throw new HttpError(400, 'This board is open to everyone already.');
+      const existing = await db.prepare('SELECT status FROM board_access WHERE board_id = ? AND user_id = ?').bind(board.id, me.id).first();
+      if (existing?.status === 'approved') throw new HttpError(400, 'You already have access to this board.');
+      await db.prepare(
+        `INSERT INTO board_access (board_id, user_id, status, requested_at) VALUES (?, ?, 'pending', ?)
+         ON CONFLICT(board_id, user_id) DO UPDATE SET status = 'pending', requested_at = excluded.requested_at, decided_by = NULL, decided_at = NULL`
+      ).bind(board.id, me.id, Date.now()).run();
+      return json({ ok: true, status: 'pending' }, 201);
+    }
+    const uid = Number(d);
+    const action = request.url.split('/').pop().split('?')[0];
+    if (method === 'POST' && Number.isInteger(uid) && ['approve', 'decline', 'revoke'].includes(action)) {
+      if (!canManageBoard(me, board)) throw new HttpError(403, 'Only the board’s owner, Sujay or Karan can decide who sees it.');
+      const target = await db.prepare(`SELECT id FROM users WHERE id = ? AND status = 'approved'`).bind(uid).first();
+      if (!target) throw new HttpError(400, 'That person no longer has access to the workspace.');
+      if (action === 'revoke') {
+        await db.prepare('DELETE FROM board_access WHERE board_id = ? AND user_id = ?').bind(board.id, uid).run();
+      } else {
+        const status = action === 'approve' ? 'approved' : 'declined';
+        await db.prepare(
+          `INSERT INTO board_access (board_id, user_id, status, requested_at, decided_by, decided_at) VALUES (?, ?, ?, ?, ?, ?)
+           ON CONFLICT(board_id, user_id) DO UPDATE SET status = excluded.status, decided_by = excluded.decided_by, decided_at = excluded.decided_at`
+        ).bind(board.id, uid, status, Date.now(), me.id, Date.now()).run();
+      }
+      return json({ ok: true });
+    }
+  }
+  throw new HttpError(404, 'Not found.');
 }
 
 async function routeApi(request, env, segs, me) {
@@ -733,7 +864,7 @@ async function routeApi(request, env, segs, me) {
   if (a === 'bootstrap' && method === 'GET') {
     const [users, boards, pending, former] = await db.batch([
       db.prepare(`SELECT * FROM users WHERE status = 'approved' ORDER BY role = 'admin' DESC, name ASC`),
-      db.prepare('SELECT * FROM boards WHERE archived = 0 ORDER BY position ASC, id ASC'),
+      db.prepare('SELECT 1'),
       db.prepare(`SELECT COUNT(*) AS n FROM users WHERE status = 'pending'`),
       db.prepare(`SELECT id, name, title, role, status FROM users WHERE status = 'disabled'`),
     ]);
@@ -742,10 +873,11 @@ async function routeApi(request, env, segs, me) {
     const transfers = await listTransfers(db, me);
     return json({
       transfers,
+      board_requests: await boardRequests(db, me),
       me: publicUser(me),
       users: users.results.map(publicUser),
       former: former.results,
-      boards: boards.results,
+      boards: await listBoards(db, me),
       tasks,
       events,
       pending: isAdmin ? pending.results[0].n : 0,
@@ -755,13 +887,11 @@ async function routeApi(request, env, segs, me) {
   if (a === 'activity' && method === 'GET') {
     const limit = Math.min(Number(new URL(request.url).searchParams.get('limit')) || 30, 100);
     // Members only see activity on their own tasks; access changes are for owners only.
-    const scope = viewAll(me)
-      ? (isAdmin ? '' : `WHERE a.action != 'access'`)
-      : `WHERE a.task_id IN (SELECT t.id FROM tasks t WHERE ${VISIBLE_TO_MEMBER})`;
+    const scope = isAdmin ? '' : `WHERE a.action != 'access' AND a.task_id IN (SELECT t.id FROM tasks t WHERE ${VISIBLE_TO_MEMBER})`;
     const { results } = await db.prepare(
       `SELECT a.id, a.task_id, a.board_id, a.user_id, a.action, a.detail, a.created_at, tk.title AS task_title
        FROM activity a LEFT JOIN tasks tk ON tk.id = a.task_id ${scope} ORDER BY a.created_at DESC LIMIT ?`
-    ).bind(...(viewAll(me) ? [] : memberBinds(me)), limit).all();
+    ).bind(...(isAdmin ? [] : memberBinds(me)), limit).all();
     return json({ activity: results.map((r) => ({ ...r, detail: r.detail ? JSON.parse(r.detail) : null })) });
   }
 
@@ -828,34 +958,7 @@ async function routeApi(request, env, segs, me) {
   }
 
   // boards
-  if (a === 'boards') {
-    if (!b && method === 'POST') {
-      if (!isAdmin) throw new HttpError(403, 'Only Sujay or Karan can create boards.');
-      const name = str(body.name, { min: 1, max: 60, field: 'Board name' });
-      const description = str(body.description, { max: 240, field: 'Description' });
-      const color = ['blue', 'teal', 'gold', 'plum', 'slate', 'rust'].includes(body.color) ? body.color : 'blue';
-      const max = await db.prepare('SELECT MAX(position) AS p FROM boards').first();
-      const res = await db.prepare('INSERT INTO boards (name, description, color, position, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)')
-        .bind(name, description, color, (max?.p || 0) + 1, me.id, Date.now()).run();
-      const board = await db.prepare('SELECT * FROM boards WHERE id = ?').bind(res.meta.last_row_id).first();
-      return json({ board }, 201);
-    }
-    if (b && method === 'PATCH') {
-      if (!isAdmin) throw new HttpError(403, 'Only Sujay or Karan can edit boards.');
-      const board = await db.prepare('SELECT * FROM boards WHERE id = ?').bind(Number(b)).first();
-      if (!board) throw new HttpError(404, 'That board doesn’t exist.');
-      const name = 'name' in body ? str(body.name, { min: 1, max: 60, field: 'Board name' }) : board.name;
-      const description = 'description' in body ? str(body.description, { max: 240, field: 'Description' }) : board.description;
-      const color = ['blue', 'teal', 'gold', 'plum', 'slate', 'rust'].includes(body.color) ? body.color : board.color;
-      const archived = 'archived' in body ? (body.archived ? 1 : 0) : board.archived;
-      if (archived) {
-        const count = await db.prepare('SELECT COUNT(*) AS n FROM boards WHERE archived = 0').first();
-        if (count.n <= 1) throw new HttpError(400, 'Keep at least one board.');
-      }
-      await db.prepare('UPDATE boards SET name = ?, description = ?, color = ?, archived = ? WHERE id = ?').bind(name, description, color, archived, board.id).run();
-      return json({ board: { ...board, name, description, color, archived } });
-    }
-  }
+  if (a === 'boards') return boardsRoute(request, env, me, b, c, segs[3], method, body);
 
   // tasks
   if (a === 'tasks') {

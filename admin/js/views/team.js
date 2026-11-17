@@ -74,7 +74,7 @@ function membersList(members, ownerEmails, admin) {
       ? `<span class="tag role-tag">${icon('crown-simple', { weight: 'fill' })}Owner</span>`
       : isManager(u) ? `<span class="tag manager-tag">${icon('shield-star', { weight: 'fill' })}Manager</span>` : '';
     const actions = [
-      seeWork ? `<a class="icon-btn" href="#/people/${u.id}" aria-label="Open ${esc(u.name)}’s board" title="Open board">${icon('kanban', { weight: 'bold' })}</a>` : '',
+      `<a class="icon-btn" href="#/people/${u.id}" aria-label="Open ${esc(u.name)}’s profile and boards" title="Profile and boards">${icon('kanban', { weight: 'bold' })}</a>`,
       admin && !isOwner && !ownerEmails.has(u.email) ? `<button class="icon-btn" type="button" data-member-menu="${u.id}" aria-label="Options for ${esc(u.name)}" aria-haspopup="menu">${icon('dots-three', { weight: 'bold' })}</button>` : '',
     ].join('');
     return `<div class="person member-row${seeWork ? '' : ' is-directory'}">

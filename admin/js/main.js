@@ -1,5 +1,8 @@
 import { api, setUnauthorizedHandler, isStandalone } from './api.js';
-import { state, subscribe, loadAll, reset, isAdmin, isManager, canViewAll, allTasks, boardById, userById, emit, poolTasks, inbox } from './store.js';
+import {
+  state, subscribe, loadAll, reset, isAdmin, isManager, canViewAll, allTasks, boardById, userById, emit, poolTasks, inbox,
+  teamBoards, myBoards, sharedBoards, canAddToBoard,
+} from './store.js';
 import { esc, icon, avatar, swatch } from './util.js';
 import { openMenu, closeMenu, openSheet, toast, toastError, setBusy } from './ui.js';
 import { openTask, openNewTask, closeDrawer, drawerOpenFor, setDrawerNavigation } from './drawer.js';
@@ -64,7 +67,8 @@ const ctx = {
   openTask: openTaskRoute,
   newTask: (defaults = {}) => {
     const { parts } = parseHash();
-    const boardId = parts[0] === 'board' ? Number(parts[1]) : undefined;
+    const routeBoard = parts[0] === 'board' ? boardById(Number(parts[1])) : null;
+    const boardId = routeBoard && canAddToBoard(routeBoard) ? routeBoard.id : undefined;
     openNewTask({ board_id: boardId, ...defaults });
   },
   go,
@@ -117,7 +121,7 @@ function pageTitle() {
     case 'pool': return { title: 'Task pool', search: true };
     case 'people': {
       const u = userById(Number(parts[1]));
-      return { title: u ? (u.id === state.me.id ? 'Your board' : `${u.name}`) : 'Board', search: true };
+      return { title: u ? (u.id === state.me.id ? 'Your profile' : u.name) : 'Profile', search: true };
     }
     default: return { title: 'Overview', search: false };
   }
@@ -179,7 +183,7 @@ function counts() {
       : open.filter((t) => t.kind === 'request' && t.created_by === me.id).length,
     pending: isAdmin() ? state.pending : 0,
     pool: poolTasks().length,
-    inbox: inbox().length,
+    inbox: inbox().length + state.boardRequests.length,
   };
 }
 
@@ -201,11 +205,20 @@ function renderChrome() {
     navItem('#/team', 'team', 'users-three', 'Team', c.pending ? `<span class="nav-badge" aria-label="${c.pending} waiting for access">${c.pending}</span>` : ''),
   ].join('');
 
-  document.querySelector('[data-boards]').innerHTML = state.boards.map((b) => {
+  const boardLink = (b) => {
     const active = sec === 'board' && Number(parts[1]) === b.id;
     const n = allTasks().filter((t) => t.board_id === b.id && t.status !== 'done').length;
-    return `<a class="nav-item${active ? ' is-active' : ''}" href="#/board/${b.id}"${active ? ' aria-current="page"' : ''}>${swatch(b)}<span>${esc(b.name)}</span>${n ? `<span class="nav-count">${n}</span>` : ''}</a>`;
-  }).join('');
+    const owner = b.owner_id && b.owner_id !== me.id ? userById(b.owner_id) : null;
+    return `<a class="nav-item${active ? ' is-active' : ''}" href="#/board/${b.id}"${active ? ' aria-current="page"' : ''} title="${esc(owner ? `${owner.name}’s board` : b.name)}">${swatch(b)}<span>${esc(b.name)}</span>${b.visibility === 'hidden' && b.access === 'owner' ? icon('eye-slash', { cls: 'nav-hidden' }) : ''}${n ? `<span class="nav-count">${n}</span>` : ''}</a>`;
+  };
+  const group = (label, list, add = false) => (list.length || add)
+    ? `<div class="side-sub"><span>${label}</span>${add ? `<button class="icon-btn" type="button" data-new-board aria-label="New board">${icon('plus')}</button>` : ''}</div>${list.map(boardLink).join('')}`
+    : '';
+  document.querySelector('[data-boards]').innerHTML = [
+    group('Team', teamBoards()),
+    group('Mine', myBoards(), true),
+    group(isAdmin() ? 'Team members’' : 'Shared with me', sharedBoards()),
+  ].join('');
 
   const showInstall = !isStandalone() && !localStorage.getItem('spvh-install-dismissed');
   document.querySelector('[data-side-foot]').innerHTML = `
@@ -239,7 +252,7 @@ function mountShell() {
         <a class="side-brand" href="#/"><img src="/assets/images/SPVH LOGO WHITE_2.png" alt="SPVH" width="948" height="330"><span>Workspace</span></a>
         <nav class="side-nav" data-nav aria-label="Main"></nav>
         <div class="side-section">
-          <div class="side-label"><a href="#/boards">Boards</a>${isAdmin() ? `<button class="icon-btn" type="button" data-new-board aria-label="New board">${icon('plus')}</button>` : ''}</div>
+          <div class="side-label"><a href="#/boards">Boards</a></div>
           <nav class="side-nav" data-boards aria-label="Boards"></nav>
         </div>
         <div class="side-foot" data-side-foot></div>

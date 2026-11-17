@@ -1,4 +1,4 @@
-const VERSION = 'spvh-ws-v4';
+const VERSION = 'spvh-ws-v5';
 const SHELL = [
   '/admin/',
   '/admin/app.css',

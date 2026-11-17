@@ -11,6 +11,7 @@ export const state = {
   tasks: new Map(),
   events: [],
   transfers: [],
+  boardRequests: [],
   pending: 0,
   activity: [],
   loaded: false,
@@ -38,6 +39,7 @@ export async function loadAll() {
   state.tasks = new Map(data.tasks.map((t) => [t.id, t]));
   state.events = data.events || [];
   state.transfers = data.transfers || [];
+  state.boardRequests = data.board_requests || [];
   state.pending = data.pending;
   state.loaded = true;
   emit();
@@ -64,6 +66,7 @@ export function reset() {
   state.tasks = new Map();
   state.events = [];
   state.transfers = [];
+  state.boardRequests = [];
   state.pending = 0;
   state.activity = [];
   state.activityLoaded = false;
@@ -163,3 +166,17 @@ export async function poolAction(path, body = {}) {
   await loadAll();
   return res;
 }
+
+// ---------- boards: team boards and personal boards ----------
+// access: 'team' | 'owner' | 'admin' | 'open' | 'approved' | 'pending' | 'locked'
+
+export const isTeamBoard = (b) => b?.access === 'team';
+export const canViewBoard = (b) => !!b && b.access !== 'locked' && b.access !== 'pending';
+export const canAddToBoard = (b) => !!b && (isAdmin() || b.access === 'team' || b.access === 'owner');
+export const canManageBoard = (b) => !!b && (isAdmin() || b.access === 'owner');
+export const teamBoards = () => state.boards.filter(isTeamBoard);
+export const myBoards = () => state.boards.filter((b) => b.access === 'owner');
+export const boardsOf = (userId) => state.boards.filter((b) => b.owner_id === userId);
+export const sharedBoards = () => state.boards.filter((b) => !isTeamBoard(b) && b.owner_id !== state.me?.id && canViewBoard(b));
+export const addableBoards = () => state.boards.filter(canAddToBoard);
+export const defaultBoardId = () => (teamBoards()[0] || addableBoards()[0])?.id;

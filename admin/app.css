@@ -1228,3 +1228,53 @@ body.is-dragging, body.is-dragging * { cursor: grabbing !important; }
 .handover-item p { font-size: 12.5px; color: var(--ink-2); }
 .handover-item p b { color: var(--ink); font-weight: 600; }
 .handover-item blockquote { margin-top: 4px; padding: 8px 12px; border-radius: var(--r-sm); background: var(--surface-2); font-size: 13.5px; line-height: 1.55; color: var(--ink); white-space: pre-wrap; }
+
+/* ---------- v4: personal boards and board access ---------- */
+
+.side-sub {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 4px 2px 10px; font-size: 11px; font-weight: 600; color: rgba(201, 211, 227, 0.45);
+}
+.side-sub .icon-btn { width: 24px; height: 24px; color: rgba(201, 211, 227, 0.7); }
+.side-sub .icon-btn .ph { font-size: 14px; }
+@media (hover: hover) and (pointer: fine) { .side-sub .icon-btn:hover { background: var(--side-hover); color: #fff; } }
+.nav-item .nav-hidden { font-size: 13px; color: rgba(201, 211, 227, 0.5); margin-left: -4px; }
+.nav-item > span:not(.nav-count):not(.nav-badge) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+.board-owner { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--ink-2); }
+.board-kind { margin-left: 4px; vertical-align: middle; font-size: 11px; height: 20px; }
+.board-kind.is-hidden { background: var(--gold-soft); color: var(--gold-ink); }
+.page-title .board-kind { position: relative; top: -2px; }
+.readonly-tag { height: 30px; padding: 0 12px; font-size: 12px; }
+
+.locked-board {
+  display: grid; justify-items: center; text-align: center; gap: 10px; max-width: 460px; margin: 10vh auto 0;
+  padding: 36px 28px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-2);
+}
+.locked-icon {
+  width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 28px;
+  background: var(--gold-soft); color: var(--gold-ink);
+}
+.locked-icon .ph-duotone:before { color: var(--gold); opacity: 0.4; }
+.locked-board .page-sub { line-height: 1.6; }
+.locked-board .btn, .locked-board .tag { margin-top: 8px; }
+
+.board-tile .board-kind { font-size: 10.5px; height: 18px; padding: 0 7px; }
+.board-tile.is-locked { background: var(--surface-2); }
+.board-tile.is-locked h3 { color: var(--ink-2); }
+.tile-lock { font-size: 14px; color: var(--gold-ink); }
+.btn-sm { height: 30px; padding: 0 11px; font-size: 12.5px; }
+
+.access-rows { display: grid; margin-top: 16px; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+.access-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--surface); }
+.access-row:first-child { border-top: 0; }
+.access-who { flex: 1; min-width: 0; display: grid; }
+.access-who strong { font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.access-who span { font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.access-do { display: flex; gap: 6px; flex: none; }
+@media (max-width: 520px) {
+  .access-row { flex-wrap: wrap; }
+  .access-do { width: 100%; justify-content: flex-end; }
+}
+.inbox-card.is-board { border-color: color-mix(in srgb, var(--brand) 35%, var(--line)); }
+.inbox-card .inbox-task .ph-bold { font-size: 13px; color: var(--gold-ink); }
